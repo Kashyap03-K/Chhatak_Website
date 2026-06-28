@@ -10,6 +10,12 @@ const TONE_MAP = {
   'Mint & Lime': 'tone-cool',
 };
 
+const PRODUCT_IMAGES = {
+  'indian-classic': '/images/bowl.JPG',
+  'peri-peri-blaze': '/images/packaging-real.JPG',
+  'combo-3x-classic': '/images/packaging-front-back.png',
+};
+
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,8 +38,9 @@ export default function ProductsPage() {
     setAddingId(productId);
     try {
       await addToCart(productId);
-    } catch {
-      // silently fail
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Failed to add to cart';
+      alert(msg);
     } finally {
       setAddingId(null);
     }
@@ -58,6 +65,9 @@ export default function ProductsPage() {
               <article className="flavor-card" key={product.id}>
                 <Link to={`/products/${product.slug}`}>
                   <div className={`flavor-thumb ${TONE_MAP[product.flavor] || 'tone-warm'}`}>
+                    {PRODUCT_IMAGES[product.slug] && (
+                      <img src={PRODUCT_IMAGES[product.slug]} alt={product.name} className="flavor-img" />
+                    )}
                     <span className="flavor-label">{String(i + 1).padStart(2, '0')} / {product.flavor || product.name}</span>
                   </div>
                 </Link>
@@ -73,13 +83,17 @@ export default function ProductsPage() {
                         <span className="price-was" style={{ marginLeft: '8px', fontSize: '14px' }}>₹{product.compare_at_price}</span>
                       )}
                     </span>
-                    <button
-                      className="btn-link"
-                      onClick={() => handleAddToCart(product.id)}
-                      disabled={addingId === product.id}
-                    >
-                      {addingId === product.id ? 'Adding...' : 'Add to bag →'}
-                    </button>
+                    {product.stock > 0 ? (
+                      <button
+                        className="btn-link"
+                        onClick={() => handleAddToCart(product.id)}
+                        disabled={addingId === product.id}
+                      >
+                        {addingId === product.id ? 'Adding...' : 'Add to bag →'}
+                      </button>
+                    ) : (
+                      <span className="out-of-stock-label">Out of stock</span>
+                    )}
                   </div>
                 </div>
               </article>

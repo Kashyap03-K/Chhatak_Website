@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
     localStorage.setItem('access_token', data.access_token);
-    const userData = { id: data.user_id, name: data.name, email };
+    const userData = { id: data.user_id, name: data.name, email, is_admin: data.is_admin };
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
     return data;
@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
   const register = useCallback(async (name, email, phone, password) => {
     const { data } = await api.post('/auth/register', { name, email, phone: phone || null, password });
     localStorage.setItem('access_token', data.access_token);
-    const userData = { id: data.user_id, name: data.name, email };
+    const userData = { id: data.user_id, name: data.name, email, is_admin: data.is_admin };
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
     return data;

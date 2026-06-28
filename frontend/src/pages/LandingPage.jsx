@@ -1,45 +1,16 @@
+import { lazy, Suspense } from 'react';
 import ModelViewer from '../ModelViewer.jsx';
-import SplashCursor from '../SplashCursor.jsx';
+import LazySection from '../components/LazySection.jsx';
+
+const CoastalJourney = lazy(() => import('../CoastalJourney.jsx'));
+const FlavorShowcase = lazy(() => import('../components/FlavorShowcase.jsx'));
 
 const PRODUCT_MODEL_URL = '/models/chhatak.glb';
 
-function BoatSketch() {
-  return (
-    <svg className="boat-sketch" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M 0 240 Q 200 232, 400 240 T 800 240" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.5"/>
-      <path d="M 280 250 L 540 250 L 510 295 L 310 295 Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
-      <path d="M 280 250 L 540 250" stroke="currentColor" strokeWidth="1.8"/>
-      <path d="M 410 250 L 410 130" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-      <path d="M 410 130 L 450 142 L 410 155" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"/>
-      <circle cx="350" cy="240" r="4" stroke="currentColor" strokeWidth="1.4"/>
-      <path d="M 348 244 L 348 258 M 352 244 L 352 258" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-      <circle cx="470" cy="238" r="4" stroke="currentColor" strokeWidth="1.4"/>
-      <path d="M 468 242 L 468 258 M 472 242 L 472 258" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-      <circle cx="500" cy="234" r="4" stroke="currentColor" strokeWidth="1.4"/>
-      <path d="M 498 238 L 498 256 M 502 238 L 502 256" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-      <path d="M 240 320 Q 280 314, 320 320 T 400 320 T 480 320 T 560 320 T 640 320" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.55"/>
-      <path d="M 200 340 Q 250 334, 300 340 T 400 340 T 500 340 T 600 340 T 700 340" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.35"/>
-      <path d="M 120 100 Q 132 92, 144 100 Q 156 92, 168 100" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-      <path d="M 640 130 Q 652 122, 664 130 Q 676 122, 688 130" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-      <path d="M 700 80 Q 708 74, 716 80 Q 724 74, 732 80" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
-      <circle cx="600" cy="160" r="38" stroke="currentColor" strokeWidth="1.4" fill="none" opacity="0.7"/>
-    </svg>
-  );
-}
 
 export default function LandingPage() {
   return (
     <>
-      <SplashCursor
-        SPLAT_RADIUS={0.18}
-        SPLAT_FORCE={5500}
-        DENSITY_DISSIPATION={3.2}
-        VELOCITY_DISSIPATION={1.8}
-        CURL={3}
-        RAINBOW_MODE={true}
-        COLOR_UPDATE_SPEED={8}
-      />
-
       {/* HERO */}
       <section id="home" className="hero">
         <div className="ocean-glow"></div>
@@ -56,7 +27,6 @@ export default function LandingPage() {
           </h1>
 
           <div className="model-stage">
-            <BoatSketch />
             <div className="model-wrap">
               <ModelViewer
                 url={PRODUCT_MODEL_URL}
@@ -121,6 +91,13 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* COASTAL JOURNEY — scroll-driven route */}
+      <LazySection rootMargin="300px" style={{ minHeight: 500 }}>
+        <Suspense fallback={null}>
+          <CoastalJourney />
+        </Suspense>
+      </LazySection>
+
       {/* STORY */}
       <section id="story" className="story section">
         <div className="container">
@@ -130,11 +107,13 @@ export default function LandingPage() {
               <h2 className="display sm">
                 The taste of the <em>Konkan coast</em>, sealed in a pouch.
               </h2>
+              <img src="/images/bowl-annotated.JPG" alt="Bombil Crunch — Crispy, Spicy, Addictive" className="story-image" loading="lazy" />
             </div>
             <div className="story-right">
               <p>Chhatak was born on the windswept shores of western India, where fishermen bring in the day's catch at dawn and grandmothers turn Bombil — Bombay duck — into something legendary.</p>
               <p>We took that century-old craft, kept the soul intact, and made it ready for the modern shelf. Every pouch is a piece of the coast: sun, salt, spice, and a crunch that lingers.</p>
               <a className="btn-link" href="#product">Discover the process →</a>
+              <img src="/images/packaging-real.JPG" alt="Chhatak Bombil Crunch packaging" className="story-image-pack" loading="lazy" />
             </div>
           </div>
         </div>
@@ -147,10 +126,13 @@ export default function LandingPage() {
           <h2 className="display sm center">Crafted, not <em>manufactured</em>.</h2>
 
           <div className="specs-grid">
-            <div className="spec">
-              <p className="spec-num">01</p>
-              <h3>Sourced at dawn</h3>
-              <p>From local fishermen on the Konkan coast, hand-graded the same morning.</p>
+            <div className="spec spec--has-img">
+              <img src="/images/bowl.JPG" alt="Bombil Crunch in bowl" className="spec-bg-img" loading="lazy" />
+              <div className="spec-content">
+                <p className="spec-num">01</p>
+                <h3>Sourced at dawn</h3>
+                <p>From local fishermen on the Konkan coast, hand-graded the same morning.</p>
+              </div>
             </div>
             <div className="spec">
               <p className="spec-num">02</p>
@@ -162,10 +144,13 @@ export default function LandingPage() {
               <h3>Hand-blended masala</h3>
               <p>Seven spices, one family recipe. Roasted in small batches.</p>
             </div>
-            <div className="spec">
-              <p className="spec-num">04</p>
-              <h3>Sealed fresh</h3>
-              <p>Nitrogen-flushed pouches lock in crunch for six full months.</p>
+            <div className="spec spec--has-img">
+              <img src="/images/packaging-real.JPG" alt="Chhatak packaging" className="spec-bg-img" loading="lazy" />
+              <div className="spec-content">
+                <p className="spec-num">04</p>
+                <h3>Sealed fresh</h3>
+                <p>Nitrogen-flushed pouches lock in crunch for six full months.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -182,61 +167,9 @@ export default function LandingPage() {
       </section>
 
       {/* FLAVORS */}
-      <section id="flavors" className="flavors section">
-        <div className="container">
-          <div className="flavors-head">
-            <div>
-              <p className="kicker">— The range</p>
-              <h2 className="display sm">Three flavors. <em>One coast.</em></h2>
-            </div>
-            <p className="muted-text">A small, considered range. We'd rather make a few things well than many things average.</p>
-          </div>
-
-          <div className="flavor-grid">
-            <article className="flavor-card">
-              <div className="flavor-thumb tone-warm">
-                <span className="flavor-label">01 / Indian Classic</span>
-              </div>
-              <div className="flavor-body">
-                <h3>Indian Classic</h3>
-                <p>The original. Crispy, spicy, unmistakably coastal.</p>
-                <div className="flavor-meta">
-                  <span>₹199</span>
-                  <a href="/products" className="btn-link">Add to bag →</a>
-                </div>
-              </div>
-            </article>
-
-            <article className="flavor-card">
-              <div className="flavor-thumb tone-fire">
-                <span className="flavor-label">02 / Peri Peri Blaze</span>
-              </div>
-              <div className="flavor-body">
-                <h3>Peri Peri Blaze</h3>
-                <p>African heat meets Indian coast. For the brave.</p>
-                <div className="flavor-meta">
-                  <span>₹219</span>
-                  <a href="/products" className="btn-link">Add to bag →</a>
-                </div>
-              </div>
-            </article>
-
-            <article className="flavor-card">
-              <div className="flavor-thumb tone-cool">
-                <span className="flavor-label">03 / Mint &amp; Lime</span>
-              </div>
-              <div className="flavor-body">
-                <h3>Mint &amp; Lime</h3>
-                <p>Cool, tangy, refreshingly different.</p>
-                <div className="flavor-meta">
-                  <span>Coming soon</span>
-                  <a href="#" className="btn-link muted">Notify me →</a>
-                </div>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
+      <Suspense fallback={null}>
+        <FlavorShowcase />
+      </Suspense>
 
       {/* BUY */}
       <section id="buy" className="buy section">
@@ -252,6 +185,7 @@ export default function LandingPage() {
           </div>
 
           <div className="buy-card">
+            <img src="/images/packaging-front-back.png" alt="Chhatak packaging front and back" className="buy-card-img" loading="lazy" />
             <p className="kicker">— Combo</p>
             <h3 className="combo-title">Pack of three</h3>
             <p className="combo-sub">100g each · Indian Classic</p>

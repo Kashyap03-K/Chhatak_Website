@@ -11,6 +11,12 @@ const TONE_MAP = {
   'Mint & Lime': 'tone-cool',
 };
 
+const PRODUCT_GALLERY = {
+  'indian-classic': ['/images/bowl.JPG', '/images/packaging-front-back.png', '/images/nutrition.PNG', '/images/bowl-annotated.JPG'],
+  'peri-peri-blaze': ['/images/packaging-real.JPG', '/images/packaging-front-back.png', '/images/nutrition.PNG'],
+  'combo-3x-classic': ['/images/packaging-front-back.png', '/images/bowl.JPG', '/images/nutrition.PNG'],
+};
+
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
@@ -18,15 +24,13 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
 
   useEffect(() => {
-    api.get('/products/')
-      .then(({ data }) => {
-        const found = data.find(p => p.slug === slug);
-        setProduct(found || null);
-      })
+    api.get(`/products/slug/${slug}`)
+      .then(({ data }) => setProduct(data))
       .catch(() => setProduct(null))
       .finally(() => setLoading(false));
   }, [slug]);
@@ -41,8 +45,9 @@ export default function ProductDetailPage() {
       await addToCart(product.id, quantity);
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
-    } catch {
-      // silently fail
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Failed to add to cart';
+      alert(msg);
     } finally {
       setAdding(false);
     }
@@ -78,7 +83,24 @@ export default function ProductDetailPage() {
 
         <div className="product-detail-grid">
           <div className="product-visual">
-            {product.model_url ? (
+            {PRODUCT_GALLERY[product.slug] ? (
+              <div className="product-gallery">
+                <div className="gallery-main">
+                  <img src={PRODUCT_GALLERY[product.slug][activeImage]} alt={product.name} className="gallery-main-img" />
+                </div>
+                <div className="gallery-thumbs">
+                  {PRODUCT_GALLERY[product.slug].map((src, i) => (
+                    <button
+                      key={i}
+                      className={`gallery-thumb ${activeImage === i ? 'active' : ''}`}
+                      onClick={() => setActiveImage(i)}
+                    >
+                      <img src={src} alt={`${product.name} view ${i + 1}`} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : product.model_url ? (
               <div className="product-model-wrap">
                 <ModelViewer
                   url={product.model_url}
@@ -141,7 +163,7 @@ export default function ProductDetailPage() {
               <div className="quantity-control">
                 <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="qty-btn">−</button>
                 <span className="qty-value">{quantity}</span>
-                <button onClick={() => setQuantity(q => q + 1)} className="qty-btn">+</button>
+                <button onClick={() => setQuantity(q => Math.min(q + 1, product.stock))} className="qty-btn">+</button>
               </div>
               <button
                 className="btn-solid accent"

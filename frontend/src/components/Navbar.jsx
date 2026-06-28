@@ -8,21 +8,22 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const isLanding = location.pathname === '/';
 
-  if (isLanding) return null;
-
   return (
-    <nav className="nav">
+    <nav className={`nav ${isLanding ? 'nav--landing' : ''}`}>
       <div className="nav-inner">
         <Link to="/" className="brand">Chhatak<sup>™</sup></Link>
         <ul className="nav-links">
           <li><Link to="/products">Shop</Link></li>
-          <li>
-            <Link to="/cart" className="cart-link">
-              Cart
-              {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
-            </Link>
-          </li>
+          {!isLanding && (
+            <li>
+              <Link to="/cart" className="cart-link">
+                Cart
+                {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+              </Link>
+            </li>
+          )}
           {isAuthenticated && <li><Link to="/orders">Orders</Link></li>}
+          {user?.is_admin && <li><Link to="/admin" className="admin-link">Admin</Link></li>}
         </ul>
         <div className="nav-auth">
           {isAuthenticated ? (
@@ -31,7 +32,10 @@ export default function Navbar() {
               <button className="btn-outline" onClick={logout}>Logout</button>
             </>
           ) : (
-            <Link className="btn-outline" to="/login">Sign in</Link>
+            <>
+              <Link className="btn-ghost" to="/login">Log in</Link>
+              <Link className="btn-solid accent" to="/register">Sign up</Link>
+            </>
           )}
         </div>
       </div>

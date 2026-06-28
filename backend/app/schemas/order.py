@@ -1,8 +1,18 @@
 from datetime import datetime
+from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.product import ProductOut
+
+
+class OrderStatus(str, Enum):
+    pending_payment = "pending_payment"
+    confirmed = "confirmed"
+    processing = "processing"
+    shipped = "shipped"
+    delivered = "delivered"
+    cancelled = "cancelled"
 
 
 class OrderItemOut(BaseModel):
@@ -17,11 +27,11 @@ class OrderItemOut(BaseModel):
 
 
 class OrderCreate(BaseModel):
-    shipping_address: str
+    shipping_address: str = Field(..., min_length=1, max_length=1000)
 
 
 class OrderStatusUpdate(BaseModel):
-    status: str
+    status: OrderStatus
 
 
 class OrderOut(BaseModel):

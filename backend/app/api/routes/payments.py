@@ -9,9 +9,13 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.api.deps import get_current_user
 from app.models.user import User
-from app.models.order import Order
+from app.models.order import Order, OrderItem
+from app.models.cart import CartItem
+from app.models.product import Product
 from app.models.payment import Payment
 from app.schemas.payment import CreatePaymentOrder, PaymentOrderResponse, VerifyPayment, PaymentVerifyResponse
+from app.services.invoice import generate_invoice_pdf
+from app.services.email import send_order_confirmation
 
 router = APIRouter(prefix="/payments", tags=["payments"])
 
@@ -32,12 +36,26 @@ def create_payment_order(
     if order.status != "pending_payment":
         raise HTTPException(status_code=400, detail="Order is not awaiting payment")
 
+    for item in order.items:
+        product = db.query(Product).filter(Product.id == item.product_id).first()
+        if product and product.stock < item.quantity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{product.name} has only {product.stock} left in stock. Please update your order.",
+            )
+
+    if not settings.RAZORPAY_KEY_ID or not settings.RAZORPAY_KEY_SECRET:
+        raise HTTPException(status_code=503, detail="Payment gateway not configured. Please contact support.")
+
     client = get_razorpay_client()
-    rz_order = client.order.create({
-        "amount": int(order.total_amount * 100),  # paise
-        "currency": "INR",
-        "receipt": f"order_{order.id}",
-    })
+    try:
+        rz_order = client.order.create({
+            "amount": int(order.total_amount * 100),  # paise
+            "currency": "INR",
+            "receipt": f"order_{order.id}",
+        })
+    except Exception:
+        raise HTTPException(status_code=502, detail="Payment gateway error. Please try again later.")
 
     payment = Payment(
         order_id=order.id,
@@ -70,22 +88,38 @@ def verify_payment(
         hashlib.sha256,
     ).hexdigest()
 
-    if expected_signature != body.razorpay_signature:
+    if not hmac.compare_digest(expected_signature, body.razorpay_signature):
         raise HTTPException(status_code=400, detail="Invalid payment signature")
 
     payment = db.query(Payment).filter(Payment.razorpay_order_id == body.razorpay_order_id).first()
     if not payment:
         raise HTTPException(status_code=404, detail="Payment record not found")
 
+    order = db.query(Order).filter(Order.id == payment.order_id).first()
+    if not order or order.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Not authorized for this order")
+
     payment.razorpay_payment_id = body.razorpay_payment_id
     payment.razorpay_signature = body.razorpay_signature
     payment.status = "captured"
-
-    order = db.query(Order).filter(Order.id == payment.order_id).first()
     if order:
         order.status = "confirmed"
 
+        for item in db.query(OrderItem).filter(OrderItem.order_id == order.id).all():
+            product = db.query(Product).filter(Product.id == item.product_id).first()
+            if product:
+                product.stock = max(0, product.stock - item.quantity)
+
+        db.query(CartItem).filter(CartItem.user_id == order.user_id).delete()
+
     db.commit()
+
+    if order and order.status == "confirmed":
+        try:
+            pdf = generate_invoice_pdf(order)
+            send_order_confirmation(order, pdf)
+        except Exception:
+            pass
 
     return PaymentVerifyResponse(
         status="success",

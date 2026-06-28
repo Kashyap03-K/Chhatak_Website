@@ -1,8 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 
+const PRODUCT_IMAGES = {
+  'indian-classic': '/images/bowl.JPG',
+  'peri-peri-blaze': '/images/packaging-real.JPG',
+  'combo-3x-classic': '/images/packaging-front-back.png',
+};
+
 export default function CartPage() {
   const { items, loading, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
+
+  const shipping = totalPrice >= 499 ? 0 : 49;
+  const freeShippingProgress = Math.min((totalPrice / 499) * 100, 100);
 
   return (
     <div className="section cart-page">
@@ -13,8 +22,9 @@ export default function CartPage() {
         {loading ? (
           <p style={{ textAlign: 'center', color: 'var(--muted)', marginTop: '40px' }}>Loading cart...</p>
         ) : items.length === 0 ? (
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
-            <p style={{ color: 'var(--muted)', marginBottom: '24px' }}>Your bag is empty.</p>
+          <div className="empty-state">
+            <p className="empty-state__icon">~</p>
+            <p className="empty-state__text">Your bag is empty.</p>
             <Link to="/products" className="btn-solid accent">Browse products →</Link>
           </div>
         ) : (
@@ -22,8 +32,15 @@ export default function CartPage() {
             <div className="cart-items">
               {items.map((item) => (
                 <div className="cart-item" key={item.id}>
+                  {PRODUCT_IMAGES[item.product.slug] && (
+                    <Link to={`/products/${item.product.slug}`} className="cart-item-thumb">
+                      <img src={PRODUCT_IMAGES[item.product.slug]} alt={item.product.name} />
+                    </Link>
+                  )}
                   <div className="cart-item-info">
-                    <h3>{item.product.name}</h3>
+                    <Link to={`/products/${item.product.slug}`}>
+                      <h3>{item.product.name}</h3>
+                    </Link>
                     <p className="cart-item-flavor">{item.product.flavor} · {item.product.weight}</p>
                     <p className="cart-item-price">₹{item.product.price} each</p>
                   </div>
@@ -36,7 +53,8 @@ export default function CartPage() {
                       <span className="qty-value">{item.quantity}</span>
                       <button
                         className="qty-btn"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.id, Math.min(item.quantity + 1, item.product.stock))}
+                        disabled={item.quantity >= item.product.stock}
                       >+</button>
                     </div>
                     <span className="cart-item-total">₹{item.product.price * item.quantity}</span>
@@ -49,20 +67,31 @@ export default function CartPage() {
 
             <div className="cart-summary">
               <h3>Order summary</h3>
+              {items.map((item) => (
+                <div className="summary-item" key={item.id}>
+                  <span>{item.product.name} × {item.quantity}</span>
+                  <span>₹{item.product.price * item.quantity}</span>
+                </div>
+              ))}
               <div className="summary-row">
                 <span>Subtotal</span>
                 <span>₹{totalPrice}</span>
               </div>
               <div className="summary-row">
                 <span>Shipping</span>
-                <span>{totalPrice >= 499 ? 'Free' : '₹49'}</span>
+                <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
               </div>
               <div className="summary-row total">
                 <span>Total</span>
-                <span>₹{totalPrice + (totalPrice >= 499 ? 0 : 49)}</span>
+                <span>₹{totalPrice + shipping}</span>
               </div>
               {totalPrice < 499 && (
-                <p className="shipping-note">Add ₹{499 - totalPrice} more for free shipping</p>
+                <div className="shipping-progress">
+                  <div className="shipping-progress__bar">
+                    <div className="shipping-progress__fill" style={{ width: `${freeShippingProgress}%` }} />
+                  </div>
+                  <p className="shipping-progress__text">Add ₹{499 - totalPrice} more for free shipping</p>
+                </div>
               )}
               <Link to="/checkout" className="btn-solid accent full" style={{ marginTop: '24px' }}>
                 Proceed to checkout →
