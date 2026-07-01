@@ -30,7 +30,6 @@ services:
     rootDir: frontend
     buildCommand: npm install --include=dev && npm run build
     staticPublishPath: ./dist
-    plan: free
     envVars:
       - key: VITE_API_URL
         value: https://chhatak-api.onrender.com/api/v1
