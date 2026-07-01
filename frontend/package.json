@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "models:optimize": "npm run models:optimize:chhatak && npm run models:optimize:boat",
+    "models:optimize:chhatak": "gltf-transform optimize public/models/chhatak.glb public/models/chhatak.glb --compress meshopt --texture-compress webp",
+    "models:optimize:boat": "gltf-transform optimize public/models/boat.glb public/models/boat.glb --compress meshopt --texture-compress webp"
   },
   "dependencies": {
     "@react-three/drei": "^9.114.0",
@@ -18,6 +21,7 @@
     "three": "^0.160.0"
   },
   "devDependencies": {
+    "@gltf-transform/cli": "^4.1.0",
     "@vitejs/plugin-react": "^4.3.3",
     "vite": "^5.4.10"
   }

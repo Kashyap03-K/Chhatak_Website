@@ -95,7 +95,6 @@ function BoatModel() {
   );
 }
 
-useGLTF.preload('/models/boat.glb');
 
 export default function CoastalStory() {
   const [active, setActive] = useState(0);
@@ -147,13 +146,11 @@ export default function CoastalStory() {
     return () => window.removeEventListener('keydown', onKey);
   }, [inView, next, prev]);
 
-  // Preload adjacent images so cross-fade is instant
+  // Preload the next image so the upcoming cross-fade is instant
   useEffect(() => {
-    const toPreload = [active, (active + 1) % total, (active - 1 + total) % total];
-    toPreload.forEach((i) => {
-      const img = new Image();
-      img.src = SCENES[i].src;
-    });
+    const nextIdx = (active + 1) % total;
+    const img = new Image();
+    img.src = SCENES[nextIdx].src;
   }, [active, total]);
 
   const scene = SCENES[active];
