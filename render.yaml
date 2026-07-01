@@ -20,22 +20,21 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         value: https://chhatak.onrender.com
-      - key: RAZORPAY_KEY_ID
-        sync: false
-      - key: RAZORPAY_KEY_SECRET
-        sync: false
-      - key: RESEND_API_KEY
-        sync: false
       - key: FROM_EMAIL
         value: orders@chhatak.co
     healthCheckPath: /api/health
 
   - type: web
     name: chhatak
-    runtime: node
-    buildCommand: npm install && npm run build && npm install -g serve
-    startCommand: serve dist -s -l $PORT
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install --include=dev && npm run build
+    staticPublishPath: ./dist
     plan: free
     envVars:
-      - key: NODE_ENV
-        value: production
+      - key: VITE_API_URL
+        value: https://chhatak-api.onrender.com/api/v1
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

@@ -1798,266 +1798,380 @@ img { display: block; max-width: 100%; }
   .cart-item-controls { width: 100%; justify-content: space-between; }
   .product-meta-details { flex-direction: column; gap: 16px; }
   .order-header { flex-direction: column; gap: 8px; align-items: flex-start; }
-  .voyage-boat { width: 120px; height: 100px; }
-  .voyage-boat canvas { width: 120px !important; height: 100px !important; }
-  .voyage-tooltip { width: 200px; }
-  .voyage-tooltip-img { height: 100px; }
-  .voyage-map-title span:first-child { font-size: 14px; }
-  .voyage-compass { display: none; }
-  .voyage-pin-label { font-size: 8px; }
 }
 
-/* COASTAL JOURNEY — treasure map */
-.coastal-journey {
+/* ================================================================
+   COASTAL STORY — 9-scene interactive journey
+   ================================================================ */
+.coastal-story {
   position: relative;
-  background: linear-gradient(180deg, #0A1A2E 0%, #0F2540 50%, #0A1A2E 100%);
-  padding: 100px 0 80px;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(232, 145, 72, 0.08), transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(107, 142, 196, 0.10), transparent 60%),
+    linear-gradient(180deg, #0A1A2E 0%, #0F2540 55%, #0A1A2E 100%);
+  padding: 110px 0 100px;
   overflow: hidden;
+  isolation: isolate;
 }
-.journey-header {
-  position: relative;
-  z-index: 2;
-  margin-bottom: 40px;
+.story-header {
+  max-width: 720px;
+  margin: 0 auto 48px;
   padding: 0 32px;
+  text-align: center;
+}
+.story-header .display { color: #F5EFE3; }
+.story-header .display em { color: #E89148; }
+.story-lead {
+  margin: 20px auto 0;
+  color: rgba(245, 239, 227, 0.65);
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  max-width: 480px;
 }
 
-/* Parchment map */
-.voyage-map {
+.story-stage {
   position: relative;
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 0 24px;
 }
-.voyage-parchment {
-  position: relative;
-  border-radius: 10px;
-  padding: 4px;
-  background: linear-gradient(135deg, #5a9ab8, #7ab8d4, #5a9ab8);
-  box-shadow:
-    0 8px 40px rgba(0,0,0,0.35),
-    inset 0 0 20px rgba(0,0,0,0.1);
-  overflow: visible;
-}
-.voyage-parchment::before {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 9px;
-  pointer-events: none;
-  z-index: 2;
-}
-.voyage-map-inner {
+
+/* Cinematic frame */
+.story-frame {
   position: relative;
   width: 100%;
-  background: url('/images/diu-map.jpg') center / cover no-repeat;
-  border-radius: 6px;
-  aspect-ratio: 1536 / 1303;
-  overflow: visible;
-  image-rendering: -webkit-optimize-contrast;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #050D1A;
+  box-shadow:
+    0 30px 80px -20px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(232, 145, 72, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
-/* Compass rose */
-.voyage-compass {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  z-index: 3;
-  opacity: 0.7;
-}
-
-/* Map title */
-.voyage-map-title {
-  position: absolute;
-  top: 16px;
-  left: 20px;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.voyage-map-title span:first-child {
-  font-family: 'Fraunces', serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: rgba(60, 35, 10, 0.85);
-  font-style: italic;
-  text-shadow: 0 1px 2px rgba(200,170,100,0.4);
-}
-.voyage-map-sub {
-  font-family: 'Inter', sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(100, 65, 25, 0.5);
-}
-
-/* Route line */
-.voyage-svg {
+/* Scene layers */
+.story-scene {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  opacity: 0;
+  transition: opacity 900ms cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
-  z-index: 1;
 }
-
-/* Pin markers */
-.voyage-point {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  cursor: pointer;
-}
-.voyage-pin {
-  width: 16px;
-  height: 16px;
-  background: radial-gradient(circle at 40% 35%, #c0392b, #922b21);
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
-  margin: 0 auto;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  z-index: 5;
-}
-.voyage-point:hover .voyage-pin,
-.voyage-point.active .voyage-pin {
-  transform: rotate(-45deg) scale(1.4);
-  box-shadow: 0 0 14px rgba(192, 57, 43, 0.5), 0 3px 8px rgba(0,0,0,0.4);
-}
-
-/* Pin label below marker */
-.voyage-pin-label {
-  display: block;
-  text-align: center;
-  font-family: 'Inter', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  color: #1a1a2e;
-  white-space: nowrap;
-  margin-top: 4px;
-  pointer-events: none;
-  text-shadow: 0 1px 3px rgba(255,255,255,0.7), 0 0 6px rgba(255,255,255,0.4);
-  letter-spacing: 0.02em;
-}
-
-/* "Drag me!" label on boat */
-.voyage-move-label {
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(192, 57, 43, 0.92);
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 20px;
-  white-space: nowrap;
-  z-index: 10;
-  pointer-events: none;
-  animation: moveBounce 1.2s ease-in-out infinite;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-@keyframes moveBounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-6px); }
-}
-
-/* Tooltip above waypoint — revealed on hover */
-.voyage-tooltip {
-  position: absolute;
-  bottom: calc(100% + 18px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(42, 34, 22, 0.96);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 90, 43, 0.45);
-  border-radius: 10px;
-  padding: 0;
-  width: 240px;
-  z-index: 20;
-  animation: tooltipIn 0.25s ease forwards;
-  pointer-events: none;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-}
-.voyage-point:nth-child(n+3) .voyage-tooltip {
-  left: auto;
-  right: 50%;
-  transform: translateX(50%);
-}
-.voyage-point:nth-child(1) .voyage-tooltip,
-.voyage-point:nth-child(2) .voyage-tooltip {
-  left: auto;
-  right: 0;
-  transform: none;
-}
-.voyage-point:nth-child(1) .voyage-tooltip::after,
-.voyage-point:nth-child(2) .voyage-tooltip::after {
-  left: auto;
-  right: 10px;
-  transform: none;
-}
-.voyage-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 7px solid transparent;
-  border-top-color: rgba(42, 34, 22, 0.96);
-}
-@keyframes tooltipIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-.voyage-tooltip-img {
-  width: 100%;
-  height: 140px;
-  overflow: hidden;
-}
-.voyage-tooltip-img img {
+.story-scene img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
+  object-position: center;
+  transform: scale(1);
+  transition: transform 900ms ease-out;
+  will-change: transform, opacity;
+  user-select: none;
 }
-.voyage-tooltip h3 {
-  font-family: 'Fraunces', serif;
-  font-size: 15px;
-  font-weight: 600;
-  color: #d4b87a;
-  margin: 0;
-  padding: 12px 16px 4px;
+.story-scene.is-active {
+  opacity: 1;
 }
-.voyage-tooltip p {
-  font-size: 12px;
-  line-height: 1.55;
-  color: rgba(210, 180, 120, 0.75);
-  margin: 0;
-  padding: 0 16px 14px;
+.story-scene.is-active img {
+  animation: storyKenBurns 9s ease-out forwards;
+}
+@keyframes storyKenBurns {
+  0% { transform: scale(1.02) translate(0, 0); }
+  100% { transform: scale(1.10) translate(-1.5%, -1%); }
 }
 
-/* Draggable 3D boat */
-.voyage-boat {
+/* Vignette + gradient for readable caption */
+.story-vignette {
   position: absolute;
-  width: 200px;
-  height: 160px;
-  transform: translate(-50%, -50%);
-  z-index: 6;
-  cursor: grab;
-  pointer-events: auto;
-  transition: filter 0.2s ease;
-}
-.voyage-boat.grabbing {
-  cursor: grabbing;
-  filter: drop-shadow(0 4px 16px rgba(139, 90, 43, 0.5));
-}
-.voyage-boat canvas {
-  width: 200px !important;
-  height: 160px !important;
+  inset: 0;
   pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(5, 13, 26, 0.20) 0%, rgba(5, 13, 26, 0) 25%, rgba(5, 13, 26, 0) 55%, rgba(5, 13, 26, 0.85) 100%),
+    linear-gradient(90deg, rgba(5, 13, 26, 0.55) 0%, rgba(5, 13, 26, 0) 45%);
+  z-index: 2;
+}
+
+/* Caption overlay */
+.story-caption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: 40px 56px 44px;
+  max-width: 620px;
+  color: #F5EFE3;
+  pointer-events: none;
+}
+.story-index {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(245, 239, 227, 0.7);
+}
+.story-index-num {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 500;
+  color: #E89148;
+  letter-spacing: 0;
+}
+.story-index-sep {
+  color: rgba(245, 239, 227, 0.4);
+}
+.story-index-total {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  color: rgba(245, 239, 227, 0.55);
+  letter-spacing: 0;
+}
+.story-index-label {
+  margin-left: 6px;
+  font-size: 11px;
+  color: rgba(245, 239, 227, 0.55);
+}
+.story-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(28px, 3.5vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+  color: #F5EFE3;
+  animation: storyFadeUp 700ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+.story-body {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(245, 239, 227, 0.82);
+  margin: 0;
+  max-width: 480px;
+  animation: storyFadeUp 700ms 100ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+@keyframes storyFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Prev / next arrows */
+.story-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 239, 227, 0.25);
+  background: rgba(10, 26, 46, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #F5EFE3;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 200ms ease, border-color 200ms ease, transform 200ms ease;
+}
+.story-arrow:hover {
+  background: rgba(232, 145, 72, 0.85);
+  border-color: rgba(232, 145, 72, 0.9);
+  transform: translateY(-50%) scale(1.05);
+}
+.story-arrow--prev { left: 20px; }
+.story-arrow--next { right: 20px; }
+
+/* Progress bar */
+.story-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: rgba(245, 239, 227, 0.08);
+  z-index: 5;
+  overflow: hidden;
+}
+.story-progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #E89148, #F5D5A0);
+  transform-origin: left;
+  animation: storyProgress linear forwards;
+}
+.story-progress-fill.is-paused {
+  animation-play-state: paused;
+  background: rgba(245, 239, 227, 0.25);
+}
+@keyframes storyProgress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Unified voyage track — 3D boat sails above the 9 ports (chapter buttons) */
+.story-track {
+  position: relative;
+  margin-top: 8px;
+  padding: 96px 0 0;
+}
+.track-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 104px;
+  width: 100%;
+  height: 24px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+.track-line-traveled {
+  transition: stroke-dashoffset 1400ms cubic-bezier(0.4, 0.15, 0.25, 1);
+}
+.track-boat {
+  position: absolute;
+  top: 20px;
+  width: 130px;
+  height: 96px;
+  transform: translateX(-50%);
+  transition: left 1400ms cubic-bezier(0.4, 0.15, 0.25, 1);
+  z-index: 3;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+}
+.track-boat canvas {
+  pointer-events: none;
+  background: transparent !important;
+}
+.track-ports {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 0;
+  z-index: 2;
+}
+.track-port {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px 8px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: rgba(245, 239, 227, 0.42);
+  font-family: 'Inter', sans-serif;
+  transition: color 250ms ease;
+}
+.track-port:hover { color: rgba(245, 239, 227, 0.85); }
+.track-port-marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(245, 239, 227, 0.20);
+  transition:
+    background 350ms ease,
+    transform 350ms ease,
+    box-shadow 350ms ease;
+  margin-top: -4px;
+}
+.track-port:hover .track-port-marker {
+  background: rgba(245, 239, 227, 0.55);
+}
+.track-port.is-past .track-port-marker {
+  background: rgba(232, 145, 72, 0.75);
+}
+.track-port.is-active .track-port-marker {
+  background: #E89148;
+  transform: scale(1.7);
+  box-shadow: 0 0 14px rgba(232, 145, 72, 0.75);
+}
+.track-port-num {
+  font-family: 'Fraunces', serif;
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 500;
+  color: inherit;
+  transition: color 250ms ease;
+}
+.track-port.is-past { color: rgba(232, 145, 72, 0.7); }
+.track-port.is-active { color: #F5EFE3; }
+.track-port.is-active .track-port-num { color: #E89148; }
+.track-port-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.story-hint {
+  margin: 8px 0 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(245, 239, 227, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+.story-hint kbd {
+  display: inline-block;
+  min-width: 22px;
+  padding: 2px 6px;
+  margin: 0 2px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  border: 1px solid rgba(245, 239, 227, 0.25);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: rgba(245, 239, 227, 0.75);
+  background: rgba(245, 239, 227, 0.04);
+  text-align: center;
+}
+.story-hint-sep { opacity: 0.4; }
+
+/* Tablet */
+@media (max-width: 900px) {
+  .coastal-story { padding: 80px 0 70px; }
+  .story-caption { padding: 28px 32px 32px; max-width: 100%; }
+  .story-arrow { width: 40px; height: 40px; }
+  .story-arrow--prev { left: 12px; }
+  .story-arrow--next { right: 12px; }
+  .track-port-num { font-size: 11px; }
+  .track-port-label { display: none; }
+  .track-boat { width: 108px; height: 82px; top: 24px; }
+  .story-track { padding-top: 84px; }
+  .track-line { top: 92px; }
+  .story-frame { aspect-ratio: 4 / 3; border-radius: 10px; }
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  .coastal-story { padding: 64px 0 56px; }
+  .story-header { margin-bottom: 32px; padding: 0 20px; }
+  .story-stage { padding: 0 12px; }
+  .story-caption { padding: 20px 22px 24px; }
+  .story-index { font-size: 10px; letter-spacing: 0.20em; }
+  .story-index-num { font-size: 16px; }
+  .story-title { font-size: 22px; }
+  .story-body { font-size: 13px; line-height: 1.55; }
+  .story-hint { font-size: 10px; flex-wrap: wrap; }
+  .story-hint kbd { display: none; }
+  .story-frame { aspect-ratio: 3 / 4; }
+  .track-boat { width: 82px; height: 62px; top: 30px; }
+  .story-track { padding-top: 70px; }
+  .track-line { top: 78px; }
+  .track-port-marker { width: 6px; height: 6px; }
 }

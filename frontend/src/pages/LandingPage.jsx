@@ -1,8 +1,7 @@
 import { lazy, Suspense } from 'react';
 import ModelViewer from '../ModelViewer.jsx';
-import LazySection from '../components/LazySection.jsx';
 
-const CoastalJourney = lazy(() => import('../CoastalJourney.jsx'));
+const CoastalStory = lazy(() => import('../components/CoastalStory.jsx'));
 const FlavorShowcase = lazy(() => import('../components/FlavorShowcase.jsx'));
 
 const PRODUCT_MODEL_URL = '/models/chhatak.glb';
@@ -91,12 +90,10 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* COASTAL JOURNEY — scroll-driven route */}
-      <LazySection rootMargin="300px" style={{ minHeight: 500 }}>
-        <Suspense fallback={null}>
-          <CoastalJourney />
-        </Suspense>
-      </LazySection>
+      {/* COASTAL STORY — 9-scene interactive journey */}
+      <Suspense fallback={null}>
+        <CoastalStory />
+      </Suspense>
 
       {/* STORY */}
       <section id="story" className="story section">
