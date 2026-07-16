@@ -1,9 +1,3 @@
-databases:
-  - name: chhatak-db
-    plan: free
-    databaseName: chhatak
-    user: chhatak
-
 services:
   - type: web
     name: chhatak-api
@@ -12,10 +6,10 @@ services:
     dockerContext: ./backend
     plan: free
     envVars:
+      # DATABASE_URL is set manually in the Render dashboard because free tier
+      # only allows one Postgres DB per account (we reuse an existing one).
       - key: DATABASE_URL
-        fromDatabase:
-          name: chhatak-db
-          property: connectionString
+        sync: false
       - key: SECRET_KEY
         generateValue: true
       - key: FRONTEND_URL
