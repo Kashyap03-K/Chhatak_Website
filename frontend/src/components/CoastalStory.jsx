@@ -4,7 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
-const SCENES = [
+const DEFAULT_SCENES = [
   {
     src: '/images/scene 1.png',
     kicker: 'Before dawn',
@@ -96,7 +96,8 @@ function BoatModel() {
 }
 
 
-export default function CoastalStory({ fullscreen = false } = {}) {
+export default function CoastalStory({ fullscreen = false, scenes } = {}) {
+  const SCENES = scenes && scenes.length ? scenes : DEFAULT_SCENES;
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [inView, setInView] = useState(false);

@@ -63,7 +63,9 @@ export default function Navbar() {
   return (
     <nav className={`nav ${isLanding ? 'nav--landing' : ''}`}>
       <div className="nav-inner">
-        <Link to="/" className="brand">Chhatak<sup>™</sup></Link>
+        <Link to="/" className="brand" aria-label="Chhatak — The Coastal Crunch">
+          <img src="/images/chhatak-logo.png" alt="Chhatak" className="brand-logo" />
+        </Link>
 
         {!isAdmin && (
           <ul className="nav-links nav-links--center">
@@ -85,6 +87,7 @@ export default function Navbar() {
             <IconHeart />
           </Link>
 
+          {isLanding && <Link to="/#products" className="nav-shop-now">Shop Now</Link>}
           <div className="nav-menu-wrap" ref={menuWrapRef}>
             <button
               type="button"

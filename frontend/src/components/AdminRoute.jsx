@@ -14,6 +14,11 @@ export default function AdminRoute({ children }) {
       .catch(() => setIsAdmin(false));
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    document.body.classList.add('theme-coastal', 'theme-coastal-admin');
+    return () => document.body.classList.remove('theme-coastal', 'theme-coastal-admin');
+  }, []);
+
   if (authLoading) return null;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (isAdmin === null) return null;

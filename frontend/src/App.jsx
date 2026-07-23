@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import OrdersPage from './pages/OrdersPage.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import AdminUIUX from './pages/admin/AdminUIUX.jsx';
 import AdminProducts from './pages/admin/AdminProducts.jsx';
 import AdminOrders from './pages/admin/AdminOrders.jsx';
 import AdminReels from './pages/admin/AdminReels.jsx';
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+        <Route path="/admin/uiux" element={<AdminRoute><AdminUIUX /></AdminRoute>} />
         <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
         <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
         <Route path="/admin/reels" element={<AdminRoute><AdminReels /></AdminRoute>} />

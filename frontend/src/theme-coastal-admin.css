@@ -1,0 +1,276 @@
+/* ============================================================
+   Admin pages · Coastal theme overrides
+   Scoped under body.theme-coastal-admin so cart/checkout stay dark.
+   ============================================================ */
+
+body.theme-coastal-admin {
+  background: #FBEFD8;
+  color: #0B2340;
+}
+
+/* Nav on admin */
+body.theme-coastal-admin .nav {
+  background: rgba(251, 239, 216, 0.94);
+  border-bottom: 1px solid rgba(11, 35, 64, 0.10);
+}
+body.theme-coastal-admin .nav-links a,
+body.theme-coastal-admin .nav-icon,
+body.theme-coastal-admin .brand { color: #0B2340; }
+
+/* Page shell */
+body.theme-coastal-admin .admin-page {
+  padding-top: 120px;
+  color: #0B2340;
+}
+body.theme-coastal-admin .admin-page .kicker {
+  color: #F5822C; font-weight: 700; letter-spacing: 0.12em;
+}
+body.theme-coastal-admin .admin-page .kicker a { color: #0B2340; }
+body.theme-coastal-admin .admin-page .display,
+body.theme-coastal-admin .admin-page .display.sm {
+  color: #0B2340;
+  font-family: 'Fredoka', 'Fraunces', sans-serif;
+  font-weight: 700; letter-spacing: -0.02em;
+}
+body.theme-coastal-admin .admin-page .display em {
+  color: #F5822C; font-style: normal;
+}
+
+/* Tabs */
+body.theme-coastal-admin .admin-tabs {
+  border-bottom: 1px solid rgba(11, 35, 64, 0.14);
+}
+body.theme-coastal-admin .admin-tab {
+  color: rgba(11, 35, 64, 0.55);
+  font-weight: 700;
+  border-radius: 6px 6px 0 0;
+  border-bottom: 2px solid transparent;
+}
+body.theme-coastal-admin .admin-tab:hover { color: #0B2340; }
+body.theme-coastal-admin .admin-tab.is-active {
+  color: #F5822C;
+  border-bottom-color: #F5822C;
+}
+
+/* Stat cards */
+body.theme-coastal-admin .stat-card {
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.08);
+  border-radius: 16px;
+  color: #0B2340;
+  box-shadow: 0 2px 0 rgba(11, 35, 64, 0.04);
+}
+body.theme-coastal-admin .stat-card .stat-num {
+  color: #0B2340;
+  font-family: 'Fredoka', 'Fraunces', sans-serif;
+  font-weight: 700;
+}
+body.theme-coastal-admin .stat-card .stat-label {
+  color: rgba(11, 35, 64, 0.65);
+  font-weight: 600;
+}
+body.theme-coastal-admin .stat-card--accent {
+  background: #0B2340;
+  border-color: #0B2340;
+}
+body.theme-coastal-admin .stat-card--accent .stat-num { color: #F5C542; }
+body.theme-coastal-admin .stat-card--accent .stat-label { color: rgba(245, 237, 216, 0.8); }
+
+/* Section cards */
+body.theme-coastal-admin .admin-section-card,
+body.theme-coastal-admin .admin-quick-actions {
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.08);
+  border-radius: 18px;
+  color: #0B2340;
+}
+body.theme-coastal-admin .admin-section-card h3,
+body.theme-coastal-admin .admin-quick-actions h3 {
+  color: #0B2340;
+  font-family: 'Fredoka', 'Fraunces', sans-serif;
+  font-weight: 700;
+}
+body.theme-coastal-admin .admin-section-card__header {
+  border-bottom-color: rgba(11, 35, 64, 0.08);
+}
+
+/* Action cards (quick actions) */
+body.theme-coastal-admin .admin-action-card {
+  background: #FBEFD8;
+  border: 1px solid rgba(11, 35, 64, 0.10);
+  border-radius: 14px;
+  color: #0B2340;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+body.theme-coastal-admin .admin-action-card:hover {
+  transform: translateY(-2px);
+  border-color: #F5822C;
+  box-shadow: 0 10px 22px rgba(11, 35, 64, 0.10);
+}
+body.theme-coastal-admin .admin-action-card strong { color: #0B2340; }
+body.theme-coastal-admin .admin-action-card p { color: rgba(11, 35, 64, 0.65); }
+body.theme-coastal-admin .admin-action-card__icon {
+  background: #F5822C; color: #fff;
+  font-weight: 700;
+}
+
+/* Recent rows */
+body.theme-coastal-admin .admin-recent-row {
+  border-bottom: 1px solid rgba(11, 35, 64, 0.08);
+}
+body.theme-coastal-admin .admin-recent-row__id { color: #0B2340; font-weight: 700; }
+body.theme-coastal-admin .admin-recent-row__date { color: rgba(11, 35, 64, 0.6); }
+body.theme-coastal-admin .admin-recent-row__amount { color: #0B2340; font-weight: 700; }
+
+/* Alerts */
+body.theme-coastal-admin .admin-alert {
+  background: #FFF3D9;
+  border: 1px solid #F5C542;
+  color: #6B4E00;
+  border-radius: 14px;
+}
+body.theme-coastal-admin .admin-alert__icon {
+  background: #F5822C; color: #fff;
+}
+body.theme-coastal-admin .admin-alert__count {
+  background: rgba(11, 35, 64, 0.08);
+  color: #0B2340;
+}
+
+/* Badges */
+body.theme-coastal-admin .admin-badge {
+  background: #7FC96B; color: #0B2340; font-weight: 700;
+  border: none;
+}
+body.theme-coastal-admin .admin-badge.warning { background: #F5C542; color: #6B4E00; }
+body.theme-coastal-admin .admin-badge.inactive { background: rgba(11, 35, 64, 0.12); color: rgba(11, 35, 64, 0.65); }
+
+/* Forms */
+body.theme-coastal-admin .admin-form {
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.10);
+  border-radius: 16px;
+}
+body.theme-coastal-admin .admin-form label,
+body.theme-coastal-admin .admin-form legend {
+  color: rgba(11, 35, 64, 0.75);
+  font-weight: 600;
+}
+body.theme-coastal-admin .admin-form input,
+body.theme-coastal-admin .admin-form textarea,
+body.theme-coastal-admin .admin-form select,
+body.theme-coastal-admin .uiux-inline-input,
+body.theme-coastal-admin .uiux-image-fields input,
+body.theme-coastal-admin .uiux-image-fields textarea {
+  background: #FBEFD8;
+  color: #0B2340;
+  border: 1px solid rgba(11, 35, 64, 0.15);
+  border-radius: 8px;
+}
+body.theme-coastal-admin .admin-form input:focus,
+body.theme-coastal-admin .admin-form textarea:focus,
+body.theme-coastal-admin .admin-form select:focus,
+body.theme-coastal-admin .uiux-inline-input:focus {
+  border-color: #F5822C;
+  outline: 2px solid rgba(245, 130, 44, 0.2);
+}
+body.theme-coastal-admin .admin-checkbox { color: #0B2340; }
+
+/* Buttons */
+body.theme-coastal-admin .btn-solid,
+body.theme-coastal-admin .btn-solid.accent {
+  background: #F5822C; color: #fff;
+  border: none; border-radius: 999px;
+  font-weight: 700; letter-spacing: 0.04em;
+  padding: 10px 22px;
+}
+body.theme-coastal-admin .btn-solid:hover,
+body.theme-coastal-admin .btn-solid.accent:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 8px 18px rgba(245, 130, 44, 0.3);
+}
+body.theme-coastal-admin .btn-solid:disabled,
+body.theme-coastal-admin .btn-solid.accent:disabled {
+  background: rgba(11, 35, 64, 0.15);
+  color: rgba(11, 35, 64, 0.5);
+  box-shadow: none;
+}
+body.theme-coastal-admin .btn-ghost {
+  background: transparent;
+  color: #0B2340;
+  border: 1.5px solid rgba(11, 35, 64, 0.25);
+  border-radius: 999px;
+  font-weight: 700; letter-spacing: 0.04em;
+  padding: 9px 20px;
+}
+body.theme-coastal-admin .btn-ghost:hover {
+  border-color: #0B2340;
+  background: rgba(11, 35, 64, 0.04);
+}
+body.theme-coastal-admin .btn-link {
+  color: #F5822C; font-weight: 700;
+}
+body.theme-coastal-admin .btn-link:hover { color: #0B2340; }
+body.theme-coastal-admin .btn-link.danger { color: #E5763A; }
+body.theme-coastal-admin .btn-link.danger:hover { color: #A63C15; }
+
+/* Tables */
+body.theme-coastal-admin .admin-table table,
+body.theme-coastal-admin .admin-table-wrap table {
+  background: #FFF8EA;
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(11, 35, 64, 0.08);
+}
+body.theme-coastal-admin .admin-table th {
+  background: #F5E4C0;
+  color: #0B2340;
+  font-weight: 700; letter-spacing: 0.06em;
+}
+body.theme-coastal-admin .admin-table td {
+  color: #0B2340;
+  border-bottom: 1px solid rgba(11, 35, 64, 0.06);
+}
+body.theme-coastal-admin .admin-table td strong { color: #0B2340; }
+body.theme-coastal-admin .admin-table tr:hover td { background: rgba(245, 130, 44, 0.05); }
+
+/* UI/UX-specific: section list rows, image cards, drag handles */
+body.theme-coastal-admin .uiux-section-row {
+  background: #FBEFD8;
+  border: 1px solid rgba(11, 35, 64, 0.10);
+  border-radius: 12px;
+}
+body.theme-coastal-admin .uiux-section-row:hover {
+  background: #FFF3D9;
+  border-color: rgba(245, 130, 44, 0.35);
+}
+body.theme-coastal-admin .uiux-drag { color: rgba(11, 35, 64, 0.4); }
+body.theme-coastal-admin .uiux-section-order { color: #F5822C; font-weight: 700; }
+body.theme-coastal-admin .uiux-section-meta strong { color: #0B2340; }
+body.theme-coastal-admin .uiux-section-key { color: rgba(11, 35, 64, 0.55); }
+
+body.theme-coastal-admin .uiux-image-card {
+  background: #FBEFD8;
+  border: 1px solid rgba(11, 35, 64, 0.10);
+  border-radius: 14px;
+}
+body.theme-coastal-admin .uiux-add-image {
+  border: 1.5px dashed rgba(245, 130, 44, 0.4);
+  background: rgba(255, 248, 234, 0.5);
+  border-radius: 12px;
+}
+body.theme-coastal-admin .uiux-add-image input[type="text"] {
+  background: #FFF8EA;
+  color: #0B2340;
+  border: 1px solid rgba(11, 35, 64, 0.15);
+}
+
+/* Auth errors on admin pages */
+body.theme-coastal-admin .auth-error {
+  background: rgba(239, 124, 124, 0.15);
+  border: 1px solid #EF7C7C;
+  color: #8B1A1A;
+  border-radius: 10px;
+}
+
+/* Muted text default */
+body.theme-coastal-admin { --muted: rgba(11, 35, 64, 0.6); }

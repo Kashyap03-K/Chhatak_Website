@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api/client.js';
+import AdminTabs from '../../components/AdminTabs.jsx';
 
 const STATUS_LABELS = {
   pending_payment: 'Awaiting Payment',
@@ -46,6 +47,7 @@ export default function AdminDashboard() {
       <div className="container">
         <p className="kicker">— Admin</p>
         <h2 className="display sm">Dashboard.</h2>
+        <AdminTabs />
 
         {loading ? (
           <p style={{ color: 'var(--muted)', marginTop: '40px' }}>Loading...</p>
@@ -131,6 +133,13 @@ export default function AdminDashboard() {
 
               <div className="admin-quick-actions">
                 <h3>Quick Actions</h3>
+                <Link to="/admin/uiux" className="admin-action-card">
+                  <div className="admin-action-card__icon">◈</div>
+                  <div>
+                    <strong>UI / UX</strong>
+                    <p>Edit hero images, reorder sections, add galleries</p>
+                  </div>
+                </Link>
                 <Link to="/admin/products" className="admin-action-card">
                   <div className="admin-action-card__icon">+</div>
                   <div>
