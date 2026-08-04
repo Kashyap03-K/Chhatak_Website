@@ -315,14 +315,17 @@ function PerfectWith({ section }) {
     <section className="v2-perfect">
       <div className="v2-container">
         <p className="v2-kicker accent v2-perfect-kicker">PERFECT WITH</p>
-        <div className="v2-perfect-grid">
+        <h2 className="v2-perfect-title">Built For Every Kind Of Craving</h2>
+        <div className="v2-perfect-list">
           {tiles.map((u) => (
-            <div key={u.title} className="v2-perfect-card" style={{ background: u.accent }}>
-              <div className="v2-perfect-text">
+            <div key={u.title} className="v2-perfect-row">
+              <div className="v2-perfect-media">
+                <img src={u.img} alt="" />
+              </div>
+              <div className="v2-perfect-body">
                 <h3>{u.title}</h3>
                 <p>{u.body}</p>
               </div>
-              <img src={u.img} alt="" className="v2-perfect-img" />
             </div>
           ))}
         </div>
@@ -450,7 +453,7 @@ function CustomGallery({ section }) {
   if (single) {
     const img = section.images[0];
     return (
-      <section className={`v2-custom-hero${img.media_type === 'video' ? ' is-video' : ''}`} id={`gallery-${section.id}`}>
+      <section className={`v2-custom-hero${section.full_viewport ? ' is-fullscreen' : ''}${img.media_type === 'video' ? ' is-video' : ''}`} id={`gallery-${section.id}`}>
         {img.media_type === 'video' ? (
           <video src={img.image_url} autoPlay muted loop playsInline preload="metadata" />
         ) : (

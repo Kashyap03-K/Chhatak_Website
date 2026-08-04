@@ -348,7 +348,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   overflow: hidden;
   margin: 40px 0;
 }
-.v2-custom-hero.is-video {
+.v2-custom-hero.is-fullscreen {
   height: 100vh;
   height: 100dvh;
   margin: 0;

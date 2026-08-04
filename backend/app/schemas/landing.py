@@ -36,6 +36,7 @@ class LandingSectionBase(BaseModel):
     subtitle: str | None = Field(None, max_length=500)
     sort_order: int = 0
     is_active: bool = True
+    full_viewport: bool = False
 
 
 class LandingSectionCreate(BaseModel):
@@ -50,6 +51,7 @@ class LandingSectionUpdate(BaseModel):
     subtitle: str | None = Field(None, max_length=500)
     is_active: bool | None = None
     sort_order: int | None = None
+    full_viewport: bool | None = None
 
 
 class LandingSectionOut(LandingSectionBase):

@@ -386,24 +386,36 @@ function SectionImagesCard({ section, isHero, hint, builtinLabel, onAdd, onUpdat
       )}
 
       {!isHero && (
-        <div className="form-row" style={{ marginTop: 12 }}>
-          <div className="form-group" style={{ flex: 1 }}>
-            <label>Gallery title</label>
-            <input
-              type="text"
-              defaultValue={section.title || ''}
-              onBlur={(e) => e.target.value !== (section.title || '') && onEditMeta(section, 'title', e.target.value)}
-            />
+        <>
+          <div className="form-row" style={{ marginTop: 12 }}>
+            <div className="form-group" style={{ flex: 1 }}>
+              <label>Gallery title</label>
+              <input
+                type="text"
+                defaultValue={section.title || ''}
+                onBlur={(e) => e.target.value !== (section.title || '') && onEditMeta(section, 'title', e.target.value)}
+              />
+            </div>
+            <div className="form-group" style={{ flex: 2 }}>
+              <label>Subtitle</label>
+              <input
+                type="text"
+                defaultValue={section.subtitle || ''}
+                onBlur={(e) => e.target.value !== (section.subtitle || '') && onEditMeta(section, 'subtitle', e.target.value)}
+              />
+            </div>
           </div>
-          <div className="form-group" style={{ flex: 2 }}>
-            <label>Subtitle</label>
-            <input
-              type="text"
-              defaultValue={section.subtitle || ''}
-              onBlur={(e) => e.target.value !== (section.subtitle || '') && onEditMeta(section, 'subtitle', e.target.value)}
-            />
+          <div className="form-row" style={{ marginTop: 6 }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={!!section.full_viewport}
+                onChange={(e) => onEditMeta(section, 'full_viewport', e.target.checked)}
+              />
+              Fit media to full screen (fullscreen hero mode)
+            </label>
           </div>
-        </div>
+        </>
       )}
 
       <div className="uiux-image-grid">

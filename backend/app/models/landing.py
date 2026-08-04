@@ -18,6 +18,7 @@ class LandingSection(Base):
     subtitle = Column(String(500), nullable=True)
     sort_order = Column(Integer, default=0)
     is_active = Column(Boolean, default=True)
+    full_viewport = Column(Boolean, default=False, nullable=False, server_default="false")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     images = relationship(
