@@ -244,26 +244,58 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 .v2-buy-btn:hover { filter: brightness(0.95); }
 
 /* --- PERFECT WITH --- */
-.v2-perfect { padding: 40px 0 60px; }
-.v2-perfect-kicker { margin-bottom: 20px; }
-.v2-perfect-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-}
-.v2-perfect-card {
-  position: relative; border-radius: 18px; padding: 22px;
-  color: #fff; min-height: 190px; overflow: hidden;
-  display: flex; flex-direction: column; justify-content: flex-start;
-}
-.v2-perfect-card h3 {
+.v2-perfect { padding: 60px 0 80px; }
+.v2-perfect-kicker { margin-bottom: 12px; }
+.v2-perfect-title {
   font-family: 'Fredoka', 'Fraunces', sans-serif;
-  font-size: 22px; font-weight: 700; margin-bottom: 6px;
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  text-align: center;
+  margin: 0 auto 48px;
+  color: var(--ink);
 }
-.v2-perfect-card p { font-size: 13px; opacity: 0.85; line-height: 1.4; max-width: 60%; }
-.v2-perfect-img {
-  position: absolute; right: -10%; bottom: -10%;
-  width: 68%; border-radius: 50%; opacity: 0.95;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+.v2-perfect-list {
+  display: flex; flex-direction: column;
+  gap: 48px;
+}
+.v2-perfect-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+.v2-perfect-row:nth-child(even) { direction: rtl; }
+.v2-perfect-row:nth-child(even) > * { direction: ltr; }
+.v2-perfect-media {
+  display: flex; align-items: center; justify-content: center;
+}
+.v2-perfect-media img {
+  max-width: 100%; height: auto; max-height: 280px;
+  object-fit: contain;
+}
+.v2-perfect-body h3 {
+  font-family: 'Fredoka', 'Fraunces', sans-serif;
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 700; margin: 0 0 14px;
+  color: var(--ink);
+}
+.v2-perfect-body p {
+  font-size: 15px; line-height: 1.6;
+  color: var(--ink); opacity: 0.85;
+  margin: 0;
+}
+@media (max-width: 720px) {
+  .v2-perfect-row,
+  .v2-perfect-row:nth-child(even) {
+    grid-template-columns: 1fr;
+    direction: ltr;
+    gap: 20px;
+    text-align: center;
+  }
+  .v2-perfect-media img { max-height: 220px; }
 }
 
 /* --- WHY CHHATAK --- */
@@ -315,6 +347,11 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   height: clamp(360px, 70vh, 720px);
   overflow: hidden;
   margin: 40px 0;
+}
+.v2-custom-hero.is-video {
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
 }
 .v2-custom-hero > img,
 .v2-custom-hero > video {
