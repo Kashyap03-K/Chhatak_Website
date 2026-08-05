@@ -60,6 +60,17 @@ export default function Navbar() {
   const go = (path) => { setMenuOpen(false); navigate(path); };
   const doLogout = () => { setMenuOpen(false); logout(); navigate('/'); };
 
+  const goHash = (hash) => (e) => {
+    e.preventDefault();
+    if (isLanding) {
+      const el = document.getElementById(hash);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      else window.location.hash = hash;
+    } else {
+      navigate(`/#${hash}`);
+    }
+  };
+
   return (
     <nav className={`nav ${isLanding ? 'nav--landing' : ''}`}>
       <div className="nav-inner">
@@ -69,10 +80,10 @@ export default function Navbar() {
 
         {!isAdmin && (
           <ul className="nav-links nav-links--center">
-            <li><a href="/#story">About</a></li>
-            <li><a href="/#products">Products</a></li>
-            <li><a href="/#reels">Reels</a></li>
-            <li><a href="/#reviews">Reviews</a></li>
+            <li><a href="/#story" onClick={goHash('story')}>About</a></li>
+            <li><a href="/#products" onClick={goHash('products')}>Products</a></li>
+            <li><a href="/#reels" onClick={goHash('reels')}>Reels</a></li>
+            <li><a href="/#reviews" onClick={goHash('reviews')}>Reviews</a></li>
             <li><Link to="/wholesale">Wholesale</Link></li>
             {user?.is_admin && <li><Link to="/admin" className="admin-link">Admin</Link></li>}
           </ul>
@@ -87,7 +98,7 @@ export default function Navbar() {
             <IconHeart />
           </Link>
 
-          {isLanding && <Link to="/#products" className="nav-shop-now">Shop Now</Link>}
+          {isLanding && <a href="/#products" className="nav-shop-now" onClick={goHash('products')}>Shop Now</a>}
           <div className="nav-menu-wrap" ref={menuWrapRef}>
             <button
               type="button"

@@ -11,12 +11,6 @@ const TONE_MAP = {
   'Mint & Lime': 'tone-cool',
 };
 
-const PRODUCT_GALLERY = {
-  'indian-classic': ['/images/bowl.JPG', '/images/packaging-front-back.png', '/images/nutrition.PNG', '/images/bowl-annotated.JPG'],
-  'peri-peri-blaze': ['/images/packaging-real.JPG', '/images/packaging-front-back.png', '/images/nutrition.PNG'],
-  'combo-3x-classic': ['/images/packaging-front-back.png', '/images/bowl.JPG', '/images/nutrition.PNG'],
-};
-
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
@@ -24,7 +18,6 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
-  const [activeImage, setActiveImage] = useState(0);
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
 
@@ -83,24 +76,7 @@ export default function ProductDetailPage() {
 
         <div className="product-detail-grid">
           <div className="product-visual">
-            {PRODUCT_GALLERY[product.slug] ? (
-              <div className="product-gallery">
-                <div className="gallery-main">
-                  <img src={PRODUCT_GALLERY[product.slug][activeImage]} alt={product.name} className="gallery-main-img" />
-                </div>
-                <div className="gallery-thumbs">
-                  {PRODUCT_GALLERY[product.slug].map((src, i) => (
-                    <button
-                      key={i}
-                      className={`gallery-thumb ${activeImage === i ? 'active' : ''}`}
-                      onClick={() => setActiveImage(i)}
-                    >
-                      <img src={src} alt={`${product.name} view ${i + 1}`} />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : product.model_url ? (
+            {product.model_url ? (
               <div className="product-model-wrap">
                 <ModelViewer
                   url={product.model_url}

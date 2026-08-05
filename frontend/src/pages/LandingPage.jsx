@@ -1,5 +1,5 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../api/client.js';
 
 const ReelsWall = lazy(() => import('../components/ReelsWall.jsx'));
@@ -208,7 +208,7 @@ function StoryBanner({ section }) {
   }, [images.length]);
 
   return (
-    <section className="v2-story">
+    <section id="story" className="v2-story">
       <div className="v2-container">
         <div className="v2-story-card">
           <div className="v2-story-media">
@@ -287,8 +287,8 @@ function Flavours({ products }) {
         <div className="v2-flavour-grid">
           {list.map((p, i) => (
             <article key={p.id} className="v2-flavour-card">
-              <div className="v2-flavour-image" style={{ '--flav-bg': bg[i % bg.length] }}>
-                <img src={p.image || '/images/packaging-real.JPG'} alt={p.name} />
+              <div className="v2-flavour-image v2-flavour-image--noimg" style={{ '--flav-bg': bg[i % bg.length] }}>
+                <span className="v2-flavour-badge">{p.flavor || p.name}</span>
               </div>
               <h3 className="v2-flavour-name">{p.name}</h3>
               <p className="v2-flavour-desc">{p.description?.slice(0, 60) || 'A timeless masala with the perfect coastal kick.'}</p>
@@ -509,12 +509,12 @@ const RENDERERS = {
   why:            (s)      => <WhyChhatak key={s.id} />,
   reels:          (s)      => (
     <Suspense key={s.id} fallback={null}>
-      <div className="v2-reels-wrap"><ReelsWall /></div>
+      <div id="reels" className="v2-reels-wrap"><ReelsWall /></div>
     </Suspense>
   ),
   reviews:        (s)      => (
     <Suspense key={s.id} fallback={null}>
-      <div className="v2-reviews-wrap"><ReviewsWall /></div>
+      <div id="reviews" className="v2-reviews-wrap"><ReviewsWall /></div>
     </Suspense>
   ),
   gallery:        (s)      => <Gallery key={s.id} section={s} />,
@@ -533,6 +533,7 @@ const DEFAULT_ORDER = ['hero', 'features', 'story', 'flavours', 'perfect-with', 
 export default function LandingPage() {
   const [products, setProducts] = useState([]);
   const [sections, setSections] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     Promise.all([
@@ -542,9 +543,18 @@ export default function LandingPage() {
       setProducts(prods.filter((p) => p.is_active));
       setSections(secs);
     });
-    document.body.classList.add('theme-coastal');
-    return () => document.body.classList.remove('theme-coastal');
   }, []);
+
+  // Scroll to hash target when landing page opens or the hash changes.
+  useEffect(() => {
+    if (!location.hash || sections === null) return;
+    const id = location.hash.slice(1);
+    const t = setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+    return () => clearTimeout(t);
+  }, [location.hash, sections]);
 
   // Build ordered render list — respecting admin order + visibility.
   // Include: built-in sections we know how to render, PLUS any custom gallery.

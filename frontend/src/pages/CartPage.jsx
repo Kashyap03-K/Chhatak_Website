@@ -1,12 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 
-const PRODUCT_IMAGES = {
-  'indian-classic': '/images/bowl.JPG',
-  'peri-peri-blaze': '/images/packaging-real.JPG',
-  'combo-3x-classic': '/images/packaging-front-back.png',
-};
-
 export default function CartPage() {
   const { items, loading, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
 
@@ -32,11 +26,6 @@ export default function CartPage() {
             <div className="cart-items">
               {items.map((item) => (
                 <div className="cart-item" key={item.id}>
-                  {PRODUCT_IMAGES[item.product.slug] && (
-                    <Link to={`/products/${item.product.slug}`} className="cart-item-thumb">
-                      <img src={PRODUCT_IMAGES[item.product.slug]} alt={item.product.name} />
-                    </Link>
-                  )}
                   <div className="cart-item-info">
                     <Link to={`/products/${item.product.slug}`}>
                       <h3>{item.product.name}</h3>

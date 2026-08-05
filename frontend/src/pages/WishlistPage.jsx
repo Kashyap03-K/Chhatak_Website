@@ -12,12 +12,6 @@ const TONE_MAP = {
   'Mint & Lime': 'tone-cool',
 };
 
-const PRODUCT_IMAGES = {
-  'indian-classic': '/images/bowl.JPG',
-  'peri-peri-blaze': '/images/packaging-real.JPG',
-  'combo-3x-classic': '/images/packaging-front-back.png',
-};
-
 function readWishlist() {
   try { return new Set(JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]')); }
   catch { return new Set(); }
@@ -87,9 +81,6 @@ export default function WishlistPage() {
               <article className="flavor-card" key={product.id}>
                 <div className={`flavor-thumb ${TONE_MAP[product.flavor] || 'tone-warm'}`}>
                   <Link to={`/products/${product.slug}`} className="flavor-thumb-link">
-                    {PRODUCT_IMAGES[product.slug] && (
-                      <img src={PRODUCT_IMAGES[product.slug]} alt={product.name} className="flavor-img" />
-                    )}
                     <span className="flavor-label">{String(i + 1).padStart(2, '0')} / {product.flavor || product.name}</span>
                   </Link>
                   <button

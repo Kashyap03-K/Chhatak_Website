@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
@@ -18,14 +19,21 @@ import AdminReviews from './pages/admin/AdminReviews.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import Navbar from './components/Navbar.jsx';
 import AuthDialog from './components/AuthDialog.jsx';
+import CartDrawer from './components/CartDrawer.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import AdminRoute from './components/AdminRoute.jsx';
 
 export default function App() {
+  useEffect(() => {
+    document.body.classList.add('theme-coastal');
+    return () => document.body.classList.remove('theme-coastal');
+  }, []);
+
   return (
     <BrowserRouter>
       <Navbar />
       <AuthDialog />
+      <CartDrawer />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/products" element={<Navigate to="/#products" replace />} />

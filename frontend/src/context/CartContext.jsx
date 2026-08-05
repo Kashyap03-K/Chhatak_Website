@@ -8,6 +8,10 @@ export function CartProvider({ children }) {
   const { isAuthenticated } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   const fetchCart = useCallback(async () => {
     if (!isAuthenticated) { setItems([]); return; }
@@ -27,6 +31,7 @@ export function CartProvider({ children }) {
   const addToCart = useCallback(async (productId, quantity = 1) => {
     const { data } = await api.post('/cart/', { product_id: productId, quantity });
     await fetchCart();
+    setDrawerOpen(true);
     return data;
   }, [fetchCart]);
 
@@ -49,7 +54,7 @@ export function CartProvider({ children }) {
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, loading, totalItems, totalPrice, addToCart, updateQuantity, removeItem, clearCart, fetchCart }}>
+    <CartContext.Provider value={{ items, loading, totalItems, totalPrice, addToCart, updateQuantity, removeItem, clearCart, fetchCart, drawerOpen, openDrawer, closeDrawer }}>
       {children}
     </CartContext.Provider>
   );
