@@ -287,8 +287,12 @@ function Flavours({ products }) {
         <div className="v2-flavour-grid">
           {list.map((p, i) => (
             <article key={p.id} className="v2-flavour-card">
-              <div className="v2-flavour-image v2-flavour-image--noimg" style={{ '--flav-bg': bg[i % bg.length] }}>
-                <span className="v2-flavour-badge">{p.flavor || p.name}</span>
+              <div className={`v2-flavour-image${p.image_url ? '' : ' v2-flavour-image--noimg'}`} style={{ '--flav-bg': bg[i % bg.length] }}>
+                {p.image_url ? (
+                  <img src={p.image_url} alt={p.name} />
+                ) : (
+                  <span className="v2-flavour-badge">{p.flavor || p.name}</span>
+                )}
               </div>
               <h3 className="v2-flavour-name">{p.name}</h3>
               <p className="v2-flavour-desc">{p.description?.slice(0, 60) || 'A timeless masala with the perfect coastal kick.'}</p>

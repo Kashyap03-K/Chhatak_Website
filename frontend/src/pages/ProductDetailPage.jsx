@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../api/client.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
-import ModelViewer from '../ModelViewer.jsx';
 
 const TONE_MAP = {
   'Indian Classic': 'tone-warm',
@@ -119,31 +118,6 @@ export default function ProductDetailPage() {
               {product.image_url ? (
                 <div className="product-image-wrap">
                   <img src={product.image_url} alt={product.name} className="product-image" />
-                </div>
-              ) : product.model_url ? (
-                <div className="product-model-wrap">
-                  <ModelViewer
-                    url={product.model_url}
-                    width="100%"
-                    height={500}
-                    defaultRotationX={0}
-                    defaultRotationY={0}
-                    defaultZoom={2}
-                    minZoomDistance={1}
-                    maxZoomDistance={6}
-                    ambientIntensity={0.45}
-                    keyLightIntensity={1.3}
-                    fillLightIntensity={0.5}
-                    rimLightIntensity={1.1}
-                    environmentPreset="night"
-                    autoRotate
-                    autoRotateSpeed={0.35}
-                    autoFrame
-                    fadeIn
-                    enableMouseParallax
-                    enableHoverRotation
-                    showScreenshotButton={false}
-                  />
                 </div>
               ) : (
                 <div className={`flavor-thumb large ${TONE_MAP[product.flavor] || 'tone-warm'}`}>

@@ -15,8 +15,8 @@ export default function AdminRoute({ children }) {
   }, [isAuthenticated]);
 
   useEffect(() => {
-    document.body.classList.add('theme-coastal', 'theme-coastal-admin');
-    return () => document.body.classList.remove('theme-coastal', 'theme-coastal-admin');
+    document.body.classList.add('theme-coastal-admin');
+    return () => document.body.classList.remove('theme-coastal-admin');
   }, []);
 
   if (authLoading) return null;

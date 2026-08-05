@@ -780,7 +780,8 @@ body.theme-coastal .out-of-stock-label { color: rgba(11, 35, 64, 0.55); }
 
 /* Product detail: uploaded image */
 body.theme-coastal .product-image-wrap {
-  background: #0B2340;
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.10);
   border-radius: 16px;
   padding: 32px;
   display: flex; align-items: center; justify-content: center;
@@ -791,7 +792,7 @@ body.theme-coastal .product-image {
   max-width: 100%; max-height: 500px;
   width: auto; height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 18px 32px rgba(11, 35, 64, 0.18));
 }
 
 /* About this product */

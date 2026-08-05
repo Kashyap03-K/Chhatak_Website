@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import LandingPage from './pages/LandingPage.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
 import WholesalePage from './pages/WholesalePage.jsx';
@@ -23,14 +23,18 @@ import CartDrawer from './components/CartDrawer.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import AdminRoute from './components/AdminRoute.jsx';
 
-export default function App() {
+function ThemeGuard() {
+  const location = useLocation();
   useEffect(() => {
     document.body.classList.add('theme-coastal');
-    return () => document.body.classList.remove('theme-coastal');
-  }, []);
+  }, [location.pathname]);
+  return null;
+}
 
+export default function App() {
   return (
     <BrowserRouter>
+      <ThemeGuard />
       <Navbar />
       <AuthDialog />
       <CartDrawer />
