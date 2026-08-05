@@ -10,6 +10,7 @@ Base.metadata.create_all(bind=engine)
 # Idempotent column additions for existing tables
 with engine.begin() as conn:
     conn.execute(text('ALTER TABLE landing_sections ADD COLUMN IF NOT EXISTS full_viewport BOOLEAN NOT NULL DEFAULT false'))
+    conn.execute(text('ALTER TABLE products ADD COLUMN IF NOT EXISTS long_description TEXT'))
 print('Database tables created.')
 "
 

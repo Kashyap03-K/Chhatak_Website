@@ -12,6 +12,7 @@ class Product(Base):
     name = Column(String(200), nullable=False)
     slug = Column(String(200), unique=True, index=True, nullable=False)
     description = Column(Text, nullable=True)
+    long_description = Column(Text, nullable=True)
     price = Column(Float, nullable=False)
     compare_at_price = Column(Float, nullable=True)
     weight = Column(String(50), default="100g")

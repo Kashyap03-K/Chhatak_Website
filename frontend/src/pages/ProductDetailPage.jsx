@@ -11,9 +11,43 @@ const TONE_MAP = {
   'Mint & Lime': 'tone-cool',
 };
 
+const WaveDoodle = () => (
+  <svg viewBox="0 0 220 40" fill="none" aria-hidden="true" className="pd-doodle pd-doodle--wave">
+    <path d="M2 22 Q 25 6, 48 22 T 96 22 T 144 22 T 192 22 T 218 22" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+    <path d="M8 32 Q 32 20, 56 32 T 108 32 T 160 32 T 210 32" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.7"/>
+  </svg>
+);
+
+const SunDoodle = () => (
+  <svg viewBox="0 0 60 60" fill="none" aria-hidden="true" className="pd-doodle pd-doodle--sun">
+    <circle cx="30" cy="30" r="10" stroke="currentColor" strokeWidth="2.5" fill="none"/>
+    {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => {
+      const rad = (a * Math.PI) / 180;
+      return (
+        <line key={a}
+          x1={30 + Math.cos(rad) * 16} y1={30 + Math.sin(rad) * 16}
+          x2={30 + Math.cos(rad) * 24} y2={30 + Math.sin(rad) * 24}
+          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+      );
+    })}
+  </svg>
+);
+
+const SparkDoodle = () => (
+  <svg viewBox="0 0 40 40" fill="none" aria-hidden="true" className="pd-doodle pd-doodle--spark">
+    <path d="M20 4 L 20 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    <path d="M4 20 L 14 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    <path d="M26 20 L 36 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    <path d="M20 26 L 20 36" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    <path d="M8 8 L 14 14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    <path d="M26 26 L 32 32" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+  </svg>
+);
+
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
+  const [others, setOthers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
@@ -22,10 +56,15 @@ export default function ProductDetailPage() {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    api.get(`/products/slug/${slug}`)
-      .then(({ data }) => setProduct(data))
-      .catch(() => setProduct(null))
-      .finally(() => setLoading(false));
+    setLoading(true);
+    Promise.all([
+      api.get(`/products/slug/${slug}`).then(({ data }) => data).catch(() => null),
+      api.get('/products/').then(({ data }) => data).catch(() => []),
+    ]).then(([p, all]) => {
+      setProduct(p);
+      setOthers(all.filter((x) => x.slug !== slug && x.is_active).slice(0, 3));
+    }).finally(() => setLoading(false));
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }, [slug]);
 
   const handleAddToCart = async () => {
@@ -70,89 +109,150 @@ export default function ProductDetailPage() {
   }
 
   return (
-    <div className="section product-detail-page">
-      <div className="container">
-        <Link to="/products" className="btn-link" style={{ marginBottom: '40px', display: 'inline-block' }}>← Back to shop</Link>
+    <>
+      <div className="section product-detail-page">
+        <div className="container">
+          <Link to="/products" className="btn-link" style={{ marginBottom: '40px', display: 'inline-block' }}>← Back to shop</Link>
 
-        <div className="product-detail-grid">
-          <div className="product-visual">
-            {product.model_url ? (
-              <div className="product-model-wrap">
-                <ModelViewer
-                  url={product.model_url}
-                  width="100%"
-                  height={500}
-                  defaultRotationX={0}
-                  defaultRotationY={0}
-                  defaultZoom={2}
-                  minZoomDistance={1}
-                  maxZoomDistance={6}
-                  ambientIntensity={0.45}
-                  keyLightIntensity={1.3}
-                  fillLightIntensity={0.5}
-                  rimLightIntensity={1.1}
-                  environmentPreset="night"
-                  autoRotate
-                  autoRotateSpeed={0.35}
-                  autoFrame
-                  fadeIn
-                  enableMouseParallax
-                  enableHoverRotation
-                  showScreenshotButton={false}
-                />
-              </div>
-            ) : (
-              <div className={`flavor-thumb large ${TONE_MAP[product.flavor] || 'tone-warm'}`}>
-                <span className="flavor-label">{product.flavor || product.name}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="product-info">
-            <p className="kicker">— {product.category}</p>
-            <h1 className="display sm">{product.name}</h1>
-            <p className="product-description">{product.description}</p>
-
-            <div className="product-price-row">
-              <span className="product-price">₹{product.price}</span>
-              {product.compare_at_price && (
-                <span className="price-was">₹{product.compare_at_price}</span>
+          <div className="product-detail-grid">
+            <div className="product-visual">
+              {product.image_url ? (
+                <div className="product-image-wrap">
+                  <img src={product.image_url} alt={product.name} className="product-image" />
+                </div>
+              ) : product.model_url ? (
+                <div className="product-model-wrap">
+                  <ModelViewer
+                    url={product.model_url}
+                    width="100%"
+                    height={500}
+                    defaultRotationX={0}
+                    defaultRotationY={0}
+                    defaultZoom={2}
+                    minZoomDistance={1}
+                    maxZoomDistance={6}
+                    ambientIntensity={0.45}
+                    keyLightIntensity={1.3}
+                    fillLightIntensity={0.5}
+                    rimLightIntensity={1.1}
+                    environmentPreset="night"
+                    autoRotate
+                    autoRotateSpeed={0.35}
+                    autoFrame
+                    fadeIn
+                    enableMouseParallax
+                    enableHoverRotation
+                    showScreenshotButton={false}
+                  />
+                </div>
+              ) : (
+                <div className={`flavor-thumb large ${TONE_MAP[product.flavor] || 'tone-warm'}`}>
+                  <span className="flavor-label">{product.flavor || product.name}</span>
+                </div>
               )}
             </div>
 
-            <div className="product-meta-details">
-              <div className="meta-item">
-                <span className="meta-label">Weight</span>
-                <span>{product.weight}</span>
-              </div>
-              <div className="meta-item">
-                <span className="meta-label">Flavor</span>
-                <span>{product.flavor}</span>
-              </div>
-              <div className="meta-item">
-                <span className="meta-label">Stock</span>
-                <span>{product.stock > 0 ? `${product.stock} available` : 'Out of stock'}</span>
-              </div>
-            </div>
+            <div className="product-info">
+              <p className="kicker">— {product.category}</p>
+              <h1 className="display sm">{product.name}</h1>
+              <p className="product-description">{product.description}</p>
 
-            <div className="product-actions">
-              <div className="quantity-control">
-                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="qty-btn">−</button>
-                <span className="qty-value">{quantity}</span>
-                <button onClick={() => setQuantity(q => Math.min(q + 1, product.stock))} className="qty-btn">+</button>
+              <div className="product-price-row">
+                <span className="product-price">₹{product.price}</span>
+                {product.compare_at_price && (
+                  <span className="price-was">₹{product.compare_at_price}</span>
+                )}
               </div>
-              <button
-                className="btn-solid accent"
-                onClick={handleAddToCart}
-                disabled={adding || product.stock === 0}
-                style={{ flex: 1 }}
-              >
-                {added ? 'Added to bag!' : adding ? 'Adding...' : product.stock === 0 ? 'Out of stock' : `Add to bag — ₹${product.price * quantity}`}
-              </button>
+
+              <div className="product-meta-details">
+                <div className="meta-item">
+                  <span className="meta-label">Weight</span>
+                  <span>{product.weight}</span>
+                </div>
+                <div className="meta-item">
+                  <span className="meta-label">Flavor</span>
+                  <span>{product.flavor}</span>
+                </div>
+                <div className="meta-item">
+                  <span className="meta-label">Stock</span>
+                  <span>{product.stock > 0 ? `${product.stock} available` : 'Out of stock'}</span>
+                </div>
+              </div>
+
+              <div className="product-actions">
+                <div className="quantity-control">
+                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="qty-btn">−</button>
+                  <span className="qty-value">{quantity}</span>
+                  <button onClick={() => setQuantity(q => Math.min(q + 1, product.stock))} className="qty-btn">+</button>
+                </div>
+                <button
+                  className="btn-solid accent"
+                  onClick={handleAddToCart}
+                  disabled={adding || product.stock === 0}
+                  style={{ flex: 1 }}
+                >
+                  {added ? 'Added to bag!' : adding ? 'Adding...' : product.stock === 0 ? 'Out of stock' : `Add to bag — ₹${product.price * quantity}`}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {product.long_description && (
+        <section className="pd-about">
+          <div className="container">
+            <SunDoodle />
+            <SparkDoodle />
+            <div className="pd-about-inner">
+              <p className="kicker">— About this flavor</p>
+              <h2 className="display sm">The story behind <em>{product.name}</em>.</h2>
+              <WaveDoodle />
+              <div className="pd-about-body">
+                {product.long_description.split(/\n\n+/).map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {others.length > 0 && (
+        <section className="pd-others">
+          <div className="container">
+            <div className="pd-others-head">
+              <div>
+                <p className="kicker">— Other flavors</p>
+                <h2 className="display sm">Try something <em>else</em>.</h2>
+              </div>
+              <Link to="/#products" className="btn-link">View all products →</Link>
+            </div>
+
+            <div className="pd-others-grid">
+              {others.map((p) => (
+                <Link key={p.id} to={`/products/${p.slug}`} className="pd-other-card">
+                  <div className={`pd-other-thumb ${TONE_MAP[p.flavor] || 'tone-warm'}`}>
+                    {p.image_url ? (
+                      <img src={p.image_url} alt={p.name} />
+                    ) : (
+                      <span className="flavor-label">{p.flavor || p.name}</span>
+                    )}
+                  </div>
+                  <div className="pd-other-body">
+                    <h3>{p.name}</h3>
+                    <p>{p.description?.slice(0, 90) || 'A coastal favorite.'}</p>
+                    <div className="pd-other-foot">
+                      <span className="pd-other-price">₹{p.price}</span>
+                      <span className="btn-link">Shop →</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </>
   );
 }

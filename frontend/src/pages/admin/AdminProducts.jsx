@@ -7,7 +7,8 @@ export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ name: '', slug: '', description: '', price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
+  const [form, setForm] = useState({ name: '', slug: '', description: '', long_description: '', image_url: '', price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
+  const [uploading, setUploading] = useState(false);
 
   const fetchProducts = () => {
     api.get('/products/')
@@ -19,7 +20,7 @@ export default function AdminProducts() {
   useEffect(() => { fetchProducts(); }, []);
 
   const resetForm = () => {
-    setForm({ name: '', slug: '', description: '', price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
+    setForm({ name: '', slug: '', description: '', long_description: '', image_url: '', price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
     setEditing(null);
     setShowCreate(false);
   };
@@ -29,6 +30,8 @@ export default function AdminProducts() {
       name: product.name,
       slug: product.slug,
       description: product.description || '',
+      long_description: product.long_description || '',
+      image_url: product.image_url || '',
       price: String(product.price),
       compare_at_price: product.compare_at_price ? String(product.compare_at_price) : '',
       weight: product.weight,
@@ -41,6 +44,25 @@ export default function AdminProducts() {
     setShowCreate(true);
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const data = new FormData();
+      data.append('file', file);
+      const { data: res } = await api.post('/uploads/image', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setForm(f => ({ ...f, image_url: res.url }));
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to upload image');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
@@ -48,6 +70,10 @@ export default function AdminProducts() {
       price: parseFloat(form.price),
       compare_at_price: form.compare_at_price ? parseFloat(form.compare_at_price) : null,
       stock: parseInt(form.stock) || 0,
+      image_url: form.image_url || null,
+      long_description: form.long_description || null,
+      description: form.description || null,
+      flavor: form.flavor || null,
     };
 
     try {
@@ -104,8 +130,23 @@ export default function AdminProducts() {
                 </div>
               </div>
               <div className="form-group">
-                <label>Description</label>
+                <label>Short description</label>
                 <textarea value={form.description} onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))} rows={3} />
+              </div>
+              <div className="form-group">
+                <label>Long description (shown in the About section on the product page)</label>
+                <textarea value={form.long_description} onChange={(e) => setForm(f => ({ ...f, long_description: e.target.value }))} rows={6} placeholder="A few paragraphs about this flavor — story, ingredients, pairings…" />
+              </div>
+              <div className="form-group">
+                <label>Product image</label>
+                <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+                {uploading && <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>Uploading…</p>}
+                {form.image_url && (
+                  <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <img src={form.image_url} alt="preview" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(11,35,64,0.15)' }} />
+                    <button type="button" className="btn-link" onClick={() => setForm(f => ({ ...f, image_url: '' }))}>Remove image</button>
+                  </div>
+                )}
               </div>
               <div className="form-row">
                 <div className="form-group">

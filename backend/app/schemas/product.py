@@ -5,6 +5,7 @@ class ProductCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
     slug: str = Field(..., min_length=1, max_length=200)
     description: str | None = Field(None, max_length=2000)
+    long_description: str | None = Field(None, max_length=8000)
     price: float = Field(..., gt=0, le=100000)
     compare_at_price: float | None = Field(None, gt=0, le=100000)
     weight: str = Field("100g", max_length=50)
@@ -28,6 +29,7 @@ class ProductCreate(BaseModel):
 class ProductUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=200)
     description: str | None = Field(None, max_length=2000)
+    long_description: str | None = Field(None, max_length=8000)
     price: float | None = Field(None, gt=0, le=100000)
     compare_at_price: float | None = Field(None, gt=0, le=100000)
     weight: str | None = Field(None, max_length=50)
@@ -43,6 +45,7 @@ class ProductOut(BaseModel):
     name: str
     slug: str
     description: str | None
+    long_description: str | None = None
     price: float
     compare_at_price: float | None
     weight: str

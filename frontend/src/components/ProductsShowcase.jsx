@@ -87,6 +87,9 @@ export default function ProductsShowcase() {
               <article className="flavor-card" key={product.id}>
                 <div className={`flavor-thumb ${TONE_MAP[product.flavor] || 'tone-warm'}`}>
                   <Link to={`/products/${product.slug}`} className="flavor-thumb-link">
+                    {product.image_url && (
+                      <img src={product.image_url} alt={product.name} className="flavor-img" />
+                    )}
                     <span className="flavor-label">{String(i + 1).padStart(2, '0')} / {product.flavor || product.name}</span>
                   </Link>
                   <button
