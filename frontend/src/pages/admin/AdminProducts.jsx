@@ -52,15 +52,26 @@ export default function AdminProducts() {
     try {
       const data = new FormData();
       data.append('file', file);
-      // Do NOT set Content-Type manually — axios must auto-generate the
-      // multipart boundary, otherwise the server can't parse the body.
-      const { data: res } = await api.post('/uploads/image', data, {
-        headers: { 'Content-Type': undefined },
+      // Use fetch directly so the browser sets the multipart boundary itself.
+      // (axios has a default Content-Type: application/json which can leak
+      //  through overrides in some setups and break the request.)
+      const token = localStorage.getItem('access_token');
+      const base = import.meta.env.VITE_API_URL || '/api/v1';
+      const resp = await fetch(`${base}/uploads/image`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: data,
       });
+      if (!resp.ok) {
+        let detail = `HTTP ${resp.status}`;
+        try { detail = (await resp.json()).detail || detail; } catch {}
+        throw new Error(detail);
+      }
+      const res = await resp.json();
+      if (!res.url) throw new Error('Server did not return an image URL');
       setForm(f => ({ ...f, image_url: res.url }));
     } catch (err) {
-      const detail = err.response?.data?.detail || err.message || 'Failed to upload image';
-      alert(`Upload failed: ${detail}`);
+      alert(`Upload failed: ${err.message || 'unknown error'}`);
     } finally {
       setUploading(false);
       if (input) input.value = '';
