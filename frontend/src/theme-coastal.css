@@ -695,6 +695,55 @@ body.theme-coastal .auth-error {
 body.theme-coastal .auth-switch { color: rgba(11, 35, 64, 0.75); }
 body.theme-coastal .out-of-stock-label { color: rgba(11, 35, 64, 0.55); }
 
+/* Keep the dark navy WHY-CHHATAK bar readable (the general text-color
+   overrides above would otherwise paint its content ink-on-ink). */
+body.theme-coastal .v2-why-bar,
+body.theme-coastal .v2-why-bar h1,
+body.theme-coastal .v2-why-bar h2,
+body.theme-coastal .v2-why-bar h3,
+body.theme-coastal .v2-why-bar h4,
+body.theme-coastal .v2-why-bar p,
+body.theme-coastal .v2-why-item,
+body.theme-coastal .v2-why-top,
+body.theme-coastal .v2-why-bot { color: #fff; }
+body.theme-coastal .v2-why-bar .v2-kicker.sun { color: var(--yellow); }
+body.theme-coastal .v2-why-bar .v2-why-icon { color: var(--yellow); }
+body.theme-coastal .v2-why-bar .v2-why-bot { color: rgba(255, 255, 255, 0.75); }
+
+/* Same guard for the dark footer */
+body.theme-coastal .v2-footer,
+body.theme-coastal .v2-footer h1,
+body.theme-coastal .v2-footer h2,
+body.theme-coastal .v2-footer h3,
+body.theme-coastal .v2-footer h4,
+body.theme-coastal .v2-footer p,
+body.theme-coastal .v2-footer a { color: #fff; }
+
+/* --- Photo corners: consistent soft rounding on all real photos --- */
+body.theme-coastal .flavor-img,
+body.theme-coastal .flavor-thumb,
+body.theme-coastal .v2-flavour-image img,
+body.theme-coastal .v2-story-slide,
+body.theme-coastal .v2-perfect-media img,
+body.theme-coastal .v2-gallery-tile img,
+body.theme-coastal .v2-gallery-tile video,
+body.theme-coastal .v2-custom-gallery-tile img,
+body.theme-coastal .v2-custom-gallery-tile video,
+body.theme-coastal .pd-other-thumb,
+body.theme-coastal .pd-other-thumb img,
+body.theme-coastal .product-image,
+body.theme-coastal .cart-item-thumb img,
+body.theme-coastal .reel-frame,
+body.theme-coastal .reel-frame > iframe {
+  border-radius: 16px;
+}
+body.theme-coastal .v2-flavour-image,
+body.theme-coastal .v2-flavour-image img { border-radius: 20px; overflow: hidden; }
+body.theme-coastal .v2-hero-pack,
+body.theme-coastal .v2-hero-bowl,
+body.theme-coastal .brand-logo,
+body.theme-coastal .v2-footer-logo { border-radius: 0; }
+
 /* ============================================================
    Cart drawer (slides in from the left)
    ============================================================ */
