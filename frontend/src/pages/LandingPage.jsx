@@ -1,6 +1,8 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../api/client.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import { useCart } from '../context/CartContext.jsx';
 
 const ReelsWall = lazy(() => import('../components/ReelsWall.jsx'));
 const ReviewsWall = lazy(() => import('../components/ReviewsWall.jsx'));
@@ -269,7 +271,18 @@ function StoryBanner({ section }) {
 
 function Flavours({ products }) {
   const list = products.slice(0, 4);
-  const bg = ['#F7D65A', '#7FC96B', '#EF7C7C', '#F5A05A'];
+  const { isAuthenticated } = useAuth();
+  const { addToCart } = useCart();
+  const [addingId, setAddingId] = useState(null);
+
+  const handleAdd = async (id) => {
+    if (!isAuthenticated) { window.location.href = '/login'; return; }
+    setAddingId(id);
+    try { await addToCart(id); }
+    catch (err) { alert(err.response?.data?.detail || 'Failed to add to cart'); }
+    finally { setAddingId(null); }
+  };
+
   return (
     <section id="products" className="v2-flavours">
       <div className="v2-container">
@@ -285,20 +298,27 @@ function Flavours({ products }) {
         </div>
 
         <div className="v2-flavour-grid">
-          {list.map((p, i) => (
+          {list.map((p) => (
             <article key={p.id} className="v2-flavour-card">
-              <div className={`v2-flavour-image${p.image_url ? '' : ' v2-flavour-image--noimg'}`} style={{ '--flav-bg': bg[i % bg.length] }}>
+              <Link to={`/products/${p.slug}`} className="v2-flavour-image" aria-label={`View ${p.name}`}>
                 {p.image_url ? (
                   <img src={p.image_url} alt={p.name} />
                 ) : (
                   <span className="v2-flavour-badge">{p.flavor || p.name}</span>
                 )}
-              </div>
-              <h3 className="v2-flavour-name">{p.name}</h3>
-              <p className="v2-flavour-desc">{p.description?.slice(0, 60) || 'A timeless masala with the perfect coastal kick.'}</p>
-              <Link to={`/products/${p.slug}`} className="v2-buy-btn" style={{ '--btn-bg': bg[i % bg.length] }}>
-                BUY NOW
               </Link>
+              <Link to={`/products/${p.slug}`} className="v2-flavour-name-link">
+                <h3 className="v2-flavour-name">{p.name}</h3>
+              </Link>
+              <div className="v2-flavour-price">₹{p.price}</div>
+              <button
+                type="button"
+                className="v2-add-btn"
+                onClick={() => handleAdd(p.id)}
+                disabled={addingId === p.id || p.stock === 0}
+              >
+                {p.stock === 0 ? 'Out of stock' : addingId === p.id ? 'Adding…' : 'Add to cart'}
+              </button>
             </article>
           ))}
         </div>

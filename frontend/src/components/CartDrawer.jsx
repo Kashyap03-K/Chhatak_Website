@@ -62,11 +62,33 @@ export default function CartDrawer() {
           ) : (
             items.map((item) => (
               <div className="cart-drawer__item" key={item.id}>
+                {item.product.image_url && (
+                  <Link
+                    to={`/products/${item.product.slug}`}
+                    className="cart-drawer__item-thumb"
+                    onClick={closeDrawer}
+                  >
+                    <img src={item.product.image_url} alt={item.product.name} />
+                  </Link>
+                )}
                 <div className="cart-drawer__item-info">
-                  <p className="cart-drawer__item-name">{item.product.name}</p>
+                  <Link
+                    to={`/products/${item.product.slug}`}
+                    className="cart-drawer__item-name-link"
+                    onClick={closeDrawer}
+                  >
+                    <p className="cart-drawer__item-name">{item.product.name}</p>
+                  </Link>
                   <p className="cart-drawer__item-meta">
                     {item.product.flavor ? `${item.product.flavor} · ` : ''}{item.product.weight}
                   </p>
+                  {item.product.description && (
+                    <p className="cart-drawer__item-desc">
+                      {item.product.description.length > 90
+                        ? `${item.product.description.slice(0, 90)}…`
+                        : item.product.description}
+                    </p>
+                  )}
                   <div className="cart-drawer__item-row">
                     <div className="cart-drawer__qty">
                       <button
