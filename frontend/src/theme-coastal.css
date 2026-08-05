@@ -705,15 +705,15 @@ body.theme-coastal .out-of-stock-label { color: rgba(11, 35, 64, 0.55); }
 }
 .cart-drawer-overlay.is-open { opacity: 1; pointer-events: auto; }
 .cart-drawer {
-  position: fixed; top: 0; left: 0; height: 100vh;
+  position: fixed; top: 0; right: 0; height: 100vh;
   width: min(400px, 92vw);
   background: #FFF8EA; color: #0B2340;
-  transform: translateX(-105%);
+  transform: translateX(105%);
   transition: transform 0.28s ease;
   z-index: 1001;
   display: flex; flex-direction: column;
-  box-shadow: 6px 0 32px rgba(11, 35, 64, 0.2);
-  border-right: 1px solid rgba(11, 35, 64, 0.08);
+  box-shadow: -6px 0 32px rgba(11, 35, 64, 0.2);
+  border-left: 1px solid rgba(11, 35, 64, 0.08);
 }
 .cart-drawer.is-open { transform: translateX(0); }
 .cart-drawer__head {

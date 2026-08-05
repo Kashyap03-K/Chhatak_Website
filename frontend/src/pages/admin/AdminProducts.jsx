@@ -45,21 +45,25 @@ export default function AdminProducts() {
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files?.[0];
+    const input = e.target;
+    const file = input.files?.[0];
     if (!file) return;
     setUploading(true);
     try {
       const data = new FormData();
       data.append('file', file);
+      // Do NOT set Content-Type manually — axios must auto-generate the
+      // multipart boundary, otherwise the server can't parse the body.
       const { data: res } = await api.post('/uploads/image', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': undefined },
       });
       setForm(f => ({ ...f, image_url: res.url }));
     } catch (err) {
-      alert(err.response?.data?.detail || 'Failed to upload image');
+      const detail = err.response?.data?.detail || err.message || 'Failed to upload image';
+      alert(`Upload failed: ${detail}`);
     } finally {
       setUploading(false);
-      e.target.value = '';
+      if (input) input.value = '';
     }
   };
 
