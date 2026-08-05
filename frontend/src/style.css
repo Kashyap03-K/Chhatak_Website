@@ -836,24 +836,32 @@ img { display: block; max-width: 100%; }
   flex-direction: column;
   gap: 14px;
 }
-.reel-frame {
-  position: relative;
-  display: block;
-  aspect-ratio: 9 / 16;
-  overflow: hidden;
+a.reel-frame {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 0 !important;
+  /* Crop to ~5:4 vertical — show a clean centered video slice with no IG chrome */
+  padding-bottom: 125% !important;
+  overflow: hidden !important;
   background: #000;
   border: 0;
   cursor: pointer;
   color-scheme: dark;
+  border-radius: 4px;
+  text-decoration: none;
 }
-.reel-video {
-  position: absolute;
-  top: -54px;
-  left: 0;
-  width: 100%;
-  height: calc(100% + 240px);
-  border: 0;
-  pointer-events: auto;
+a.reel-frame > iframe.reel-video {
+  position: absolute !important;
+  /* Shift iframe up so IG header is gone AND video is roughly centered inside the visible slice */
+  top: -110px !important;
+  left: 0 !important;
+  width: 100% !important;
+  /* Massive iframe height guarantees the caption/likes/comments strip is far below the visible clip */
+  height: 800px !important;
+  min-height: calc(100% + 700px) !important;
+  border: 0 !important;
+  pointer-events: none !important;
   color-scheme: dark;
   background: #000;
 }
@@ -900,6 +908,61 @@ img { display: block; max-width: 100%; }
 }
 .reels-cta a { color: var(--accent); }
 .reels-cta a:hover { text-decoration: underline; }
+
+/* --- Reels: centered header + IG follow button --- */
+.reels-head--centered {
+  display: block;
+  text-align: center;
+  margin-bottom: 40px;
+}
+.reels-title {
+  font-family: 'Fredoka', 'Fraunces', sans-serif;
+  font-size: clamp(1.9rem, 3.4vw, 2.8rem);
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.15;
+}
+.reels-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 32px;
+}
+.reels-handle {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: inherit;
+}
+.reels-handle:hover { opacity: 0.75; }
+.reels-ig-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 40px;
+  min-width: 320px;
+  border-radius: 999px;
+  color: #fff;
+  font-family: 'Fredoka', 'Inter', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background: linear-gradient(90deg, #F58529 0%, #DD2A7B 55%, #8134AF 100%);
+  box-shadow: 0 10px 24px rgba(221, 42, 123, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.reels-ig-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(221, 42, 123, 0.45);
+  color: #fff;
+}
+@media (max-width: 640px) {
+  .reels-ig-btn { min-width: 0; width: 100%; max-width: 340px; }
+}
 
 @media (max-width: 640px) {
   .reel-card { flex: 0 0 78vw; }

@@ -27,14 +27,10 @@ export default function ReelsWall() {
   };
 
   return (
-    <section id="reels" className="section reels-wall">
+    <section id="reels" className="section reels-wall reels-wall--centered">
       <div className="container">
-        <div className="reels-head">
-          <div>
-            <p className="kicker">— Reels</p>
-            <h2 className="display sm">Straight from the <em>feed</em>.</h2>
-          </div>
-          <p className="muted-text">People trying Chhatak on Instagram. Real reels, real reactions.</p>
+        <div className="reels-head reels-head--centered">
+          <h2 className="reels-title">Stay Chhatak on Instagram</h2>
         </div>
 
         <div className="reels-scroller">
@@ -51,6 +47,21 @@ export default function ReelsWall() {
                   target="_blank"
                   rel="noopener"
                   aria-label={`Open reel: ${r.caption}`}
+                  style={{
+                    position: 'relative',
+                    display: 'block',
+                    width: '100%',
+                    height: 0,
+                    paddingBottom: '125%',
+                    overflow: 'hidden',
+                    clipPath: 'inset(0)',
+                    contain: 'paint',
+                    isolation: 'isolate',
+                    background: '#000',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                  }}
                 >
                   <iframe
                     className="reel-video"
@@ -60,11 +71,18 @@ export default function ReelsWall() {
                     allow="encrypted-media; picture-in-picture"
                     scrolling="no"
                     tabIndex={-1}
+                    style={{
+                      position: 'absolute',
+                      top: -110,
+                      left: 0,
+                      width: '100%',
+                      height: 900,
+                      border: 0,
+                      pointerEvents: 'none',
+                      background: '#000',
+                    }}
                   />
                 </a>
-                <div className="reel-meta">
-                  <p className="reel-caption">{r.caption}</p>
-                </div>
               </article>
             ))}
           </div>
@@ -74,9 +92,17 @@ export default function ReelsWall() {
           </button>
         </div>
 
-        <p className="reels-cta">
-          Tag <a href="https://instagram.com/chhatak.co" target="_blank" rel="noopener">@chhatak.co</a> in your reel — we repost the best ones.
-        </p>
+        <div className="reels-footer">
+          <a href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="reels-handle">@chhatak.co</a>
+          <a href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="reels-ig-btn">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+            </svg>
+            <span>Follow us on Instagram</span>
+          </a>
+        </div>
       </div>
     </section>
   );
