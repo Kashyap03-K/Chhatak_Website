@@ -6,8 +6,9 @@ from app.models.payment import Payment
 from app.models.address import Address
 from app.models.content import Reel, Review
 from app.models.landing import LandingSection, SectionImage
+from app.models.newsletter import NewsletterSubscriber
 
 __all__ = [
     "User", "Product", "CartItem", "Order", "OrderItem", "Payment", "Address",
-    "Reel", "Review", "LandingSection", "SectionImage",
+    "Reel", "Review", "LandingSection", "SectionImage", "NewsletterSubscriber",
 ]

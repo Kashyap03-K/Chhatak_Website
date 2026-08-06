@@ -11,7 +11,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from app.core.config import settings
-from app.api.routes import auth, products, cart, orders, payments, addresses, content, landing
+from app.api.routes import auth, products, cart, orders, payments, addresses, content, landing, newsletter
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 
@@ -52,6 +52,7 @@ app.include_router(content.reels_router, prefix=settings.API_V1_PREFIX)
 app.include_router(content.reviews_router, prefix=settings.API_V1_PREFIX)
 app.include_router(landing.router, prefix=settings.API_V1_PREFIX)
 app.include_router(landing.uploads_router, prefix=settings.API_V1_PREFIX)
+app.include_router(newsletter.router, prefix=settings.API_V1_PREFIX)
 
 # Serve uploaded images at /uploads/<file>
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "uploads"))

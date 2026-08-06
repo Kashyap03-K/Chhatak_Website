@@ -17,6 +17,7 @@ import AdminProducts from './pages/admin/AdminProducts.jsx';
 import AdminOrders from './pages/admin/AdminOrders.jsx';
 import AdminReels from './pages/admin/AdminReels.jsx';
 import AdminReviews from './pages/admin/AdminReviews.jsx';
+import AdminNewsletter from './pages/admin/AdminNewsletter.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import Navbar from './components/Navbar.jsx';
 import AuthDialog from './components/AuthDialog.jsx';
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
         <Route path="/admin/reels" element={<AdminRoute><AdminReels /></AdminRoute>} />
         <Route path="/admin/reviews" element={<AdminRoute><AdminReviews /></AdminRoute>} />
+        <Route path="/admin/newsletter" element={<AdminRoute><AdminNewsletter /></AdminRoute>} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

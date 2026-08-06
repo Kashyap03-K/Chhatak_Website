@@ -168,6 +168,13 @@ export default function AdminDashboard() {
                     <p>Add, edit, or hide customer testimonials</p>
                   </div>
                 </Link>
+                <Link to="/admin/newsletter" className="admin-action-card">
+                  <div className="admin-action-card__icon">✉</div>
+                  <div>
+                    <strong>Newsletter</strong>
+                    <p>See who signed up via the "Stay in the loop" footer</p>
+                  </div>
+                </Link>
               </div>
             </div>
           </>

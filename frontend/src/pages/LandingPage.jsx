@@ -541,73 +541,90 @@ function Gallery({ section }) {
 }
 
 function Footer() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('idle'); // idle | sending | ok | error
+  const [message, setMessage] = useState('');
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed) return;
+    setStatus('sending');
+    setMessage('');
+    try {
+      await api.post('/newsletter/subscribe', { email: trimmed });
+      setStatus('ok');
+      setMessage('Thanks — you\'re on the list.');
+      setEmail('');
+    } catch (err) {
+      setStatus('error');
+      setMessage(err.response?.data?.detail?.[0]?.msg || err.response?.data?.detail || 'Could not subscribe. Please try again.');
+    }
+  };
+
   return (
     <footer className="v2-footer">
       <div className="v2-container">
-        <div className="v2-footer-grid">
-          <div className="v2-footer-brand">
-            <img src="/images/chhatak-logo.png" alt="Chhatak" className="v2-footer-logo" />
-            <p>Premium dried Bombil fish snack made in Diu, for the world.</p>
-            <div className="v2-footer-social">
-              <a href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" aria-label="Instagram">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <rect x="3" y="3" width="18" height="18" rx="5" />
-                  <circle cx="12" cy="12" r="4" />
-                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-                </svg>
-              </a>
-              <a href="#" aria-label="Facebook">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-                  <path d="M13.5 21v-7h2.4l.4-3h-2.8V9c0-.87.24-1.46 1.5-1.46H16.5V4.9c-.26-.03-1.15-.11-2.19-.11-2.17 0-3.66 1.32-3.66 3.75V11H8v3h2.65v7h2.85z" />
-                </svg>
-              </a>
-              <a href="#" aria-label="YouTube">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
-                  <path d="M21.6 7.2a2.5 2.5 0 0 0-1.75-1.77C18.28 5 12 5 12 5s-6.28 0-7.85.43A2.5 2.5 0 0 0 2.4 7.2 26.2 26.2 0 0 0 2 12a26.2 26.2 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.75 1.77C5.72 19 12 19 12 19s6.28 0 7.85-.43a2.5 2.5 0 0 0 1.75-1.77A26.2 26.2 0 0 0 22 12a26.2 26.2 0 0 0-.4-4.8zM10 15V9l5.2 3z" />
-                </svg>
-              </a>
-              <a href="#" aria-label="X">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                  <path d="M17.3 3H20l-6.3 7.2L21.5 21h-6.4l-4.5-6-5.2 6H2.7l6.7-7.7L2.2 3h6.6l4.1 5.5L17.3 3zm-1.1 16h1.7L7.9 5H6.1l10.1 14z" />
-                </svg>
-              </a>
-              <a href="#" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-                  <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21h-4z" />
-                </svg>
-              </a>
-            </div>
+        <div className="v2-footer-brand">
+          <img src="/images/chhatak-logo.png" alt="Chhatak" className="v2-footer-logo" />
+          <p>Premium dried Bombil fish snack made in Diu, for the world.</p>
+          <div className="v2-footer-social">
+            <a href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <a href="https://facebook.com/chhatak.co" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                <path d="M13.5 21v-7h2.4l.4-3h-2.8V9c0-.87.24-1.46 1.5-1.46H16.5V4.9c-.26-.03-1.15-.11-2.19-.11-2.17 0-3.66 1.32-3.66 3.75V11H8v3h2.65v7h2.85z" />
+              </svg>
+            </a>
+            <a href="https://youtube.com/@chhatak.co" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+                <path d="M21.6 7.2a2.5 2.5 0 0 0-1.75-1.77C18.28 5 12 5 12 5s-6.28 0-7.85.43A2.5 2.5 0 0 0 2.4 7.2 26.2 26.2 0 0 0 2 12a26.2 26.2 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.75 1.77C5.72 19 12 19 12 19s6.28 0 7.85-.43a2.5 2.5 0 0 0 1.75-1.77A26.2 26.2 0 0 0 22 12a26.2 26.2 0 0 0-.4-4.8zM10 15V9l5.2 3z" />
+              </svg>
+            </a>
           </div>
+        </div>
+
+        <div className="v2-footer-grid">
           <div>
             <p className="v2-footer-h">SHOP</p>
-            <Link to="/#products">All Products</Link>
-            <Link to="/#products">Indian Classic</Link>
-            <Link to="/#products">Garlic Lemon</Link>
-            <Link to="/#products">Magic Masala</Link>
-            <Link to="/#products">Peri Peri Tomato</Link>
+            <Link to="/products">All Products</Link>
+            <Link to="/wholesale">Wholesale</Link>
+            <Link to="/cart">Cart</Link>
+            <Link to="/wishlist">Wishlist</Link>
+            <Link to="/orders">My Orders</Link>
           </div>
           <div>
-            <p className="v2-footer-h">COMPANY</p>
-            <Link to="/#story">About Us</Link>
-            <Link to="/#story">Our Story</Link>
-            <a href="#">Blog</a>
-            <a href="#">Contact Us</a>
-            <a href="#">FAQ</a>
-          </div>
-          <div>
-            <p className="v2-footer-h">HELP</p>
-            <a href="#">Shipping & Delivery</a>
-            <a href="#">Returns & Refunds</a>
-            <a href="#">Terms & Conditions</a>
-            <a href="#">Privacy Policy</a>
+            <p className="v2-footer-h">EXPLORE</p>
+            <Link to="/#story">About</Link>
+            <Link to="/#reels">Reels</Link>
+            <Link to="/#reviews">Reviews</Link>
           </div>
           <div>
             <p className="v2-footer-h">STAY IN THE LOOP</p>
-            <p className="v2-footer-note">Get updates on new flavours, offers & coastal stories.</p>
-            <form className="v2-newsletter" onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder="Enter your email" />
-              <button type="submit">SUBSCRIBE</button>
+            <p className="v2-footer-note">Get updates on new flavours & coastal stories.</p>
+            <form className="v2-newsletter" onSubmit={submit}>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                disabled={status === 'sending'}
+              />
+              <button type="submit" disabled={status === 'sending'}>
+                {status === 'sending' ? '…' : 'SUBSCRIBE'}
+              </button>
             </form>
+            {message && (
+              <p className={`v2-newsletter-msg ${status === 'ok' ? 'ok' : status === 'error' ? 'err' : ''}`}>
+                {message}
+              </p>
+            )}
           </div>
         </div>
         <div className="v2-footer-bar">
