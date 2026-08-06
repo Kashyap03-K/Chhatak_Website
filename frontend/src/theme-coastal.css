@@ -111,8 +111,8 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 }
 .v2-hero-seaside-svg { display: block; width: 100%; height: auto; }
 
-/* Coast Crunch hero — flat cream background, layered photos */
-.v2-hero--coast { padding: 90px 0 140px; background: #F4E7C6; }
+/* Coast Crunch hero — flat grey background, layered photos */
+.v2-hero--coast { padding: 90px 0 140px; background: #EDEEF0; }
 
 .v2-hero-photo-wrap {
   position: relative;
