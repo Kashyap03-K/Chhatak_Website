@@ -120,18 +120,14 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   min-height: 460px;
 }
 
-/* Background photo — sits farthest back, on beige paper (burnt edges show) */
-.v2-hero-bg-photo {
+/* Beige paper backdrop — sits farthest back, burnt edges visible */
+.v2-hero-paper {
   position: absolute;
   top: -6%; left: -6%;
   width: 112%; height: 112%;
   z-index: 1;
   background: url('/images/beige-paper.png') center/100% 100% no-repeat;
-}
-.v2-hero-bg-photo img {
-  width: 82%; height: 82%; margin: 9% auto; object-fit: cover; display: block;
-  filter: grayscale(0.35) contrast(0.95);
-  opacity: 0.9;
+  pointer-events: none;
 }
 
 /* Main photo — no frame, just the image, slight tilt */
@@ -176,11 +172,6 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   font-weight: 700; font-size: 12px; letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 8px;
-}
-/* When the background slot is empty, let the parchment texture show through */
-.v2-hero-bg-photo .v2-hero-slot-empty {
-  background: transparent;
-  color: rgba(20, 33, 61, 0.45);
 }
 
 .v2-hero-palm {

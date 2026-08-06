@@ -168,8 +168,7 @@ const WHY = [
 function Hero({ section }) {
   const imgs = section?.images || [];
   const mainImg = imgs[0];
-  const bgImg = imgs[1];
-  const bowlImg = imgs[2];
+  const bowlImg = imgs[1];
   return (
     <section className="v2-hero v2-hero--coast">
       <div className="v2-container">
@@ -218,14 +217,8 @@ function Hero({ section }) {
               </g>
             </svg>
 
-            {/* Layer 2: background photo behind main */}
-            <div className="v2-hero-bg-photo">
-              {bgImg?.image_url ? (
-                <img src={bgImg.image_url} alt="" />
-              ) : (
-                <div className="v2-hero-slot-empty">Background photo</div>
-              )}
-            </div>
+            {/* Beige paper backdrop (decorative) */}
+            <div className="v2-hero-paper" aria-hidden="true" />
 
             {/* Layer 1: main photo */}
             <figure className="v2-hero-photo">
