@@ -24,7 +24,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Times New Roman', Times, serif;
   background: var(--bg);
   color: var(--ink);
   line-height: 1.55;
@@ -33,6 +33,16 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+/* Global font override — everything on the site uses Times New Roman */
+body,
+body *,
+button,
+input,
+select,
+textarea {
+  font-family: 'Times New Roman', Times, serif !important;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -115,9 +125,9 @@ img { display: block; max-width: 100%; }
   .brand-logo--footer { height: 56px; }
 }
 
-.nav-links { list-style: none; display: flex; gap: 36px; }
+.nav-links { list-style: none; display: flex; gap: 40px; }
 .nav-links a {
-  font-size: 14px; font-weight: 500;
+  font-size: 17px; font-weight: 700;
   color: var(--ink-soft);
   transition: color 0.2s;
 }
@@ -127,10 +137,11 @@ img { display: block; max-width: 100%; }
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  gap: 32px;
+  gap: 40px;
 }
 .nav-links--center a {
-  font-size: 13px;
+  font-size: 17px;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink);

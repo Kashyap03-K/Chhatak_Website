@@ -167,53 +167,108 @@ const WHY = [
 
 function Hero({ section }) {
   const imgs = section?.images || [];
-  const packUrl = imgs[0]?.image_url || '/images/packaging-real.JPG';
-  const bowlUrl = imgs[1]?.image_url || '/images/bowl.JPG';
-  const coastUrl = imgs[2]?.image_url || '/images/scene 1.png';
-  const packAlt = imgs[0]?.title || 'Indian Classic';
+  const mainImg = imgs[0];
+  const bgImg = imgs[1];
+  const bowlImg = imgs[2];
   return (
-    <section className="v2-hero">
+    <section className="v2-hero v2-hero--coast">
       <div className="v2-container">
         <div className="v2-hero-grid">
           <div className="v2-hero-copy">
             <h1 className="v2-hero-title">
               FROM COAST
               <br />
-              TO <span className="accent">CRUNCH!</span>
+              TO <em>CRUNCH</em>
             </h1>
             <p className="v2-hero-lede">
-              Premium dried Bombil fish snack made with coastal tradition and bold Indian flavours.
+              Premium dried Bombil fish snack
+              <br />
+              made with coastal tradition and
+              <br />
+              bold Indian flavours.
             </p>
             <div className="v2-hero-ctas">
-              <Link to="/#products" className="v2-btn v2-btn--primary">SHOP NOW</Link>
-              <Link to="/#products" className="v2-btn v2-btn--ghost">EXPLORE FLAVOURS</Link>
+              <Link to="/products" className="v2-btn v2-btn--primary">SHOP NOW</Link>
+              <Link to="/#products" className="v2-btn v2-btn--outline">EXPLORE FLAVOURS</Link>
             </div>
-            <WaveDoodle className="v2-hero-waves" />
+            <svg className="v2-hero-brush" viewBox="0 0 240 22" aria-hidden="true">
+              <path d="M6 12 C 60 2, 130 20, 190 8 S 232 12, 236 10" stroke="#B47A2E" strokeWidth="8" strokeLinecap="round" fill="none" opacity="0.85" />
+            </svg>
           </div>
-          <div className="v2-hero-visual">
-            <div className="v2-hero-blob" aria-hidden="true" />
-            <StarburstDoodle className="v2-doodle v2-doodle--burst" />
-            <SunDoodle className="v2-doodle v2-doodle--sun" />
-            <PalmDoodle className="v2-doodle v2-doodle--palm" />
-            <SwirlDoodle className="v2-doodle v2-doodle--swirl" />
-            <SparkDoodle className="v2-doodle v2-doodle--spark1" />
-            <SparkDoodle className="v2-doodle v2-doodle--spark2" />
-            <DotClusterDoodle className="v2-doodle v2-doodle--dots" />
-            <BoatDoodle className="v2-doodle v2-doodle--boat" />
 
-            {/* Story stickers — small photo peeks behind the pouch */}
-            <div className="v2-hero-sticker v2-hero-sticker--coast" aria-hidden="true">
-              <img src={coastUrl} alt="" loading="lazy" />
-            </div>
-            <div className="v2-hero-sticker v2-hero-sticker--bowl" aria-hidden="true">
-              <img src={bowlUrl} alt="" loading="lazy" />
+          <div className="v2-hero-photo-wrap">
+            <svg className="v2-hero-palm v2-hero-palm--tl" viewBox="0 0 80 100" aria-hidden="true">
+              <g stroke="#14213D" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity="0.6">
+                <path d="M40 96 Q 42 60 40 30" />
+                <path d="M40 30 Q 22 22 8 26" />
+                <path d="M40 30 Q 58 22 72 26" />
+                <path d="M40 30 Q 30 12 18 8" />
+                <path d="M40 30 Q 50 12 62 8" />
+                <path d="M40 30 Q 40 10 40 4" />
+              </g>
+            </svg>
+            <svg className="v2-hero-palm v2-hero-palm--tr" viewBox="0 0 80 100" aria-hidden="true">
+              <g stroke="#14213D" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity="0.6">
+                <path d="M40 96 Q 42 60 40 30" />
+                <path d="M40 30 Q 22 22 8 26" />
+                <path d="M40 30 Q 58 22 72 26" />
+                <path d="M40 30 Q 30 12 18 8" />
+                <path d="M40 30 Q 50 12 62 8" />
+                <path d="M40 30 Q 40 10 40 4" />
+              </g>
+            </svg>
+
+            {/* Layer 2: background photo behind main */}
+            <div className="v2-hero-bg-photo">
+              {bgImg?.image_url ? (
+                <img src={bgImg.image_url} alt="" />
+              ) : (
+                <div className="v2-hero-slot-empty">Background photo</div>
+              )}
             </div>
 
-            {/* Hero pack — the star */}
-            <img src={packUrl} alt={packAlt} className="v2-hero-pack" />
+            {/* Layer 1: main photo */}
+            <figure className="v2-hero-photo">
+              {mainImg?.image_url ? (
+                <img src={mainImg.image_url} alt={mainImg.title || ''} />
+              ) : (
+                <div className="v2-hero-slot-empty">Main photo</div>
+              )}
+            </figure>
+
+            {/* Layer 3: bowl circle */}
+            <div className="v2-hero-bowl">
+              {bowlImg?.image_url ? (
+                <img src={bowlImg.image_url} alt="" />
+              ) : (
+                <div className="v2-hero-slot-empty">Bowl</div>
+              )}
+            </div>
+
+            <svg className="v2-hero-compass" viewBox="0 0 70 70" aria-hidden="true">
+              <g stroke="#14213D" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.55">
+                <path d="M35 8 L 40 35 L 35 62 L 30 35 Z" />
+                <path d="M8 35 L 35 40 L 62 35 L 35 30 Z" />
+              </g>
+            </svg>
+
           </div>
         </div>
       </div>
+
+      {/* Small sailboat sketch in the hero's bottom-right corner */}
+      <svg className="v2-hero-corner-boat" viewBox="0 0 140 80" aria-hidden="true">
+        <g stroke="#14213D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.8">
+          <path d="M34 46 L 96 46 L 86 60 L 44 60 Z" />
+          <path d="M65 46 L 65 14" />
+          <path d="M65 16 L 65 44 L 96 44 Z" />
+          <path d="M4 68 Q 26 62 48 68 T 92 68 T 136 68" opacity="0.7" />
+          <path d="M2 74 Q 26 68 50 74 T 96 74 T 138 74" opacity="0.5" />
+        </g>
+      </svg>
+
+      {/* Tall-ship sketch in the hero's bottom-left corner */}
+      <img className="v2-hero-fleet" src="/images/tall-ship.png" alt="" aria-hidden="true" />
     </section>
   );
 }
