@@ -87,6 +87,8 @@ def on_startup():
         with engine.begin() as conn:
             if "media_type" not in cols:
                 conn.execute(text("ALTER TABLE section_images ADD COLUMN media_type VARCHAR(16) DEFAULT 'image' NOT NULL"))
+            if "sound_on" not in cols:
+                conn.execute(text(f"ALTER TABLE section_images ADD COLUMN sound_on BOOLEAN DEFAULT {false_default} NOT NULL"))
     if "reels" in inspector.get_table_names():
         cols = {c["name"] for c in inspector.get_columns("reels")}
         with engine.begin() as conn:

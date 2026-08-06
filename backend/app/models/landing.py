@@ -39,6 +39,7 @@ class SectionImage(Base):
     kicker = Column(String(120), nullable=True)
     title = Column(String(200), nullable=True)
     body = Column(Text, nullable=True)
+    sound_on = Column(Boolean, default=False, nullable=False, server_default="false")
     sort_order = Column(Integer, default=0)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 

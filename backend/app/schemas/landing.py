@@ -7,6 +7,7 @@ class SectionImageBase(BaseModel):
     kicker: str | None = Field(None, max_length=120)
     title: str | None = Field(None, max_length=200)
     body: str | None = None
+    sound_on: bool = False
     sort_order: int = 0
 
 
@@ -20,6 +21,7 @@ class SectionImageUpdate(BaseModel):
     kicker: str | None = Field(None, max_length=120)
     title: str | None = Field(None, max_length=200)
     body: str | None = None
+    sound_on: bool | None = None
     sort_order: int | None = None
 
 

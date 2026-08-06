@@ -121,6 +121,7 @@ def add_image(section_id: int, body: SectionImageCreate, db: Session = Depends(g
         kicker=body.kicker,
         title=body.title,
         body=body.body,
+        sound_on=body.sound_on,
         sort_order=body.sort_order if body.sort_order else next_order,
     )
     db.add(img)

@@ -494,9 +494,33 @@ function Footer() {
             <img src="/images/chhatak-logo.png" alt="Chhatak" className="v2-footer-logo" />
             <p>Premium dried Bombil fish snack made in Diu, for the world.</p>
             <div className="v2-footer-social">
-              <a href="https://instagram.com/chhatak.co" aria-label="Instagram">◎</a>
-              <a href="#" aria-label="Facebook">ⓕ</a>
-              <a href="#" aria-label="YouTube">▶</a>
+              <a href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+              <a href="#" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                  <path d="M13.5 21v-7h2.4l.4-3h-2.8V9c0-.87.24-1.46 1.5-1.46H16.5V4.9c-.26-.03-1.15-.11-2.19-.11-2.17 0-3.66 1.32-3.66 3.75V11H8v3h2.65v7h2.85z" />
+                </svg>
+              </a>
+              <a href="#" aria-label="YouTube">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+                  <path d="M21.6 7.2a2.5 2.5 0 0 0-1.75-1.77C18.28 5 12 5 12 5s-6.28 0-7.85.43A2.5 2.5 0 0 0 2.4 7.2 26.2 26.2 0 0 0 2 12a26.2 26.2 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.75 1.77C5.72 19 12 19 12 19s6.28 0 7.85-.43a2.5 2.5 0 0 0 1.75-1.77A26.2 26.2 0 0 0 22 12a26.2 26.2 0 0 0-.4-4.8zM10 15V9l5.2 3z" />
+                </svg>
+              </a>
+              <a href="#" aria-label="X">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <path d="M17.3 3H20l-6.3 7.2L21.5 21h-6.4l-4.5-6-5.2 6H2.7l6.7-7.7L2.2 3h6.6l4.1 5.5L17.3 3zm-1.1 16h1.7L7.9 5H6.1l10.1 14z" />
+                </svg>
+              </a>
+              <a href="#" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                  <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21h-4z" />
+                </svg>
+              </a>
             </div>
           </div>
           <div>
@@ -540,9 +564,19 @@ function Footer() {
   );
 }
 
-function HeroVideo({ src }) {
+function HeroVideo({ src, defaultSoundOn = false }) {
   const ref = useRef(null);
   const [muted, setMuted] = useState(true);
+  useEffect(() => {
+    if (!defaultSoundOn) return;
+    const v = ref.current;
+    if (!v) return;
+    v.muted = false;
+    v.play().then(() => setMuted(false)).catch(() => {
+      v.muted = true;
+      setMuted(true);
+    });
+  }, [defaultSoundOn, src]);
   const toggle = () => {
     const v = ref.current;
     if (!v) return;
@@ -598,7 +632,7 @@ function CustomGallery({ section }) {
     return (
       <section className={`v2-custom-hero${section.full_viewport ? ' is-fullscreen' : ''}${img.media_type === 'video' ? ' is-video' : ''}`} id={`gallery-${section.id}`}>
         {img.media_type === 'video' ? (
-          <HeroVideo src={img.image_url} />
+          <HeroVideo src={img.image_url} defaultSoundOn={!!img.sound_on} />
         ) : (
           <img src={img.image_url} alt={img.title || section.title || ''} loading="lazy" />
         )}

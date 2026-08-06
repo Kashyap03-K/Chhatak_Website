@@ -448,6 +448,16 @@ function SectionImagesCard({ section, isHero, hint, builtinLabel, onAdd, onUpdat
                 />
               </div>
             )}
+            {img.media_type === 'video' && (
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, padding: '4px 8px', color: 'var(--muted)' }}>
+                <input
+                  type="checkbox"
+                  checked={!!img.sound_on}
+                  onChange={(e) => onUpdate(img, { sound_on: e.target.checked })}
+                />
+                Default sound on
+              </label>
+            )}
             <div className="uiux-image-actions">
               <button type="button" className="btn-link" onClick={() => onMove(section, i, i - 1)} disabled={i === 0}>←</button>
               <span style={{ color: 'var(--muted)', fontSize: 12 }}>{i + 1}</span>
