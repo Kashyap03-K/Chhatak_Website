@@ -62,6 +62,34 @@ const BrushArrowDoodle = ({ className = '' }) => (
     <path d="M50 8 L 62 15 L 50 22" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
   </svg>
 );
+const StarburstDoodle = ({ className = '' }) => (
+  <svg className={className} viewBox="0 0 60 60" fill="none" aria-hidden="true">
+    {[0, 30, 60, 90, 120, 150].map((a) => {
+      const rad = (a * Math.PI) / 180;
+      return (
+        <line key={a}
+          x1={30 - Math.cos(rad) * 8} y1={30 - Math.sin(rad) * 8}
+          x2={30 + Math.cos(rad) * 26} y2={30 + Math.sin(rad) * 26}
+          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+      );
+    })}
+  </svg>
+);
+const SwirlDoodle = ({ className = '' }) => (
+  <svg className={className} viewBox="0 0 60 60" fill="none" aria-hidden="true">
+    <path d="M30 8 Q 46 12, 46 30 Q 46 46, 30 46 Q 18 46, 18 34 Q 18 24, 28 24 Q 34 24, 34 30" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+  </svg>
+);
+const DotClusterDoodle = ({ className = '' }) => (
+  <svg className={className} viewBox="0 0 40 40" fill="none" aria-hidden="true">
+    <circle cx="8" cy="12" r="2" fill="currentColor"/>
+    <circle cx="18" cy="6" r="2" fill="currentColor"/>
+    <circle cx="26" cy="16" r="2" fill="currentColor"/>
+    <circle cx="14" cy="22" r="2" fill="currentColor"/>
+    <circle cx="30" cy="28" r="2" fill="currentColor"/>
+    <circle cx="8" cy="30" r="2" fill="currentColor"/>
+  </svg>
+);
 
 // ==== Feature strip icons ====
 const IconFish = () => (
@@ -141,6 +169,7 @@ function Hero({ section }) {
   const imgs = section?.images || [];
   const packUrl = imgs[0]?.image_url || '/images/packaging-real.JPG';
   const bowlUrl = imgs[1]?.image_url || '/images/bowl.JPG';
+  const coastUrl = imgs[2]?.image_url || '/images/scene 1.png';
   const packAlt = imgs[0]?.title || 'Indian Classic';
   return (
     <section className="v2-hero">
@@ -163,13 +192,25 @@ function Hero({ section }) {
           </div>
           <div className="v2-hero-visual">
             <div className="v2-hero-blob" aria-hidden="true" />
+            <StarburstDoodle className="v2-doodle v2-doodle--burst" />
             <SunDoodle className="v2-doodle v2-doodle--sun" />
             <PalmDoodle className="v2-doodle v2-doodle--palm" />
-            <BoatDoodle className="v2-doodle v2-doodle--boat" />
+            <SwirlDoodle className="v2-doodle v2-doodle--swirl" />
             <SparkDoodle className="v2-doodle v2-doodle--spark1" />
             <SparkDoodle className="v2-doodle v2-doodle--spark2" />
+            <DotClusterDoodle className="v2-doodle v2-doodle--dots" />
+            <BoatDoodle className="v2-doodle v2-doodle--boat" />
+
+            {/* Story stickers — small photo peeks behind the pouch */}
+            <div className="v2-hero-sticker v2-hero-sticker--coast" aria-hidden="true">
+              <img src={coastUrl} alt="" loading="lazy" />
+            </div>
+            <div className="v2-hero-sticker v2-hero-sticker--bowl" aria-hidden="true">
+              <img src={bowlUrl} alt="" loading="lazy" />
+            </div>
+
+            {/* Hero pack — the star */}
             <img src={packUrl} alt={packAlt} className="v2-hero-pack" />
-            <img src={bowlUrl} alt="" className="v2-hero-bowl" aria-hidden="true" />
           </div>
         </div>
       </div>
