@@ -705,6 +705,33 @@ body.theme-coastal .auth-error {
 body.theme-coastal .auth-switch { color: rgba(11, 35, 64, 0.75); }
 body.theme-coastal .out-of-stock-label { color: rgba(11, 35, 64, 0.55); }
 
+/* --- WHOLESALE PAGE (coastal) --- */
+body.theme-coastal .wholesale-page { background: #FBEFD8; color: #0B2340; }
+body.theme-coastal .wholesale-page .lead-dark { color: rgba(11, 35, 64, 0.78); }
+
+body.theme-coastal .buy-card {
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.10);
+  border-radius: 18px;
+  color: #0B2340;
+  box-shadow: 0 6px 18px rgba(11, 35, 64, 0.05);
+}
+body.theme-coastal .buy-card-img { border: 1px solid rgba(11, 35, 64, 0.08); }
+body.theme-coastal .buy-card .kicker { color: #F5822C; }
+body.theme-coastal .combo-title { color: #0B2340; }
+body.theme-coastal .combo-sub { color: rgba(11, 35, 64, 0.6); }
+body.theme-coastal .price-now { color: #0B2340; }
+body.theme-coastal .price-was { color: rgba(11, 35, 64, 0.45); }
+body.theme-coastal .combo-price { border-bottom-color: rgba(11, 35, 64, 0.08); }
+body.theme-coastal .combo-list li {
+  color: rgba(11, 35, 64, 0.8);
+  border-bottom-color: rgba(11, 35, 64, 0.08);
+}
+body.theme-coastal .combo-list li::before { color: #F5822C; }
+
+body.theme-coastal .wholesale-enquire { background: #F5E4C0; }
+body.theme-coastal .wholesale-enquire .muted-text { color: rgba(11, 35, 64, 0.7); }
+
 /* Keep the dark navy WHY-CHHATAK bar readable (the general text-color
    overrides above would otherwise paint its content ink-on-ink). */
 body.theme-coastal .v2-why-bar,

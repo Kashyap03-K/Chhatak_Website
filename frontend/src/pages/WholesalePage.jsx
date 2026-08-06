@@ -49,7 +49,7 @@ export default function WholesalePage() {
       </section>
 
       {/* WHOLESALE ENQUIRY */}
-      <section id="enquire" className="section" style={{ background: 'var(--bg-alt)' }}>
+      <section id="enquire" className="section wholesale-enquire">
         <div className="container" style={{ maxWidth: 720 }}>
           <p className="kicker center">— Wholesale enquiry</p>
           <h2 className="display sm center">Get in <em>touch</em>.</h2>
