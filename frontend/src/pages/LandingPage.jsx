@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../api/client.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -262,7 +262,7 @@ function StoryBanner({ section }) {
                   key={img.id ?? i}
                   src={img.image_url}
                   className={`v2-story-slide${i === active ? ' is-active' : ''}`}
-                  muted playsInline preload="metadata"
+                  controls playsInline preload="metadata"
                 />
               ) : (
                 <img
@@ -311,10 +311,11 @@ function StoryBanner({ section }) {
 }
 
 function Flavours({ products }) {
-  const list = products.slice(0, 4);
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
   const [addingId, setAddingId] = useState(null);
+  const trackRef = useRef(null);
+  const isSlider = products.length > 4;
 
   const handleAdd = async (id) => {
     if (!isAuthenticated) { window.location.href = '/login'; return; }
@@ -322,6 +323,14 @@ function Flavours({ products }) {
     try { await addToCart(id); }
     catch (err) { alert(err.response?.data?.detail || 'Failed to add to cart'); }
     finally { setAddingId(null); }
+  };
+
+  const scroll = (dir) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector('.v2-flavour-card');
+    const step = card ? card.getBoundingClientRect().width + 24 : 320;
+    el.scrollBy({ left: dir * step, behavior: 'smooth' });
   };
 
   return (
@@ -332,39 +341,61 @@ function Flavours({ products }) {
             <p className="v2-kicker accent">OUR FLAVOURS</p>
             <h2 className="v2-section-title">Bold flavours. <span className="ink">Coastal soul.</span></h2>
           </div>
-          <Link to="/#products" className="v2-view-all">
+          <Link to="/products" className="v2-view-all">
             VIEW ALL PRODUCTS
             <BrushArrowDoodle className="v2-arrow" />
           </Link>
         </div>
 
-        <div className="v2-flavour-grid">
-          {list.map((p) => (
-            <article key={p.id} className="v2-flavour-card">
-              <Link to={`/products/${p.slug}`} className="v2-flavour-image" aria-label={`View ${p.name}`}>
-                {p.image_url ? (
-                  <img src={p.image_url} alt={p.name} />
-                ) : (
-                  <span className="v2-flavour-badge">{p.flavor || p.name}</span>
-                )}
-              </Link>
-              <Link to={`/products/${p.slug}`} className="v2-flavour-name-link">
-                <h3 className="v2-flavour-name">{p.name}</h3>
-              </Link>
-              <div className="v2-flavour-price">₹{p.price}</div>
-              <button
-                type="button"
-                className="v2-add-btn"
-                onClick={() => handleAdd(p.id)}
-                disabled={addingId === p.id || p.stock === 0}
-              >
-                {p.stock === 0 ? 'Out of stock' : addingId === p.id ? 'Adding…' : 'Add to cart'}
-              </button>
-            </article>
-          ))}
-        </div>
+        {isSlider ? (
+          <div className="v2-flavour-slider">
+            <button type="button" className="v2-flavour-arrow prev" onClick={() => scroll(-1)} aria-label="Previous products">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 6l-6 6 6 6" /></svg>
+            </button>
+            <div className="v2-flavour-track" ref={trackRef}>
+              {products.map((p) => (
+                <FlavourCard key={p.id} p={p} addingId={addingId} onAdd={handleAdd} />
+              ))}
+            </div>
+            <button type="button" className="v2-flavour-arrow next" onClick={() => scroll(1)} aria-label="Next products">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6" /></svg>
+            </button>
+          </div>
+        ) : (
+          <div className="v2-flavour-grid">
+            {products.slice(0, 4).map((p) => (
+              <FlavourCard key={p.id} p={p} addingId={addingId} onAdd={handleAdd} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
+  );
+}
+
+function FlavourCard({ p, addingId, onAdd }) {
+  return (
+    <article className="v2-flavour-card">
+      <Link to={`/products/${p.slug}`} className="v2-flavour-image" aria-label={`View ${p.name}`}>
+        {p.image_url ? (
+          <img src={p.image_url} alt={p.name} />
+        ) : (
+          <span className="v2-flavour-badge">{p.flavor || p.name}</span>
+        )}
+      </Link>
+      <Link to={`/products/${p.slug}`} className="v2-flavour-name-link">
+        <h3 className="v2-flavour-name">{p.name}</h3>
+      </Link>
+      <div className="v2-flavour-price">₹{p.price}</div>
+      <button
+        type="button"
+        className="v2-add-btn"
+        onClick={() => onAdd(p.id)}
+        disabled={addingId === p.id || p.stock === 0}
+      >
+        {p.stock === 0 ? 'Out of stock' : addingId === p.id ? 'Adding…' : 'Add to cart'}
+      </button>
+    </article>
   );
 }
 
@@ -442,7 +473,7 @@ function Gallery({ section }) {
           {items.map((it, i) => (
             <a key={i} href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="v2-gallery-tile">
               {it.media_type === 'video' ? (
-                <video src={it.src} muted playsInline preload="metadata" />
+                <video src={it.src} controls playsInline preload="metadata" />
               ) : (
                 <img src={it.src} alt="" loading="lazy" />
               )}
@@ -520,7 +551,7 @@ function CustomGallery({ section }) {
     return (
       <section className={`v2-custom-hero${section.full_viewport ? ' is-fullscreen' : ''}${img.media_type === 'video' ? ' is-video' : ''}`} id={`gallery-${section.id}`}>
         {img.media_type === 'video' ? (
-          <video src={img.image_url} autoPlay muted loop playsInline preload="metadata" />
+          <video src={img.image_url} autoPlay muted loop playsInline controls preload="metadata" />
         ) : (
           <img src={img.image_url} alt={img.title || section.title || ''} loading="lazy" />
         )}

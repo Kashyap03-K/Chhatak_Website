@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from './pages/LandingPage.jsx';
+import ProductsPage from './pages/ProductsPage.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
 import WholesalePage from './pages/WholesalePage.jsx';
 import WishlistPage from './pages/WishlistPage.jsx';
@@ -40,7 +41,7 @@ export default function App() {
       <CartDrawer />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/products" element={<Navigate to="/#products" replace />} />
+        <Route path="/products" element={<ProductsPage />} />
         <Route path="/products/:slug" element={<ProductDetailPage />} />
         <Route path="/wholesale" element={<WholesalePage />} />
         <Route path="/wishlist" element={<WishlistPage />} />

@@ -1,21 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import api from '../api/client.js';
 
-const FALLBACK_REELS = [
-  { shortcode: 'DZkcT1HsRaC', caption: 'Straight from the feed.' },
-  { shortcode: 'DZmcmILCUx3', caption: 'The coastal crunch, tried and tasted.' },
-  { shortcode: 'DZfC1SgIiyb', caption: 'Real reels, real reactions.' },
-  { shortcode: 'DaQKQp_NKkn', caption: 'Fresh from the sea, made for you.' },
-];
-
 export default function ReelsWall() {
   const trackRef = useRef(null);
-  const [reels, setReels] = useState(FALLBACK_REELS);
+  const [reels, setReels] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     api.get('/reels/')
-      .then(({ data }) => { if (Array.isArray(data) && data.length) setReels(data); })
-      .catch(() => {});
+      .then(({ data }) => { if (Array.isArray(data)) setReels(data.filter((r) => r.video_url)); })
+      .catch(() => {})
+      .finally(() => setLoaded(true));
   }, []);
 
   const scroll = (dir) => {
@@ -26,11 +21,13 @@ export default function ReelsWall() {
     el.scrollBy({ left: dir * step, behavior: 'smooth' });
   };
 
+  if (loaded && reels.length === 0) return null;
+
   return (
     <section id="reels" className="section reels-wall reels-wall--centered">
       <div className="container">
         <div className="reels-head reels-head--centered">
-          <h2 className="reels-title">Stay Chhatak on Instagram</h2>
+          <h2 className="reels-title">Stay Chhatak</h2>
         </div>
 
         <div className="reels-scroller">
@@ -40,13 +37,9 @@ export default function ReelsWall() {
 
           <div className="reels-track" ref={trackRef}>
             {reels.map((r) => (
-              <article className="reel-card" key={r.shortcode}>
-                <a
+              <article className="reel-card" key={r.id}>
+                <div
                   className="reel-frame"
-                  href={`https://www.instagram.com/reel/${r.shortcode}/`}
-                  target="_blank"
-                  rel="noopener"
-                  aria-label={`Open reel: ${r.caption}`}
                   style={{
                     position: 'relative',
                     display: 'block',
@@ -54,35 +47,28 @@ export default function ReelsWall() {
                     height: 0,
                     paddingBottom: '125%',
                     overflow: 'hidden',
-                    clipPath: 'inset(0)',
-                    contain: 'paint',
-                    isolation: 'isolate',
-                    background: '#000',
                     borderRadius: 4,
-                    cursor: 'pointer',
-                    textDecoration: 'none',
+                    background: '#000',
                   }}
                 >
-                  <iframe
+                  <video
                     className="reel-video"
-                    src={`https://www.instagram.com/reel/${r.shortcode}/embed/?cr=1&hidecaption=true`}
-                    title={r.caption}
-                    loading="lazy"
-                    allow="encrypted-media; picture-in-picture"
-                    scrolling="no"
-                    tabIndex={-1}
+                    src={r.video_url}
+                    poster={r.poster_url || undefined}
+                    controls
+                    playsInline
+                    preload="metadata"
                     style={{
                       position: 'absolute',
-                      top: -110,
-                      left: 0,
+                      inset: 0,
                       width: '100%',
-                      height: 900,
-                      border: 0,
-                      pointerEvents: 'none',
+                      height: '100%',
+                      objectFit: 'cover',
                       background: '#000',
                     }}
                   />
-                </a>
+                </div>
+                {r.caption && <p className="reel-caption" style={{ marginTop: 10, textAlign: 'center' }}>{r.caption}</p>}
               </article>
             ))}
           </div>

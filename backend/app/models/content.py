@@ -9,7 +9,9 @@ class Reel(Base):
     __tablename__ = "reels"
 
     id = Column(Integer, primary_key=True, index=True)
-    shortcode = Column(String(64), unique=True, nullable=False)
+    shortcode = Column(String(64), unique=True, nullable=True)
+    video_url = Column(String(500), nullable=True)
+    poster_url = Column(String(500), nullable=True)
     caption = Column(String(280), nullable=True)
     is_active = Column(Boolean, default=True)
     sort_order = Column(Integer, default=0)

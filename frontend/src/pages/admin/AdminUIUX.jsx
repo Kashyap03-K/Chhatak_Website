@@ -484,7 +484,7 @@ function SectionImagesCard({ section, isHero, hint, builtinLabel, onAdd, onUpdat
         />
         {!isHero && (
           <span style={{ color: 'var(--muted)', fontSize: 12, marginLeft: 10 }}>
-            Images or videos (mp4/webm/mov · max 60 MB)
+            Images or videos (mp4/webm/mov · max 500 MB)
           </span>
         )}
         {busy && <span style={{ color: 'var(--muted)', marginLeft: 8 }}>Uploading…</span>}

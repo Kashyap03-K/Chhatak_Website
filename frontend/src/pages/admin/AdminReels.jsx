@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api/client.js';
 
-const EMPTY = { shortcode: '', caption: '', is_active: true, sort_order: 0 };
-
-function extractShortcode(input) {
-  if (!input) return input;
-  const m = input.match(/instagram\.com\/reel\/([^/?#]+)/i);
-  return m ? m[1] : input.trim();
-}
+const EMPTY = { video_url: '', poster_url: '', caption: '', is_active: true, sort_order: 0 };
 
 export default function AdminReels() {
   const [reels, setReels] = useState([]);
@@ -17,6 +11,10 @@ export default function AdminReels() {
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadingPoster, setUploadingPoster] = useState(false);
+  const videoRef = useRef(null);
+  const posterRef = useRef(null);
 
   const load = () => {
     setLoading(true);
@@ -28,16 +26,68 @@ export default function AdminReels() {
 
   useEffect(() => { load(); }, []);
 
-  const reset = () => { setForm(EMPTY); setEditingId(null); setError(''); };
+  const reset = () => {
+    setForm(EMPTY);
+    setEditingId(null);
+    setError('');
+    if (videoRef.current) videoRef.current.value = '';
+    if (posterRef.current) posterRef.current.value = '';
+  };
+
+  const uploadFile = async (file) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    const { data } = await api.post('/uploads/image', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data;
+  };
+
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError('');
+    setUploading(true);
+    try {
+      const data = await uploadFile(file);
+      if (data.media_type !== 'video') {
+        setError('Please upload a video file (mp4, webm, mov).');
+        return;
+      }
+      setForm((f) => ({ ...f, video_url: data.url }));
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Video upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handlePosterUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError('');
+    setUploadingPoster(true);
+    try {
+      const data = await uploadFile(file);
+      setForm((f) => ({ ...f, poster_url: data.url }));
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Poster upload failed');
+    } finally {
+      setUploadingPoster(false);
+    }
+  };
 
   const submit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!form.video_url) {
+      setError('Upload a video before saving.');
+      return;
+    }
     setBusy(true);
-    const payload = { ...form, shortcode: extractShortcode(form.shortcode) };
     try {
-      if (editingId) await api.put(`/reels/${editingId}`, payload);
-      else await api.post('/reels/', payload);
+      if (editingId) await api.put(`/reels/${editingId}`, form);
+      else await api.post('/reels/', form);
       reset();
       load();
     } catch (err) {
@@ -49,7 +99,13 @@ export default function AdminReels() {
 
   const startEdit = (r) => {
     setEditingId(r.id);
-    setForm({ shortcode: r.shortcode, caption: r.caption || '', is_active: r.is_active, sort_order: r.sort_order });
+    setForm({
+      video_url: r.video_url || '',
+      poster_url: r.poster_url || '',
+      caption: r.caption || '',
+      is_active: r.is_active,
+      sort_order: r.sort_order,
+    });
   };
 
   const toggleActive = async (r) => {
@@ -58,7 +114,7 @@ export default function AdminReels() {
   };
 
   const remove = async (r) => {
-    if (!confirm(`Delete reel ${r.shortcode}?`)) return;
+    if (!confirm('Delete this reel?')) return;
     await api.delete(`/reels/${r.id}`);
     load();
   };
@@ -67,21 +123,56 @@ export default function AdminReels() {
     <div className="section admin-page">
       <div className="container">
         <p className="kicker"><Link to="/admin" className="btn-link">← Admin</Link> · Reels</p>
-        <h2 className="display sm">Instagram <em>reels</em>.</h2>
+        <h2 className="display sm">Reel <em>videos</em>.</h2>
 
         {error && <div className="auth-error" style={{ marginTop: '24px' }}>{error}</div>}
 
         <form onSubmit={submit} className="admin-form">
+          <div className="form-group">
+            <label>Video file (mp4/webm/mov · max 500 MB)</label>
+            <input
+              ref={videoRef}
+              type="file"
+              accept="video/*"
+              onChange={handleVideoUpload}
+              disabled={uploading || busy}
+            />
+            {uploading && <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>Uploading…</p>}
+            {form.video_url && (
+              <div style={{ marginTop: 10, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <video src={form.video_url} controls playsInline preload="metadata" style={{ width: 220, borderRadius: 8, background: '#000' }} />
+                <button type="button" className="btn-link" onClick={() => setForm((f) => ({ ...f, video_url: '' }))}>Remove video</button>
+              </div>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Poster image (optional — shown before playback)</label>
+            <input
+              ref={posterRef}
+              type="file"
+              accept="image/*"
+              onChange={handlePosterUpload}
+              disabled={uploadingPoster || busy}
+            />
+            {uploadingPoster && <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>Uploading…</p>}
+            {form.poster_url && (
+              <div style={{ marginTop: 10, display: 'flex', gap: 12, alignItems: 'center' }}>
+                <img src={form.poster_url} alt="poster" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(11,35,64,0.15)' }} />
+                <button type="button" className="btn-link" onClick={() => setForm((f) => ({ ...f, poster_url: '' }))}>Remove poster</button>
+              </div>
+            )}
+          </div>
+
           <div className="form-row">
             <div className="form-group" style={{ flex: 2 }}>
-              <label htmlFor="shortcode">Reel URL or shortcode</label>
+              <label htmlFor="caption">Caption</label>
               <input
-                id="shortcode"
+                id="caption"
                 type="text"
-                value={form.shortcode}
-                onChange={(e) => setForm({ ...form, shortcode: e.target.value })}
-                placeholder="https://www.instagram.com/reel/ABC123/ or ABC123"
-                required
+                value={form.caption}
+                onChange={(e) => setForm({ ...form, caption: e.target.value })}
+                placeholder="Short caption shown below the reel"
               />
             </div>
             <div className="form-group" style={{ flex: 1 }}>
@@ -94,16 +185,7 @@ export default function AdminReels() {
               />
             </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="caption">Caption</label>
-            <input
-              id="caption"
-              type="text"
-              value={form.caption}
-              onChange={(e) => setForm({ ...form, caption: e.target.value })}
-              placeholder="Short caption shown below the reel"
-            />
-          </div>
+
           <label className="admin-checkbox">
             <input
               type="checkbox"
@@ -112,8 +194,9 @@ export default function AdminReels() {
             />
             <span>Active — show on landing page</span>
           </label>
+
           <div className="admin-form-actions">
-            <button type="submit" className="btn-solid accent" disabled={busy}>
+            <button type="submit" className="btn-solid accent" disabled={busy || uploading}>
               {busy ? 'Saving…' : editingId ? 'Save changes' : 'Add reel'}
             </button>
             {editingId && (
@@ -132,7 +215,7 @@ export default function AdminReels() {
               <thead>
                 <tr>
                   <th>Order</th>
-                  <th>Shortcode</th>
+                  <th>Preview</th>
                   <th>Caption</th>
                   <th>Status</th>
                   <th></th>
@@ -143,9 +226,15 @@ export default function AdminReels() {
                   <tr key={r.id}>
                     <td>{r.sort_order}</td>
                     <td>
-                      <a href={`https://www.instagram.com/reel/${r.shortcode}/`} target="_blank" rel="noopener" className="btn-link">
-                        {r.shortcode}
-                      </a>
+                      {r.video_url ? (
+                        <video src={r.video_url} poster={r.poster_url || undefined} muted playsInline preload="metadata" style={{ width: 90, height: 120, objectFit: 'cover', borderRadius: 6, background: '#000' }} />
+                      ) : r.shortcode ? (
+                        <a href={`https://www.instagram.com/reel/${r.shortcode}/`} target="_blank" rel="noopener" className="btn-link">
+                          {r.shortcode}
+                        </a>
+                      ) : (
+                        <span style={{ color: 'var(--muted)' }}>—</span>
+                      )}
                     </td>
                     <td>{r.caption}</td>
                     <td>

@@ -2,7 +2,9 @@ from pydantic import BaseModel, Field
 
 
 class ReelBase(BaseModel):
-    shortcode: str = Field(..., min_length=1, max_length=64)
+    video_url: str | None = Field(None, max_length=500)
+    poster_url: str | None = Field(None, max_length=500)
+    shortcode: str | None = Field(None, min_length=1, max_length=64)
     caption: str | None = Field(None, max_length=280)
     is_active: bool = True
     sort_order: int = 0
@@ -13,6 +15,8 @@ class ReelCreate(ReelBase):
 
 
 class ReelUpdate(BaseModel):
+    video_url: str | None = Field(None, max_length=500)
+    poster_url: str | None = Field(None, max_length=500)
     shortcode: str | None = Field(None, min_length=1, max_length=64)
     caption: str | None = Field(None, max_length=280)
     is_active: bool | None = None

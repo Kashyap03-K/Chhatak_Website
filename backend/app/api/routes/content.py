@@ -32,6 +32,8 @@ def list_reels_admin(db: Session = Depends(get_db), _=Depends(get_current_admin)
 
 @reels_router.post("/", response_model=ReelOut, status_code=status.HTTP_201_CREATED)
 def create_reel(body: ReelCreate, db: Session = Depends(get_db), _=Depends(get_current_admin)):
+    if not body.video_url and not body.shortcode:
+        raise HTTPException(status_code=400, detail="Either video_url or shortcode is required")
     reel = Reel(**body.model_dump())
     db.add(reel)
     db.commit()

@@ -81,7 +81,7 @@ export default function Navbar() {
         {!isAdmin && (
           <ul className="nav-links nav-links--center">
             <li><a href="/#story" onClick={goHash('story')}>About</a></li>
-            <li><a href="/#products" onClick={goHash('products')}>Products</a></li>
+            <li><Link to="/products">Products</Link></li>
             <li><a href="/#reels" onClick={goHash('reels')}>Reels</a></li>
             <li><a href="/#reviews" onClick={goHash('reviews')}>Reviews</a></li>
             <li><Link to="/wholesale">Wholesale</Link></li>
@@ -98,7 +98,7 @@ export default function Navbar() {
             <IconHeart />
           </Link>
 
-          {isLanding && <a href="/#products" className="nav-shop-now" onClick={goHash('products')}>Shop Now</a>}
+          {isLanding && <Link to="/products" className="nav-shop-now">Shop Now</Link>}
           <div className="nav-menu-wrap" ref={menuWrapRef}>
             <button
               type="button"

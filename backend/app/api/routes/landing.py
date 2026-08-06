@@ -24,8 +24,8 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
 VIDEO_EXTS = {".mp4", ".webm", ".mov", ".m4v", ".ogv"}
 ALLOWED_EXTS = IMAGE_EXTS | VIDEO_EXTS
-MAX_IMAGE_BYTES = 45 * 1024 * 1024  # 45 MB
-MAX_VIDEO_BYTES = 60 * 1024 * 1024  # 60 MB
+MAX_IMAGE_BYTES = 45 * 1024 * 1024   # 45 MB
+MAX_VIDEO_BYTES = 500 * 1024 * 1024  # 500 MB
 SAFE_NAME_RE = re.compile(r"[^a-zA-Z0-9._-]+")
 
 
@@ -169,12 +169,26 @@ async def upload_image(file: UploadFile = File(...), _=Depends(get_current_admin
         raise HTTPException(status_code=400, detail=f"Unsupported file type: {ext}")
     media_type = "video" if ext in VIDEO_EXTS else "image"
     limit = MAX_VIDEO_BYTES if media_type == "video" else MAX_IMAGE_BYTES
-    contents = await file.read()
-    if len(contents) > limit:
-        mb = limit // (1024 * 1024)
-        raise HTTPException(status_code=400, detail=f"File too large (max {mb} MB)")
     safe_stem = SAFE_NAME_RE.sub("-", Path(file.filename or "media").stem)[:60] or "media"
     name = f"{safe_stem}-{secrets.token_hex(6)}{ext}"
     dest = UPLOAD_DIR / name
-    dest.write_bytes(contents)
+    written = 0
+    try:
+        with dest.open("wb") as out:
+            while True:
+                chunk = await file.read(1024 * 1024)
+                if not chunk:
+                    break
+                written += len(chunk)
+                if written > limit:
+                    out.close()
+                    dest.unlink(missing_ok=True)
+                    mb = limit // (1024 * 1024)
+                    raise HTTPException(status_code=400, detail=f"File too large (max {mb} MB)")
+                out.write(chunk)
+    except HTTPException:
+        raise
+    except Exception:
+        dest.unlink(missing_ok=True)
+        raise
     return {"url": f"/uploads/{name}", "media_type": media_type}

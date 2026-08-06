@@ -87,6 +87,13 @@ def on_startup():
         with engine.begin() as conn:
             if "media_type" not in cols:
                 conn.execute(text("ALTER TABLE section_images ADD COLUMN media_type VARCHAR(16) DEFAULT 'image' NOT NULL"))
+    if "reels" in inspector.get_table_names():
+        cols = {c["name"] for c in inspector.get_columns("reels")}
+        with engine.begin() as conn:
+            if "video_url" not in cols:
+                conn.execute(text("ALTER TABLE reels ADD COLUMN video_url VARCHAR(500)"))
+            if "poster_url" not in cols:
+                conn.execute(text("ALTER TABLE reels ADD COLUMN poster_url VARCHAR(500)"))
 
     # Seed default landing sections + starter images
     from app.core.database import SessionLocal
