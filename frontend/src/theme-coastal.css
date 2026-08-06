@@ -1,14 +1,14 @@
 /* ============================================================
    V2 · Coastal Cream landing theme  (scoped under .v2)
    ============================================================ */
-body.theme-coastal { background: #FBEFD8; color: #0B2340; }
+body.theme-coastal { background: #FFFFFF; color: #0B2340; }
 body.theme-coastal .nav {
-  background: rgba(251, 239, 216, 0.92);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(11, 35, 64, 0.08);
 }
 body.theme-coastal .nav--landing {
-  background: rgba(251, 239, 216, 0.92);
+  background: rgba(255, 255, 255, 0.92);
   border-bottom: 1px solid rgba(11, 35, 64, 0.08);
 }
 body.theme-coastal .nav-links a { color: #0B2340; }
@@ -16,8 +16,11 @@ body.theme-coastal .nav-links a:hover { color: #F0994A; }
 body.theme-coastal .nav-icon { color: #0B2340; }
 
 .v2 {
-  --cream: #FBEFD8;
-  --cream-2: #F5E4C0;
+  /* Note: --cream is now the page bg (white) so landing v2 sections
+     don't fight the site background. --cream-2 stays a soft warm tint
+     for banded sections (About story, Perfect With, etc.) */
+  --cream: #FFFFFF;
+  --cream-2: #F7F1E6;
   --ink: #0B2340;
   --ink-2: #1B3559;
   --orange: #F5822C;
@@ -278,7 +281,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   display: block;
   position: relative; border-radius: 16px;
   aspect-ratio: 1 / 1; margin-bottom: 16px;
-  overflow: hidden; background: #FBEFD8;
+  overflow: hidden; background: #F7F1E6;
   text-decoration: none;
 }
 .v2-flavour-image img {
@@ -679,7 +682,7 @@ body.theme-coastal .orders-page,
 body.theme-coastal .product-detail-page,
 body.theme-coastal .wishlist-page,
 body.theme-coastal .auth-page {
-  background: #FBEFD8;
+  background: #FFFFFF;
   color: #0B2340;
 }
 
@@ -765,7 +768,7 @@ body.theme-coastal .auth-switch { color: rgba(11, 35, 64, 0.75); }
 body.theme-coastal .out-of-stock-label { color: rgba(11, 35, 64, 0.55); }
 
 /* --- WHOLESALE PAGE (coastal) --- */
-body.theme-coastal .wholesale-page { background: #FBEFD8; color: #0B2340; }
+body.theme-coastal .wholesale-page { background: #FFFFFF; color: #0B2340; }
 body.theme-coastal .wholesale-page .lead-dark { color: rgba(11, 35, 64, 0.78); }
 
 body.theme-coastal .buy-card {
@@ -788,7 +791,7 @@ body.theme-coastal .combo-list li {
 }
 body.theme-coastal .combo-list li::before { color: #F5822C; }
 
-body.theme-coastal .wholesale-enquire { background: #F5E4C0; }
+body.theme-coastal .wholesale-enquire { background: #F7F1E6; }
 body.theme-coastal .wholesale-enquire .muted-text { color: rgba(11, 35, 64, 0.7); }
 
 /* Keep the dark navy WHY-CHHATAK bar readable (the general text-color
@@ -885,7 +888,7 @@ body.theme-coastal .v2-hero-sticker--bowl img { border-radius: 50%; }
 .cart-drawer__item-thumb {
   flex: 0 0 auto; width: 84px; height: 84px;
   border-radius: 12px; overflow: hidden;
-  background: #FBEFD8; border: 1px solid rgba(11, 35, 64, 0.08);
+  background: #F7F1E6; border: 1px solid rgba(11, 35, 64, 0.08);
   display: block;
 }
 .cart-drawer__item-thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -903,7 +906,7 @@ body.theme-coastal .v2-hero-sticker--bowl img { border-radius: 50%; }
 }
 .cart-drawer__qty {
   display: inline-flex; align-items: center; gap: 8px;
-  background: #FBEFD8; border: 1px solid rgba(11, 35, 64, 0.12);
+  background: #F7F1E6; border: 1px solid rgba(11, 35, 64, 0.12);
   border-radius: 999px; padding: 4px 10px;
 }
 .cart-drawer__qty button {
@@ -919,7 +922,7 @@ body.theme-coastal .v2-hero-sticker--bowl img { border-radius: 50%; }
 .cart-drawer__remove:hover { color: #C95437; }
 .cart-drawer__foot {
   padding: 18px 22px; border-top: 1px solid rgba(11, 35, 64, 0.08);
-  background: #FBEFD8;
+  background: #F7F1E6;
 }
 .cart-drawer__subtotal {
   display: flex; justify-content: space-between; align-items: baseline;
@@ -959,7 +962,7 @@ body.theme-coastal .product-image {
 
 /* About this product */
 body.theme-coastal .pd-about {
-  background: #F5E4C0;
+  background: #F7F1E6;
   padding: 80px 0;
   position: relative;
   overflow: hidden;
@@ -978,7 +981,7 @@ body.theme-coastal .pd-about-body p {
 
 /* Other products */
 body.theme-coastal .pd-others {
-  background: #FBEFD8;
+  background: #FFFFFF;
   padding: 80px 0;
 }
 .pd-others-head {
