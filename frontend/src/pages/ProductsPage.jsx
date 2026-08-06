@@ -10,12 +10,6 @@ const TONE_MAP = {
   'Mint & Lime': 'tone-cool',
 };
 
-const PRODUCT_IMAGES = {
-  'indian-classic': '/images/bowl.JPG',
-  'peri-peri-blaze': '/images/packaging-real.JPG',
-  'combo-3x-classic': '/images/packaging-front-back.png',
-};
-
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,8 +59,8 @@ export default function ProductsPage() {
               <article className="flavor-card" key={product.id}>
                 <Link to={`/products/${product.slug}`}>
                   <div className={`flavor-thumb ${TONE_MAP[product.flavor] || 'tone-warm'}`}>
-                    {PRODUCT_IMAGES[product.slug] && (
-                      <img src={PRODUCT_IMAGES[product.slug]} alt={product.name} className="flavor-img" />
+                    {product.image_url && (
+                      <img src={product.image_url} alt={product.name} className="flavor-img" />
                     )}
                     <span className="flavor-label">{String(i + 1).padStart(2, '0')} / {product.flavor || product.name}</span>
                   </div>

@@ -540,6 +540,53 @@ function Footer() {
   );
 }
 
+function HeroVideo({ src }) {
+  const ref = useRef(null);
+  const [muted, setMuted] = useState(true);
+  const toggle = () => {
+    const v = ref.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    setMuted(v.muted);
+    if (!v.muted) v.play().catch(() => {});
+  };
+  return (
+    <>
+      <video
+        ref={ref}
+        src={src}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        disablePictureInPicture
+        controlsList="nodownload noplaybackrate nofullscreen"
+      />
+      <button
+        type="button"
+        className="v2-hero-mute"
+        onClick={toggle}
+        aria-label={muted ? 'Unmute video' : 'Mute video'}
+      >
+        {muted ? (
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+            <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+            <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+          </svg>
+        )}
+      </button>
+    </>
+  );
+}
+
 // Custom gallery block for admin-created gallery sections.
 // One image → full-bleed hero banner. Many images → responsive grid.
 function CustomGallery({ section }) {
@@ -551,7 +598,7 @@ function CustomGallery({ section }) {
     return (
       <section className={`v2-custom-hero${section.full_viewport ? ' is-fullscreen' : ''}${img.media_type === 'video' ? ' is-video' : ''}`} id={`gallery-${section.id}`}>
         {img.media_type === 'video' ? (
-          <video src={img.image_url} autoPlay muted loop playsInline controls preload="metadata" />
+          <HeroVideo src={img.image_url} />
         ) : (
           <img src={img.image_url} alt={img.title || section.title || ''} loading="lazy" />
         )}

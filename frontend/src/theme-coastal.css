@@ -464,6 +464,25 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   object-fit: cover;
   display: block;
 }
+.v2-hero-mute {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(11, 35, 64, 0.55);
+  color: #FBEFD8;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s;
+}
+.v2-hero-mute:hover { background: rgba(11, 35, 64, 0.8); }
 .v2-custom-hero-overlay {
   position: absolute;
   inset: 0;
