@@ -48,6 +48,24 @@ textarea {
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 
+/* Global rounded corners on photos and videos */
+img, video { border-radius: 14px; }
+/* Exceptions — logos, doodles, and elements where the shape is intentional */
+.brand img,
+.brand-logo,
+.v2-footer-logo,
+.v2-hero-fleet,
+.v2-hero-palm,
+.v2-hero-compass,
+.v2-hero-corner-boat,
+.nav-icon svg,
+img[src*="logo"],
+img[src*="tall-ship"],
+img[src*="beige-paper"] { border-radius: 0 !important; }
+/* Circle stays circular */
+.v2-hero-bowl,
+.v2-hero-bowl img { border-radius: 50% !important; }
+
 .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
 .section { padding: 140px 0; position: relative; }
 
