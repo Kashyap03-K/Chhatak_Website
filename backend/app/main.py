@@ -90,6 +90,11 @@ def on_startup():
                 conn.execute(text("ALTER TABLE section_images ADD COLUMN media_type VARCHAR(16) DEFAULT 'image' NOT NULL"))
             if "sound_on" not in cols:
                 conn.execute(text(f"ALTER TABLE section_images ADD COLUMN sound_on BOOLEAN DEFAULT {false_default} NOT NULL"))
+    if "landing_sections" in inspector.get_table_names():
+        cols = {c["name"] for c in inspector.get_columns("landing_sections")}
+        with engine.begin() as conn:
+            if "full_viewport" not in cols:
+                conn.execute(text(f"ALTER TABLE landing_sections ADD COLUMN full_viewport BOOLEAN DEFAULT {false_default} NOT NULL"))
     if "reels" in inspector.get_table_names():
         cols = {c["name"] for c in inspector.get_columns("reels")}
         with engine.begin() as conn:

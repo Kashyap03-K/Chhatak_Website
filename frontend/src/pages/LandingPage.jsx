@@ -3,6 +3,21 @@ import { Link, useLocation } from 'react-router-dom';
 import api from '../api/client.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
+import {
+  LighthouseIllustration,
+  CompassRose,
+  SeagullFlock,
+  WaveDivider,
+  WaveDividerLine,
+} from '../components/CoastalIllustrations.jsx';
+
+// Reusable wave divider that lives at the bottom of a section and
+// visually flows into the next section's background.
+function SectionWave({ color = '#E4CFA6' }) {
+  return (
+    <WaveDivider className="v2-section-wave" style={{ color }} />
+  );
+}
 
 const ReelsWall = lazy(() => import('../components/ReelsWall.jsx'));
 const ReviewsWall = lazy(() => import('../components/ReviewsWall.jsx'));
@@ -171,28 +186,33 @@ function Hero({ section }) {
   const bowlImg = imgs[1];
   return (
     <section className="v2-hero v2-hero--coast">
+      {/* Background editorial layers */}
+      <LighthouseIllustration className="v2-hero-lighthouse" />
+      <SeagullFlock className="v2-hero-birds" />
+
       <div className="v2-container">
         <div className="v2-hero-grid">
           <div className="v2-hero-copy">
+            <p className="v2-hero-eyebrow">
+              <span>EST · 1961</span>
+              <span className="v2-hero-eyebrow-dot" />
+              <span>DIU · ARABIAN SEA</span>
+            </p>
             <h1 className="v2-hero-title">
               FROM COAST
               <br />
               TO <em>CRUNCH</em>
             </h1>
+            <WaveDividerLine className="v2-hero-wave-line" />
             <p className="v2-hero-lede">
-              Premium dried Bombil fish snack
+              Premium dried Bombil fish snack made with
               <br />
-              made with coastal tradition and
-              <br />
-              bold Indian flavours.
+              coastal tradition and bold Indian flavours.
             </p>
             <div className="v2-hero-ctas">
-              <Link to="/products" className="v2-btn v2-btn--primary">SHOP NOW</Link>
-              <Link to="/#products" className="v2-btn v2-btn--outline">EXPLORE FLAVOURS</Link>
+              <Link to="/products" className="v2-btn v2-btn--primary">SHOP THE RANGE</Link>
+              <Link to="/#story" className="v2-btn v2-btn--outline">OUR STORY</Link>
             </div>
-            <svg className="v2-hero-brush" viewBox="0 0 240 22" aria-hidden="true">
-              <path d="M6 12 C 60 2, 130 20, 190 8 S 232 12, 236 10" stroke="#B47A2E" strokeWidth="8" strokeLinecap="round" fill="none" opacity="0.85" />
-            </svg>
           </div>
 
           <div className="v2-hero-photo-wrap">
@@ -238,12 +258,7 @@ function Hero({ section }) {
               )}
             </div>
 
-            <svg className="v2-hero-compass" viewBox="0 0 70 70" aria-hidden="true">
-              <g stroke="#14213D" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.55">
-                <path d="M35 8 L 40 35 L 35 62 L 30 35 Z" />
-                <path d="M8 35 L 35 40 L 62 35 L 35 30 Z" />
-              </g>
-            </svg>
+            <CompassRose className="v2-hero-compass" />
 
           </div>
         </div>
@@ -262,6 +277,9 @@ function Hero({ section }) {
 
       {/* Tall-ship sketch in the hero's bottom-left corner */}
       <img className="v2-hero-fleet" src="/images/tall-ship.png" alt="" aria-hidden="true" />
+
+      {/* Editorial wave divider transitioning into the next section */}
+      <WaveDivider className="v2-hero-wave-bottom" />
     </section>
   );
 }
@@ -282,6 +300,7 @@ function FeatureStrip() {
           ))}
         </div>
       </div>
+      <SectionWave color="#FBF3E1" />
     </section>
   );
 }
@@ -354,6 +373,7 @@ function StoryBanner({ section }) {
           <BoatDoodle className="v2-story-boat" />
         </div>
       </div>
+      <SectionWave color="#FBF3E1" />
     </section>
   );
 }
@@ -417,6 +437,7 @@ function Flavours({ products }) {
           </div>
         )}
       </div>
+      <SectionWave color="#E4CFA6" />
     </section>
   );
 }
@@ -474,6 +495,7 @@ function PerfectWith({ section }) {
           ))}
         </div>
       </div>
+      <SectionWave color="#14213D" />
     </section>
   );
 }
@@ -499,6 +521,7 @@ function WhyChhatak() {
           </div>
         </div>
       </div>
+      <SectionWave color="#FBF3E1" />
     </section>
   );
 }
@@ -529,6 +552,7 @@ function Gallery({ section }) {
           ))}
         </div>
       </div>
+      <SectionWave color="#14213D" />
     </section>
   );
 }

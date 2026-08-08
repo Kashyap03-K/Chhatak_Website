@@ -111,8 +111,102 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 }
 .v2-hero-seaside-svg { display: block; width: 100%; height: auto; }
 
-/* Coast Crunch hero — flat grey background, layered photos */
-.v2-hero--coast { padding: 90px 0 140px; background: #EDEEF0; }
+/* Coast Crunch hero — editorial layered composition on parchment grey */
+.v2-hero--coast {
+  padding: 110px 0 160px;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(245, 232, 196, 0.55) 0%, rgba(245, 232, 196, 0) 55%),
+    radial-gradient(ellipse at 100% 60%, rgba(212, 178, 128, 0.18) 0%, rgba(212, 178, 128, 0) 60%),
+    #EDEEF0;
+  position: relative;
+  overflow: hidden;
+}
+/* Faded lighthouse silhouette in the top-right */
+.v2-hero-lighthouse {
+  position: absolute;
+  top: 40px; right: 6%;
+  width: 260px; height: auto;
+  color: #14213D;
+  opacity: 0.09;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Birds gliding across the sky */
+.v2-hero-birds {
+  position: absolute;
+  top: 90px; left: 8%;
+  width: 300px; height: 90px;
+  color: #14213D;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+  animation: heroBirds 26s ease-in-out infinite alternate;
+}
+@keyframes heroBirds {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(60px, -14px); }
+}
+/* Editorial eyebrow above the headline */
+.v2-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: rgba(20, 33, 61, 0.7); font-weight: 700;
+  margin: 0 0 18px;
+}
+.v2-hero-eyebrow-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #B47A2E;
+}
+/* Wave line under headline */
+.v2-hero-wave-line {
+  display: block; width: 160px; height: 22px;
+  color: #B47A2E;
+  margin: 22px 0 0;
+  opacity: 0.75;
+}
+/* Reusable section wave — sits at the bottom of a section, flows into the next */
+.v2-section-wave {
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  width: 100%; height: 110px;
+  z-index: 6;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 -3px 6px rgba(11, 35, 64, 0.05));
+}
+/* Ensure the sections that host a bottom wave clip cleanly and stack right */
+.v2-feature-strip,
+.v2-story,
+.v2-flavours,
+.v2-perfect,
+.v2-why,
+.v2-gallery {
+  position: relative;
+  overflow: hidden;
+}
+/* Background flow between sections so each wave lands on a matching colour */
+.v2-feature-strip { background: #E4CFA6; padding-bottom: 130px; }
+.v2-story         { background: #FBF3E1; padding-bottom: 130px; }
+.v2-flavours      { background: #FBF3E1; padding-bottom: 130px; }
+.v2-perfect       { background: #E4CFA6; padding-bottom: 130px; }
+.v2-why           { background: #14213D; padding-bottom: 130px; color: #FBF3E1; }
+.v2-gallery       { background: #FBF3E1; padding-bottom: 130px; }
+
+/* Bottom wave transitioning out of the hero */
+.v2-hero-wave-bottom {
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  width: 100%; height: 150px;
+  color: #E4CFA6;
+  z-index: 10;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 -3px 6px rgba(11, 35, 64, 0.06));
+}
+/* Match the section that follows so the wave visually flows in */
+.v2-hero + .v2-feature-strip,
+.v2-hero + section { background: #E4CFA6; }
 
 .v2-hero-photo-wrap {
   position: relative;
@@ -182,8 +276,10 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 .v2-hero-palm--tr { top: -8px; right: 4%; width: 62px; transform: rotate(6deg); }
 .v2-hero-compass {
   position: absolute; z-index: 5; pointer-events: none;
-  left: -6%; bottom: 8%;
-  width: 56px; height: auto;
+  left: -8%; bottom: 4%;
+  width: 130px; height: auto;
+  color: #14213D;
+  opacity: 0.55;
 }
 .v2-hero-corner-boat {
   position: absolute; z-index: 8; pointer-events: none;
