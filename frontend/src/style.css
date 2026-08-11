@@ -764,27 +764,37 @@ img[src*="beige-paper"] { border-radius: 0 !important; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
+  align-items: stretch;
 }
 .flavor-card {
   background: transparent;
   transition: transform 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
+.flavor-card > a { display: block; }
 .flavor-card:hover { transform: translateY(-6px); }
 .flavor-thumb {
   aspect-ratio: 3 / 4;
-  border-radius: 4px;
+  border-radius: 12px;
   position: relative;
   margin-bottom: 24px;
   overflow: hidden;
   border: 1px solid var(--line);
+  background: #FBF3E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
 }
 .flavor-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  position: relative;
   transition: transform 0.6s ease;
 }
 .flavor-card:hover .flavor-img { transform: scale(1.05); }
@@ -899,17 +909,25 @@ img[src*="beige-paper"] { border-radius: 0 !important; }
 }
 .wishlist-btn:hover { background: rgba(10, 20, 34, 0.8); transform: scale(1.08); }
 .wishlist-btn.is-active { color: #E89148; }
-.flavor-thumb.tone-warm { background: linear-gradient(160deg, #E89148 0%, #8C3A14 100%); }
-.flavor-thumb.tone-fire { background: linear-gradient(160deg, #C95437 0%, #4A0F08 100%); }
-.flavor-thumb.tone-cool { background: linear-gradient(160deg, #4A8FA8 0%, #0F2640 100%); }
+/* Neutral thumb background for all tones (kept classes for compat) */
+.flavor-thumb.tone-warm,
+.flavor-thumb.tone-fire,
+.flavor-thumb.tone-cool { background: #FBF3E1; }
 .flavor-label {
   position: absolute;
-  top: 24px; left: 24px;
+  top: 16px; left: 16px;
   font-size: 11px;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
+  color: rgba(11, 35, 64, 0.55);
+  font-weight: 600;
   text-transform: uppercase;
+}
+.flavor-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
 }
 .flavor-body h3 {
   font-family: 'Fraunces', serif;
@@ -922,19 +940,22 @@ img[src*="beige-paper"] { border-radius: 0 !important; }
 .flavor-body > p {
   color: var(--muted);
   font-size: 15px;
-  margin-bottom: 24px;
+  margin: 0 auto 24px;
   max-width: 320px;
 }
 .flavor-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-top: auto;
   padding-top: 18px;
   border-top: 1px solid var(--line);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 .flavor-meta > span {
   font-family: 'Fraunces', serif;
-  font-size: 20px;
+  font-size: 22px;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
