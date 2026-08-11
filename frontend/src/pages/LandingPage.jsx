@@ -527,11 +527,6 @@ function Gallery({ section }) {
     ? section.images.map((img) => ({ src: img.image_url, media_type: img.media_type || 'image' }))
     : fallback.map((src) => ({ src, media_type: 'image' }));
 
-  // Pick a single frame shape for the whole slideshow so slide transitions
-  // don't jump. If any item is video → reel (9:16), else post (1:1).
-  const anyVideo = items.some((it) => it.media_type === 'video');
-  const aspect = anyVideo ? 'reel' : 'post';
-
   return (
     <section className="v2-gallery v2-gallery--journey" id="journey">
       <div className="v2-container">
@@ -539,10 +534,42 @@ function Gallery({ section }) {
         <p className="v2-handle">
           <a href="https://instagram.com/chhatak.co" target="_blank" rel="noopener">@chhatak.crunch</a>
         </p>
-        <MediaSlideshow items={items} aspect={aspect} className="v2-journey-slideshow" />
       </div>
+      <JourneyStrip items={items} />
       <SectionWave color="#14213D" />
     </section>
+  );
+}
+
+function JourneyStrip({ items }) {
+  const trackRef = useRef(null);
+  const scroll = (dir) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector('.v2-journey-tile');
+    const step = card ? card.getBoundingClientRect().width + 16 : 300;
+    el.scrollBy({ left: dir * step * 2 });
+  };
+  return (
+    <div className="v2-journey-strip-wrap">
+      <button type="button" className="v2-journey-arrow v2-journey-arrow--prev" onClick={() => scroll(-1)} aria-label="Scroll previous">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+      </button>
+      <div className="v2-journey-strip" ref={trackRef}>
+        {items.map((it, i) => (
+          <a key={i} href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="v2-journey-tile">
+            {it.media_type === 'video' ? (
+              <video src={it.src} muted playsInline preload="metadata" />
+            ) : (
+              <img src={it.src} alt="" loading="lazy" />
+            )}
+          </a>
+        ))}
+      </div>
+      <button type="button" className="v2-journey-arrow v2-journey-arrow--next" onClick={() => scroll(1)} aria-label="Scroll next">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+      </button>
+    </div>
   );
 }
 

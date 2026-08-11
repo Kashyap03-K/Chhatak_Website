@@ -14,12 +14,19 @@ function Stars({ rating = 5 }) {
   return (
     <div className="review-stars" aria-label={`${rating} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} viewBox="0 0 24 24" width="14" height="14" fill={i < rating ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+        <svg key={i} viewBox="0 0 24 24" width="26" height="26" fill={i < rating ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" />
         </svg>
       ))}
     </div>
   );
+}
+
+function initials(name = '') {
+  const parts = name.trim().split(/\s+/);
+  const first = parts[0]?.[0] || '';
+  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] : '';
+  return (first + last).toUpperCase() || '·';
 }
 
 export default function ReviewsWall() {
@@ -48,8 +55,11 @@ export default function ReviewsWall() {
               <Stars rating={r.rating} />
               <blockquote className="review-quote">"{r.quote}"</blockquote>
               <footer className="review-author">
-                <p className="review-name">{r.author}</p>
-                {r.location && <p className="review-loc">{r.location}</p>}
+                <div className="review-avatar" aria-hidden="true">{initials(r.author)}</div>
+                <div>
+                  <p className="review-name">{r.author}</p>
+                  {r.location && <p className="review-loc">{r.location}</p>}
+                </div>
               </footer>
             </article>
           ))}
