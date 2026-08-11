@@ -28,8 +28,8 @@ export default function StoryPage() {
         ))}
       </div>
       <div className="story-page__cta">
-        <Link to="/products" className="v2-btn v2-btn--primary">SHOP THE RANGE</Link>
-        <Link to="/" className="v2-btn v2-btn--outline">BACK HOME</Link>
+        <Link to="/products" className="story-page__btn story-page__btn--primary">SHOP THE RANGE</Link>
+        <Link to="/" className="story-page__btn story-page__btn--outline">BACK HOME</Link>
       </div>
     </div>
   );

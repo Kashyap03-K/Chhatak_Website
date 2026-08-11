@@ -582,14 +582,19 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 
 /* --- PERFECT WITH --- */
 .v2-perfect { padding: 60px 0 80px; }
-.v2-perfect-kicker { margin-bottom: 12px; }
+.v2-perfect-kicker.v2-kicker.accent {
+  font-size: 18px;
+  letter-spacing: 0.16em;
+  margin-bottom: 18px;
+}
 .v2-perfect-title {
   font-family: 'Fredoka', 'Fraunces', sans-serif;
-  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  font-size: clamp(2.4rem, 4.4vw, 3.6rem);
   font-weight: 700;
   text-align: center;
   margin: 0 auto 48px;
   color: var(--ink);
+  line-height: 1.15;
 }
 .v2-perfect-grid {
   display: flex;
@@ -604,7 +609,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 }
 .v2-perfect-card {
   margin: 0;
-  aspect-ratio: 21 / 9;
+  aspect-ratio: 5 / 1;
   border-radius: 18px;
   overflow: hidden;
   background: #0B2340;
