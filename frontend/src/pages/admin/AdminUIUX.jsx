@@ -10,8 +10,7 @@ const BUILTIN_LABELS = {
   flavours:       'Flavours grid (from products)',
   'perfect-with': 'Perfect With — 4 use-case tiles',
   why:            'Why Chhatak — dark stats bar',
-  gallery:        'Journey gallery (Instagram strip)',
-  reels:          'Instagram reels wall',
+  gallery:        'Follow our journey (reel/post slideshow)',
   reviews:        'Customer reviews wall',
   footer:         'Footer',
   // Legacy keys (kept for backwards-compat with older seeds)
@@ -26,7 +25,7 @@ const IMAGE_HINTS = {
   hero:           'Image 1 = product pack (shown centered). Image 2 = bowl (bottom-right accent).',
   story:          'A single wide banner image for the yellow story card. First image is used.',
   'perfect-with': 'Exactly 4 images — one per tile: Drinks, Meals, Travel, Movie Nights (in order).',
-  gallery:        'The Instagram-style strip. 7 images shown by default; add more to extend the strip.',
+  gallery:        'Reel/post frames shown one at a time with next/prev arrows. Upload as many images or videos as you like; any videos → 9:16 reel frame, otherwise 1:1 post frame.',
 };
 
 async function uploadMedia(file) {

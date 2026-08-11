@@ -82,8 +82,8 @@ export default function Navbar() {
           <ul className="nav-links nav-links--center">
             <li><a href="/#story" onClick={goHash('story')}>About</a></li>
             <li><Link to="/products">Products</Link></li>
-            <li><a href="/#reels" onClick={goHash('reels')}>Reels</a></li>
             <li><a href="/#reviews" onClick={goHash('reviews')}>Reviews</a></li>
+            <li><a href="/#journey" onClick={goHash('journey')}>Journey</a></li>
             <li><Link to="/wholesale">Wholesale</Link></li>
             {user?.is_admin && <li><Link to="/admin" className="admin-link">Admin</Link></li>}
           </ul>

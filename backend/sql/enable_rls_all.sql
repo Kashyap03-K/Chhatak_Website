@@ -6,7 +6,7 @@
 -- case anyone hits the auto-generated REST API directly.
 --
 -- Policy summary:
---   Public read:  products, reviews, reels, landing_sections, section_images
+--   Public read:  products, reviews, landing_sections, section_images
 --   Backend-only: users, addresses, cart_items, orders, order_items, payments
 --                 (RLS enabled with NO policies -> anon/authenticated blocked)
 
@@ -21,11 +21,6 @@ ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Reviews are viewable by everyone" ON public.reviews;
 CREATE POLICY "Reviews are viewable by everyone"
   ON public.reviews FOR SELECT USING (true);
-
-ALTER TABLE public.reels ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Reels are viewable by everyone" ON public.reels;
-CREATE POLICY "Reels are viewable by everyone"
-  ON public.reels FOR SELECT USING (true);
 
 ALTER TABLE public.landing_sections ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Landing sections are viewable by everyone" ON public.landing_sections;

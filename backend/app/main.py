@@ -48,7 +48,6 @@ app.include_router(cart.router, prefix=settings.API_V1_PREFIX)
 app.include_router(orders.router, prefix=settings.API_V1_PREFIX)
 app.include_router(payments.router, prefix=settings.API_V1_PREFIX)
 app.include_router(addresses.router, prefix=settings.API_V1_PREFIX)
-app.include_router(content.reels_router, prefix=settings.API_V1_PREFIX)
 app.include_router(content.reviews_router, prefix=settings.API_V1_PREFIX)
 app.include_router(landing.router, prefix=settings.API_V1_PREFIX)
 app.include_router(landing.uploads_router, prefix=settings.API_V1_PREFIX)
@@ -95,13 +94,10 @@ def on_startup():
         with engine.begin() as conn:
             if "full_viewport" not in cols:
                 conn.execute(text(f"ALTER TABLE landing_sections ADD COLUMN full_viewport BOOLEAN DEFAULT {false_default} NOT NULL"))
+    # Drop the legacy reels table if it lingers from a previous deploy.
     if "reels" in inspector.get_table_names():
-        cols = {c["name"] for c in inspector.get_columns("reels")}
         with engine.begin() as conn:
-            if "video_url" not in cols:
-                conn.execute(text("ALTER TABLE reels ADD COLUMN video_url VARCHAR(500)"))
-            if "poster_url" not in cols:
-                conn.execute(text("ALTER TABLE reels ADD COLUMN poster_url VARCHAR(500)"))
+            conn.execute(text("DROP TABLE reels"))
 
     # Seed default landing sections + starter images
     from app.core.database import SessionLocal
@@ -116,7 +112,6 @@ def on_startup():
             ("flavours",     "Flavours",         "Bold flavours. Coastal soul."),
             ("perfect-with", "Perfect With",     "When to snack Chhatak."),
             ("why",          "Why Chhatak",      "Not just a snack."),
-            ("reels",        "Reels",            "Straight from the feed."),
             ("reviews",      "Reviews",          "What people say."),
             ("gallery",      "Journey Gallery",  "@chhatak.crunch"),
             ("footer",       "Footer",           None),

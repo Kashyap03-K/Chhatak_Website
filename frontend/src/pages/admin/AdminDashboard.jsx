@@ -154,13 +154,6 @@ export default function AdminDashboard() {
                     <p>View and update order statuses</p>
                   </div>
                 </Link>
-                <Link to="/admin/reels" className="admin-action-card">
-                  <div className="admin-action-card__icon">▶</div>
-                  <div>
-                    <strong>Reels</strong>
-                    <p>Choose which Instagram reels appear on the landing page</p>
-                  </div>
-                </Link>
                 <Link to="/admin/reviews" className="admin-action-card">
                   <div className="admin-action-card__icon">★</div>
                   <div>

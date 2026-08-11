@@ -15,6 +15,7 @@ export default function CheckoutPage() {
   const [newAddr, setNewAddr] = useState({ full_name: '', phone: '', address_line1: '', address_line2: '', city: '', state: '', pincode: '' });
   const [saveAddress, setSaveAddress] = useState(true);
 
+  const [paymentMethod, setPaymentMethod] = useState('online');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -43,6 +44,58 @@ export default function CheckoutPage() {
     return formatAddress(newAddr);
   };
 
+  const loadRazorpayScript = () => new Promise((resolve) => {
+    if (window.Razorpay) return resolve(true);
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+
+  const payWithRazorpay = async (shippingAddress) => {
+    const { data: order } = await api.post('/orders/', { shipping_address: shippingAddress, payment_method: 'razorpay' });
+    const { data: rz } = await api.post('/payments/create-order', { order_id: order.id });
+
+    const ok = await loadRazorpayScript();
+    if (!ok) throw new Error('Could not load payment gateway. Check your connection and try again.');
+
+    await new Promise((resolve, reject) => {
+      const rzp = new window.Razorpay({
+        key: rz.razorpay_key_id,
+        amount: rz.amount,
+        currency: rz.currency,
+        name: 'Chhatak',
+        description: `Order #${order.id}`,
+        order_id: rz.razorpay_order_id,
+        prefill: {
+          name: user?.full_name || '',
+          email: user?.email || '',
+        },
+        theme: { color: '#f0994a' },
+        handler: async (response) => {
+          try {
+            await api.post('/payments/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            resolve();
+          } catch (err) {
+            reject(new Error(err.response?.data?.detail || 'Payment verification failed'));
+          }
+        },
+        modal: {
+          ondismiss: () => reject(new Error('Payment cancelled')),
+        },
+      });
+      rzp.on('payment.failed', (resp) => {
+        reject(new Error(resp?.error?.description || 'Payment failed'));
+      });
+      rzp.open();
+    });
+  };
+
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     const shippingAddress = getShippingAddress();
@@ -56,11 +109,15 @@ export default function CheckoutPage() {
         setSavedAddresses(prev => [...prev, saved]);
       }
 
-      await api.post('/orders/place-cod', { shipping_address: shippingAddress, payment_method: 'cod' });
+      if (paymentMethod === 'online') {
+        await payWithRazorpay(shippingAddress);
+      } else {
+        await api.post('/orders/place-cod', { shipping_address: shippingAddress, payment_method: 'cod' });
+      }
       await fetchCart();
       navigate('/orders');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Something went wrong. Please try again.');
+      setError(err.response?.data?.detail || err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -156,13 +213,26 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            <div className="cod-notice" style={{ marginTop: 24, padding: '16px 18px', background: 'var(--accent-soft)', border: '1px solid rgba(240, 153, 74, 0.35)', borderRadius: 6 }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, color: 'var(--accent)', letterSpacing: '0.06em', textTransform: 'uppercase', margin: '0 0 4px' }}>Cash on delivery</p>
-              <p style={{ fontSize: 14, color: 'var(--ink-soft)', margin: 0 }}>Online payments are coming soon. Pay the courier when your order arrives.</p>
+            <h3 style={{ marginTop: 32 }}>Payment method</h3>
+            <div className="saved-addresses">
+              <label className={`address-option ${paymentMethod === 'online' ? 'selected' : ''}`}>
+                <input type="radio" name="payment" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} />
+                <div>
+                  <strong>Pay online</strong>
+                  <br /><span style={{ fontSize: 13, color: 'var(--ink-soft)' }}>UPI, cards, netbanking & wallets via Razorpay</span>
+                </div>
+              </label>
+              <label className={`address-option ${paymentMethod === 'cod' ? 'selected' : ''}`}>
+                <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} />
+                <div>
+                  <strong>Cash on delivery</strong>
+                  <br /><span style={{ fontSize: 13, color: 'var(--ink-soft)' }}>Pay the courier when your order arrives.</span>
+                </div>
+              </label>
             </div>
 
             <button type="submit" className="btn-solid accent full" disabled={loading} style={{ marginTop: '20px' }}>
-              {loading ? 'Placing order…' : `Place order — ₹${grandTotal}`}
+              {loading ? (paymentMethod === 'online' ? 'Opening payment…' : 'Placing order…') : (paymentMethod === 'online' ? `Pay ₹${grandTotal}` : `Place order — ₹${grandTotal}`)}
             </button>
           </form>
 

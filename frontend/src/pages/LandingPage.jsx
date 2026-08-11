@@ -19,7 +19,6 @@ function SectionWave({ color = '#E4CFA6' }) {
   );
 }
 
-const ReelsWall = lazy(() => import('../components/ReelsWall.jsx'));
 const ReviewsWall = lazy(() => import('../components/ReviewsWall.jsx'));
 
 // ==== Inline SVG doodles (hand-drawn feel, original) ====
@@ -211,7 +210,7 @@ function Hero({ section }) {
             </p>
             <div className="v2-hero-ctas">
               <Link to="/products" className="v2-btn v2-btn--primary">SHOP THE RANGE</Link>
-              <Link to="/#story" className="v2-btn v2-btn--outline">OUR STORY</Link>
+              <Link to="/story" className="v2-btn v2-btn--outline">OUR STORY</Link>
             </div>
           </div>
 
@@ -368,7 +367,7 @@ function StoryBanner({ section }) {
               taste of Bombil with a crunchy twist. A snack that fits every mood, every meal
               and every moment.
             </p>
-            <Link to="/#story" className="v2-btn v2-btn--dark">READ OUR STORY</Link>
+            <Link to="/story" className="v2-btn v2-btn--dark">READ OUR STORY</Link>
           </div>
           <BoatDoodle className="v2-story-boat" />
         </div>
@@ -472,26 +471,18 @@ function PerfectWith({ section }) {
   const imgs = section?.images || [];
   const tiles = USE_CASE_DEFAULTS.map((defaults, i) => ({
     ...defaults,
-    title: imgs[i]?.title || defaults.title,
-    body:  imgs[i]?.body  || defaults.body,
-    img:   imgs[i]?.image_url || '/images/bowl.JPG',
+    img: imgs[i]?.image_url || '/images/bowl.JPG',
   }));
   return (
     <section className="v2-perfect">
       <div className="v2-container">
         <p className="v2-kicker accent v2-perfect-kicker">PERFECT WITH</p>
         <h2 className="v2-perfect-title">Built For Every Kind Of Craving</h2>
-        <div className="v2-perfect-list">
-          {tiles.map((u) => (
-            <div key={u.title} className="v2-perfect-row">
-              <div className="v2-perfect-media">
-                <img src={u.img} alt="" />
-              </div>
-              <div className="v2-perfect-body">
-                <h3>{u.title}</h3>
-                <p>{u.body}</p>
-              </div>
-            </div>
+        <div className="v2-perfect-grid">
+          {tiles.map((u, i) => (
+            <figure key={i} className="v2-perfect-card">
+              <img src={u.img} alt="" loading="lazy" />
+            </figure>
           ))}
         </div>
       </div>
@@ -535,22 +526,20 @@ function Gallery({ section }) {
   const items = section?.images?.length
     ? section.images.map((img) => ({ src: img.image_url, media_type: img.media_type || 'image' }))
     : fallback.map((src) => ({ src, media_type: 'image' }));
+
+  // Pick a single frame shape for the whole slideshow so slide transitions
+  // don't jump. If any item is video → reel (9:16), else post (1:1).
+  const anyVideo = items.some((it) => it.media_type === 'video');
+  const aspect = anyVideo ? 'reel' : 'post';
+
   return (
-    <section className="v2-gallery">
+    <section className="v2-gallery v2-gallery--journey" id="journey">
       <div className="v2-container">
         <p className="v2-kicker accent">FOLLOW OUR JOURNEY</p>
-        <p className="v2-handle">@chhatak.crunch</p>
-        <div className="v2-gallery-strip">
-          {items.map((it, i) => (
-            <a key={i} href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="v2-gallery-tile">
-              {it.media_type === 'video' ? (
-                <video src={it.src} controls playsInline preload="metadata" />
-              ) : (
-                <img src={it.src} alt="" loading="lazy" />
-              )}
-            </a>
-          ))}
-        </div>
+        <p className="v2-handle">
+          <a href="https://instagram.com/chhatak.co" target="_blank" rel="noopener">@chhatak.crunch</a>
+        </p>
+        <MediaSlideshow items={items} aspect={aspect} className="v2-journey-slideshow" />
       </div>
       <SectionWave color="#14213D" />
     </section>
@@ -618,8 +607,8 @@ function Footer() {
           <div>
             <p className="v2-footer-h">EXPLORE</p>
             <Link to="/#story">About</Link>
-            <Link to="/#reels">Reels</Link>
             <Link to="/#reviews">Reviews</Link>
+            <Link to="/#journey">Journey</Link>
           </div>
           <div>
             <p className="v2-footer-h">STAY IN THE LOOP</p>
@@ -710,6 +699,64 @@ function HeroVideo({ src, defaultSoundOn = false }) {
   );
 }
 
+// Reusable slideshow for a list of media (images + videos) with next/prev arrows.
+// One item → renders it plain (no arrows). 2+ items → slideshow.
+function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption }) {
+  const [index, setIndex] = useState(0);
+  if (!items?.length) return null;
+  const count = items.length;
+  const clamp = (n) => (n + count) % count;
+  const go = (dir) => setIndex((i) => clamp(i + dir));
+  const current = items[index];
+
+  const frameClass =
+    aspect === 'reel' ? 'v2-slide-frame v2-slide-frame--reel'
+    : aspect === 'post' ? 'v2-slide-frame v2-slide-frame--post'
+    : 'v2-slide-frame';
+
+  const renderMedia = (it) =>
+    it.media_type === 'video' ? (
+      <video src={it.src} controls playsInline preload="metadata" />
+    ) : (
+      <img src={it.src} alt={it.alt || ''} loading="lazy" />
+    );
+
+  if (count === 1) {
+    return (
+      <div className={`v2-slideshow v2-slideshow--single ${className}`}>
+        <div className={frameClass}>{renderMedia(current)}</div>
+        {renderCaption?.(current)}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`v2-slideshow ${className}`}>
+      <button type="button" className="v2-slide-arrow v2-slide-arrow--prev" onClick={() => go(-1)} aria-label="Previous">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+      </button>
+      <div className={frameClass} key={index}>{renderMedia(current)}</div>
+      <button type="button" className="v2-slide-arrow v2-slide-arrow--next" onClick={() => go(1)} aria-label="Next">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+      </button>
+      <div className="v2-slide-dots" role="tablist" aria-label="Slide indicators">
+        {items.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            role="tab"
+            aria-label={`Go to slide ${i + 1}`}
+            aria-selected={i === index}
+            className={`v2-slide-dot${i === index ? ' is-active' : ''}`}
+            onClick={() => setIndex(i)}
+          />
+        ))}
+      </div>
+      {renderCaption?.(current)}
+    </div>
+  );
+}
+
 // Custom gallery block for admin-created gallery sections.
 // One image → full-bleed hero banner. Many images → responsive grid.
 function CustomGallery({ section }) {
@@ -738,28 +785,34 @@ function CustomGallery({ section }) {
     );
   }
 
+  const items = section.images.map((img) => ({
+    src: img.image_url,
+    media_type: img.media_type || 'image',
+    alt: img.title || section.title || '',
+    title: img.title,
+    body: img.body,
+  }));
+  const anyVideo = items.some((it) => it.media_type === 'video');
+  const aspect = anyVideo ? 'reel' : 'post';
+
   return (
     <section className="v2-custom-gallery" id={`gallery-${section.id}`}>
       <div className="v2-container">
         {section.title && <p className="v2-kicker accent">{section.title.toUpperCase()}</p>}
         {section.subtitle && <h2 className="v2-section-title">{section.subtitle}</h2>}
-        <div className="v2-custom-gallery-grid">
-          {section.images.map((img) => (
-            <figure key={img.id} className="v2-custom-gallery-tile">
-              {img.media_type === 'video' ? (
-                <video src={img.image_url} controls playsInline preload="metadata" />
-              ) : (
-                <img src={img.image_url} alt={img.title || section.title || ''} loading="lazy" />
-              )}
-              {(img.title || img.body) && (
-                <figcaption>
-                  {img.title && <strong>{img.title}</strong>}
-                  {img.body && <p>{img.body}</p>}
-                </figcaption>
-              )}
-            </figure>
-          ))}
-        </div>
+        <MediaSlideshow
+          items={items}
+          aspect={aspect}
+          className="v2-custom-slideshow"
+          renderCaption={(it) => (
+            (it.title || it.body) ? (
+              <figcaption className="v2-slide-caption">
+                {it.title && <strong>{it.title}</strong>}
+                {it.body && <p>{it.body}</p>}
+              </figcaption>
+            ) : null
+          )}
+        />
       </div>
     </section>
   );
@@ -773,11 +826,6 @@ const RENDERERS = {
   flavours:       (s, ctx) => <Flavours key={s.id} products={ctx.products} />,
   'perfect-with': (s)      => <PerfectWith key={s.id} section={s} />,
   why:            (s)      => <WhyChhatak key={s.id} />,
-  reels:          (s)      => (
-    <Suspense key={s.id} fallback={null}>
-      <div id="reels" className="v2-reels-wrap"><ReelsWall /></div>
-    </Suspense>
-  ),
   reviews:        (s)      => (
     <Suspense key={s.id} fallback={null}>
       <div id="reviews" className="v2-reviews-wrap"><ReviewsWall /></div>
@@ -794,7 +842,7 @@ function renderSection(section, ctx) {
   return r ? r(section, ctx) : null;
 }
 
-const DEFAULT_ORDER = ['hero', 'features', 'story', 'flavours', 'perfect-with', 'why', 'reels', 'reviews', 'gallery', 'footer'];
+const DEFAULT_ORDER = ['hero', 'features', 'story', 'flavours', 'perfect-with', 'why', 'reviews', 'gallery', 'footer'];
 
 export default function LandingPage() {
   const [products, setProducts] = useState([]);

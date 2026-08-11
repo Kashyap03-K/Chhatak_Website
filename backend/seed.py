@@ -5,7 +5,7 @@ from app.core.database import SessionLocal, engine, Base
 from app.core.security import hash_password
 from app.models.user import User
 from app.models.product import Product
-from app.models.content import Reel, Review
+from app.models.content import Review
 
 import app.models  # noqa: F401
 
@@ -93,17 +93,6 @@ def seed():
         if not db.query(Product).filter(Product.slug == p["slug"]).first():
             db.add(Product(**p))
             print(f"Created product: {p['name']}")
-
-    reels = [
-        {"shortcode": "DZkcT1HsRaC", "caption": "Straight from the feed.",              "sort_order": 1},
-        {"shortcode": "DZmcmILCUx3", "caption": "The coastal crunch, tried and tasted.", "sort_order": 2},
-        {"shortcode": "DZfC1SgIiyb", "caption": "Real reels, real reactions.",           "sort_order": 3},
-        {"shortcode": "DaQKQp_NKkn", "caption": "Fresh from the sea, made for you.",     "sort_order": 4},
-    ]
-    for r in reels:
-        if not db.query(Reel).filter(Reel.shortcode == r["shortcode"]).first():
-            db.add(Reel(**r))
-            print(f"Created reel: {r['shortcode']}")
 
     reviews = [
         {"author": "Aarti Kulkarni", "location": "Mumbai, MH",  "rating": 5,

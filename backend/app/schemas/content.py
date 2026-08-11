@@ -1,33 +1,6 @@
 from pydantic import BaseModel, Field
 
 
-class ReelBase(BaseModel):
-    video_url: str | None = Field(None, max_length=500)
-    poster_url: str | None = Field(None, max_length=500)
-    shortcode: str | None = Field(None, min_length=1, max_length=64)
-    caption: str | None = Field(None, max_length=280)
-    is_active: bool = True
-    sort_order: int = 0
-
-
-class ReelCreate(ReelBase):
-    pass
-
-
-class ReelUpdate(BaseModel):
-    video_url: str | None = Field(None, max_length=500)
-    poster_url: str | None = Field(None, max_length=500)
-    shortcode: str | None = Field(None, min_length=1, max_length=64)
-    caption: str | None = Field(None, max_length=280)
-    is_active: bool | None = None
-    sort_order: int | None = None
-
-
-class ReelOut(ReelBase):
-    id: int
-    model_config = {"from_attributes": True}
-
-
 class ReviewBase(BaseModel):
     author: str = Field(..., min_length=1, max_length=120)
     handle: str | None = Field(None, max_length=120)
