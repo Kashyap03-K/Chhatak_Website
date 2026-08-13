@@ -745,16 +745,18 @@ function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption 
 
   const toggleMute = () => {
     const v = videoRef.current;
-    if (!v) return;
-    v.muted = !v.muted;
-    if (!v.muted) v.play().catch(() => {});
-    setMuted(v.muted);
+    const next = !muted;
+    if (v) {
+      v.muted = next;
+      if (!next) v.play().catch(() => {});
+    }
+    setMuted(next);
   };
 
   const renderMedia = (it) =>
     it.media_type === 'video' ? (
       <>
-        <video ref={videoRef} src={it.src} autoPlay muted loop playsInline preload="auto" />
+        <video ref={videoRef} src={it.src} autoPlay muted={muted} loop playsInline preload="auto" />
         <button
           type="button"
           className="v2-slide-mute"
