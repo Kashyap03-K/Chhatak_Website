@@ -22,6 +22,18 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
+      # Razorpay — set these in the Render dashboard (never commit real keys).
+      # Get them from https://dashboard.razorpay.com → Account & Settings → API Keys.
+      # For live payments use rzp_live_*; for testing use rzp_test_*.
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      # Webhook signing secret from Razorpay Dashboard → Settings → Webhooks.
+      # Configure the webhook to POST to https://chhatak-api.onrender.com/api/v1/payments/webhook
+      # subscribed to at minimum: payment.captured, payment.failed, order.paid
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
     healthCheckPath: /api/health
 
   - type: web

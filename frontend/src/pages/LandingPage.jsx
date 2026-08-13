@@ -730,6 +730,8 @@ function HeroVideo({ src, defaultSoundOn = false }) {
 // One item → renders it plain (no arrows). 2+ items → slideshow.
 function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption }) {
   const [index, setIndex] = useState(0);
+  const [muted, setMuted] = useState(true);
+  const videoRef = useRef(null);
   if (!items?.length) return null;
   const count = items.length;
   const clamp = (n) => (n + count) % count;
@@ -741,9 +743,31 @@ function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption 
     : aspect === 'post' ? 'v2-slide-frame v2-slide-frame--post'
     : 'v2-slide-frame';
 
+  const toggleMute = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    if (!v.muted) v.play().catch(() => {});
+    setMuted(v.muted);
+  };
+
   const renderMedia = (it) =>
     it.media_type === 'video' ? (
-      <video src={it.src} autoPlay muted loop playsInline preload="auto" />
+      <>
+        <video ref={videoRef} src={it.src} autoPlay muted loop playsInline preload="auto" />
+        <button
+          type="button"
+          className="v2-slide-mute"
+          onClick={toggleMute}
+          aria-label={muted ? 'Unmute video' : 'Mute video'}
+        >
+          {muted ? (
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></svg>
+          ) : (
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /></svg>
+          )}
+        </button>
+      </>
     ) : (
       <img src={it.src} alt={it.alt || ''} loading="lazy" />
     );
@@ -899,10 +923,17 @@ export default function LandingPage() {
 
   // Build ordered render list — respecting admin order + visibility.
   // Include: built-in sections we know how to render, PLUS any custom gallery.
-  const list =
-    sections && sections.length > 0
-      ? sections.filter((s) => s.kind === 'gallery' || RENDERERS[s.key])
-      : DEFAULT_ORDER.map((key, i) => ({ id: `d-${i}`, key, kind: 'builtin', is_active: true, images: [] }));
+  const list = (() => {
+    const base =
+      sections && sections.length > 0
+        ? sections.filter((s) => s.kind === 'gallery' || RENDERERS[s.key])
+        : DEFAULT_ORDER.map((key, i) => ({ id: `d-${i}`, key, kind: 'builtin', is_active: true, images: [] }));
+    // Custom gallery sections open the page; footer stays last; everything else keeps its order.
+    const galleries = base.filter((s) => s.kind === 'gallery');
+    const footers = base.filter((s) => s.key === 'footer' && s.kind !== 'gallery');
+    const middle = base.filter((s) => s.kind !== 'gallery' && s.key !== 'footer');
+    return [...galleries, ...middle, ...footers];
+  })();
 
   const ctx = { products };
 
