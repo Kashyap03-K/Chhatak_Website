@@ -274,3 +274,42 @@ body.theme-coastal-admin .auth-error {
 
 /* Muted text default */
 body.theme-coastal-admin { --muted: rgba(11, 35, 64, 0.6); }
+
+/* Filter chips */
+body.theme-coastal-admin .filter-btn {
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.12);
+  color: rgba(11, 35, 64, 0.7);
+  font-weight: 700;
+}
+body.theme-coastal-admin .filter-btn:hover { border-color: #F5822C; color: #F5822C; }
+body.theme-coastal-admin .filter-btn.active {
+  background: #F5822C;
+  border-color: #F5822C;
+  color: #FFFFFF;
+}
+
+/* Order cards */
+body.theme-coastal-admin .admin-order-card {
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.08);
+  border-radius: 14px;
+  color: #0B2340;
+}
+body.theme-coastal-admin .admin-order-header {
+  border-bottom: 1px solid rgba(11, 35, 64, 0.08);
+}
+body.theme-coastal-admin .order-id { color: #0B2340; font-weight: 700; }
+body.theme-coastal-admin .order-date { color: rgba(11, 35, 64, 0.6); }
+body.theme-coastal-admin .order-items-list .order-item-row { color: rgba(11, 35, 64, 0.78); }
+body.theme-coastal-admin .admin-order-footer {
+  border-top: 1px solid rgba(11, 35, 64, 0.08);
+}
+body.theme-coastal-admin .order-total { color: #0B2340; font-weight: 700; }
+body.theme-coastal-admin .admin-order-addr { color: rgba(11, 35, 64, 0.6); }
+body.theme-coastal-admin .status-select {
+  background: #FBEFD8;
+  color: #0B2340;
+  border: 1px solid rgba(11, 35, 64, 0.15);
+}
+body.theme-coastal-admin .status-select:focus { border-color: #F5822C; }

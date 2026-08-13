@@ -1,7 +1,19 @@
 /* ============================================================
    V2 · Coastal Cream landing theme  (scoped under .v2)
    ============================================================ */
-body.theme-coastal { background: #FFFFFF; color: #0B2340; }
+body.theme-coastal {
+  background: #FFFFFF;
+  color: #0B2340;
+  /* Redefine base tokens so shared components (cart, orders, wholesale)
+     read dark-on-cream instead of the default dark-theme cream-on-navy. */
+  --ink: #0B2340;
+  --ink-soft: rgba(11, 35, 64, 0.86);
+  --muted: rgba(11, 35, 64, 0.72);
+  --line: rgba(11, 35, 64, 0.14);
+  --line-strong: rgba(11, 35, 64, 0.22);
+  --bg: #FFFFFF;
+  --bg-soft: #FFF8EA;
+}
 body.theme-coastal .nav {
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
@@ -490,6 +502,48 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 .v2-story-boat {
   position: absolute; right: 3%; bottom: 6%;
   width: 130px; color: var(--ink); opacity: 0.4;
+}
+
+/* --- STORY BANNER: full-hero slideshow variant (multi-image) --- */
+.v2-story-card--slideshow {
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0;
+  min-height: min(88vh, 780px);
+  align-items: stretch;
+}
+.v2-story-card--slideshow .v2-story-media {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+.v2-story-card--slideshow .v2-story-copy {
+  position: relative;
+  z-index: 2;
+  align-self: end;
+  padding: 40px clamp(24px, 5vw, 64px);
+  color: #fff;
+  max-width: 720px;
+  background: linear-gradient(to top, rgba(11, 35, 64, 0.82) 0%, rgba(11, 35, 64, 0.55) 55%, rgba(11, 35, 64, 0) 100%);
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+.v2-story-card--slideshow .v2-story-kicker { color: #F5C542; }
+.v2-story-card--slideshow .v2-story-title { color: #fff; }
+.v2-story-card--slideshow .v2-story-body { color: rgba(255, 255, 255, 0.88); max-width: 560px; }
+.v2-story-card--slideshow .v2-story-boat { display: none; }
+.v2-story-card--slideshow .v2-story-dots {
+  bottom: auto;
+  top: 20px;
+  left: auto;
+  right: 20px;
+  transform: none;
 }
 
 /* --- FLAVOURS --- */
@@ -1095,7 +1149,7 @@ body.theme-coastal h1, body.theme-coastal h2, body.theme-coastal h3, body.theme-
 }
 body.theme-coastal .display em, body.theme-coastal h2 em { color: #F5822C; font-style: normal; }
 body.theme-coastal p, body.theme-coastal li, body.theme-coastal label,
-body.theme-coastal .muted-text { color: rgba(11, 35, 64, 0.75); }
+body.theme-coastal .muted-text { color: rgba(11, 35, 64, 0.85); }
 
 body.theme-coastal .btn-solid,
 body.theme-coastal .btn-solid.accent {
@@ -1173,9 +1227,29 @@ body.theme-coastal .auth-error {
 body.theme-coastal .auth-switch { color: rgba(11, 35, 64, 0.75); }
 body.theme-coastal .out-of-stock-label { color: rgba(11, 35, 64, 0.55); }
 
+/* Checkout: address & payment option cards on cream form */
+body.theme-coastal .address-option {
+  background: #FFFFFF;
+  border: 1px solid rgba(11, 35, 64, 0.15);
+  color: rgba(11, 35, 64, 0.78);
+}
+body.theme-coastal .address-option:hover { border-color: #F5822C; }
+body.theme-coastal .address-option.selected {
+  border-color: #F5822C;
+  background: rgba(245, 130, 44, 0.10);
+}
+body.theme-coastal .address-option strong { color: #0B2340; }
+body.theme-coastal .default-badge {
+  background: #F5822C;
+  color: #FFFFFF;
+}
+body.theme-coastal .save-checkbox { color: rgba(11, 35, 64, 0.78); }
+body.theme-coastal .checkout-form h3 { color: #0B2340; }
+body.theme-coastal .cart-summary h3 { color: #0B2340; }
+
 /* --- WHOLESALE PAGE (coastal) --- */
 body.theme-coastal .wholesale-page { background: #FFFFFF; color: #0B2340; }
-body.theme-coastal .wholesale-page .lead-dark { color: rgba(11, 35, 64, 0.78); }
+body.theme-coastal .wholesale-page .lead-dark { color: rgba(11, 35, 64, 0.88); }
 
 body.theme-coastal .buy-card {
   background: #FFF8EA;

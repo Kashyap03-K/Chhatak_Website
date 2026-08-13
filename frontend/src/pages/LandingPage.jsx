@@ -316,10 +316,12 @@ function StoryBanner({ section }) {
     return () => clearInterval(t);
   }, [images.length]);
 
+  const isSlideshow = images.length > 1;
+
   return (
     <section id="story" className="v2-story">
       <div className="v2-container">
-        <div className="v2-story-card">
+        <div className={`v2-story-card${isSlideshow ? ' v2-story-card--slideshow' : ''}`}>
           <div className="v2-story-media">
             {images.map((img, i) => {
               const isVideo = img.media_type === 'video';
