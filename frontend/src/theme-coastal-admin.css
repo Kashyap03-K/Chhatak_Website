@@ -275,6 +275,90 @@ body.theme-coastal-admin .auth-error {
 /* Muted text default */
 body.theme-coastal-admin { --muted: rgba(11, 35, 64, 0.6); }
 
+/* --- ADMIN USERS PAGE --- */
+body.theme-coastal-admin .admin-users-toolbar {
+  display: flex; gap: 12px; align-items: center;
+  margin: 20px 0 16px;
+}
+body.theme-coastal-admin .admin-users-search {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid rgba(11, 35, 64, 0.15);
+  background: #FFF8EA;
+  color: #0B2340;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+body.theme-coastal-admin .admin-users-search:focus { border-color: #F5822C; }
+
+body.theme-coastal-admin .admin-users-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-bottom: 24px;
+}
+body.theme-coastal-admin .admin-users-stats > div {
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.08);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+body.theme-coastal-admin .admin-users-stats .stat-num {
+  font-family: 'Fredoka', 'Fraunces', sans-serif;
+  font-weight: 700; font-size: 22px; color: #0B2340;
+}
+body.theme-coastal-admin .admin-users-stats .stat-label {
+  color: rgba(11, 35, 64, 0.65); font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;
+}
+
+body.theme-coastal-admin .admin-users-table-wrap {
+  background: #FFF8EA;
+  border: 1px solid rgba(11, 35, 64, 0.08);
+  border-radius: 12px;
+  overflow-x: auto;
+}
+body.theme-coastal-admin .admin-users-table {
+  width: 100%; border-collapse: collapse;
+  min-width: 900px;
+}
+body.theme-coastal-admin .admin-users-table th {
+  background: #F5E4C0;
+  color: #0B2340;
+  font-weight: 700; letter-spacing: 0.06em;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+body.theme-coastal-admin .admin-users-table td {
+  padding: 12px 14px;
+  border-top: 1px solid rgba(11, 35, 64, 0.06);
+  color: #0B2340;
+  font-size: 14px;
+  vertical-align: middle;
+}
+body.theme-coastal-admin .admin-users-table tr.is-open td { background: rgba(245, 130, 44, 0.06); }
+body.theme-coastal-admin .admin-users-table tr:hover td { background: rgba(245, 130, 44, 0.05); }
+body.theme-coastal-admin .admin-users-detail-row td { background: rgba(11, 35, 64, 0.03); padding: 18px 20px; }
+body.theme-coastal-admin .admin-users-detail-row:hover td { background: rgba(11, 35, 64, 0.03); }
+
+body.theme-coastal-admin .admin-users-addr-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+body.theme-coastal-admin .admin-users-addr-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(11, 35, 64, 0.10);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+@media (max-width: 720px) {
+  body.theme-coastal-admin .admin-users-toolbar { flex-direction: column; align-items: stretch; }
+  body.theme-coastal-admin .admin-users-stats { grid-template-columns: 1fr; }
+}
+
 /* Filter chips */
 body.theme-coastal-admin .filter-btn {
   background: #FFF8EA;
