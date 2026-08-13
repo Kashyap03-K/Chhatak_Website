@@ -819,30 +819,72 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   .v2-slide-frame--post { max-width: 380px; }
 }
 
-/* Custom gallery slideshow: 3/4 viewport height, full container width */
-.v2-custom-slideshow { max-width: 100%; }
+/* Custom gallery slideshow: 3/4 viewport height, full viewport width */
+.v2-custom-gallery {
+  padding: 0;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+.v2-custom-gallery .v2-container {
+  max-width: 100%;
+  padding: 0;
+  width: 100%;
+}
+.v2-custom-slideshow {
+  max-width: 100%;
+  margin: 0;
+  gap: 0;
+  grid-template-columns: 0 1fr 0;
+}
 .v2-custom-slideshow .v2-slide-frame,
 .v2-custom-slideshow .v2-slide-frame--reel,
 .v2-custom-slideshow .v2-slide-frame--post {
   max-width: 100%;
+  width: 100%;
   aspect-ratio: auto;
   height: 75vh;
-  background: transparent;
+  background: #000;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
 }
 .v2-custom-slideshow .v2-slide-frame img,
 .v2-custom-slideshow .v2-slide-frame video {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
-.v2-custom-slideshow .v2-slide-arrow--prev { margin-left: 12px; }
-.v2-custom-slideshow .v2-slide-arrow--next { margin-right: 12px; }
+.v2-custom-slideshow .v2-slide-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  grid-column: unset;
+}
+.v2-custom-slideshow .v2-slide-arrow--prev { left: 20px; }
+.v2-custom-slideshow .v2-slide-arrow--next { right: 20px; }
+.v2-custom-slideshow .v2-slide-arrow:hover {
+  transform: translateY(-50%) scale(1.06);
+}
+.v2-custom-slideshow .v2-slide-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 0; right: 0;
+  margin: 0;
+  z-index: 2;
+}
 @media (max-width: 640px) {
   .v2-custom-slideshow .v2-slide-frame,
   .v2-custom-slideshow .v2-slide-frame--reel,
   .v2-custom-slideshow .v2-slide-frame--post {
     height: 60vh;
   }
+  .v2-custom-slideshow .v2-slide-arrow--prev { left: 10px; }
+  .v2-custom-slideshow .v2-slide-arrow--next { right: 10px; }
 }
 
 /* --- CUSTOM HERO (single-image gallery becomes a full-bleed banner) --- */

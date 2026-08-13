@@ -743,7 +743,7 @@ function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption 
 
   const renderMedia = (it) =>
     it.media_type === 'video' ? (
-      <video src={it.src} controls playsInline preload="metadata" />
+      <video src={it.src} autoPlay muted loop playsInline preload="auto" />
     ) : (
       <img src={it.src} alt={it.alt || ''} loading="lazy" />
     );
