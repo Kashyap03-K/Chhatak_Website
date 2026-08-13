@@ -1102,7 +1102,21 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   .v2-hero { padding-top: 96px; }
   .v2-hero-grid, .v2-story-card { grid-template-columns: 1fr; }
   .v2-story-media { aspect-ratio: 16 / 11; }
-  .v2-feature-grid { grid-template-columns: repeat(2, 1fr); }
+  .v2-feature-strip { padding: 40px 0 60px; }
+  .v2-feature-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 22px;
+    border-radius: 16px;
+  }
+  .v2-feature-item {
+    border-right: none;
+    border-bottom: 1px solid rgba(11, 35, 64, 0.10);
+    padding: 0 0 18px;
+    align-items: flex-start;
+  }
+  .v2-feature-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .v2-feature-body { font-size: 14px; }
   .v2-flavour-grid, .v2-perfect-grid { grid-template-columns: 1fr; }
   .v2-why-bar { grid-template-columns: 1fr; padding: 32px; border-radius: 24px; }
   .v2-why-list { grid-template-columns: repeat(2, 1fr); }

@@ -732,6 +732,18 @@ function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption 
   const [index, setIndex] = useState(0);
   const [muted, setMuted] = useState(true);
   const videoRef = useRef(null);
+
+  // Mobile browsers (iOS Safari especially) don't always honor the autoplay
+  // attribute even with muted+playsInline — nudge them by calling .play()
+  // once the element is mounted and again whenever the active slide changes.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = muted;
+    const p = v.play();
+    if (p && typeof p.catch === 'function') p.catch(() => {});
+  }, [index, muted]);
+
   if (!items?.length) return null;
   const count = items.length;
   const clamp = (n) => (n + count) % count;
