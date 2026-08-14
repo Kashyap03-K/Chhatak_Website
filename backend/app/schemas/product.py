@@ -10,6 +10,7 @@ class ProductCreate(BaseModel):
     compare_at_price: float | None = Field(None, gt=0, le=100000)
     weight: str = Field("100g", max_length=50)
     image_url: str | None = Field(None, max_length=500)
+    images: list[str] | None = Field(None, max_length=20)
     model_url: str | None = Field(None, max_length=500)
     category: str = Field("snacks", max_length=100)
     flavor: str | None = Field(None, max_length=100)
@@ -34,6 +35,7 @@ class ProductUpdate(BaseModel):
     compare_at_price: float | None = Field(None, gt=0, le=100000)
     weight: str | None = Field(None, max_length=50)
     image_url: str | None = Field(None, max_length=500)
+    images: list[str] | None = Field(None, max_length=20)
     model_url: str | None = Field(None, max_length=500)
     stock: int | None = Field(None, ge=0, le=100000)
     is_active: bool | None = None
@@ -50,6 +52,7 @@ class ProductOut(BaseModel):
     compare_at_price: float | None
     weight: str
     image_url: str | None
+    images: list[str] = []
     model_url: str | None
     category: str
     flavor: str | None

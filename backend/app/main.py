@@ -77,6 +77,11 @@ def on_startup():
                 conn.execute(text(f"ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT {false_default} NOT NULL"))
             if "verification_token" not in cols:
                 conn.execute(text("ALTER TABLE users ADD COLUMN verification_token VARCHAR(64)"))
+    if "products" in inspector.get_table_names():
+        cols = {c["name"] for c in inspector.get_columns("products")}
+        with engine.begin() as conn:
+            if "images_json" not in cols:
+                conn.execute(text("ALTER TABLE products ADD COLUMN images_json TEXT"))
     if "orders" in inspector.get_table_names():
         cols = {c["name"] for c in inspector.get_columns("orders")}
         with engine.begin() as conn:

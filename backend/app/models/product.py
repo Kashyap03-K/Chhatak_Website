@@ -17,6 +17,7 @@ class Product(Base):
     compare_at_price = Column(Float, nullable=True)
     weight = Column(String(50), default="100g")
     image_url = Column(String(500), nullable=True)
+    images_json = Column(Text, nullable=True)  # JSON list of extra image URLs (cover included)
     model_url = Column(String(500), nullable=True)
     category = Column(String(100), default="snacks")
     flavor = Column(String(100), nullable=True)

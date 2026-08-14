@@ -7,7 +7,7 @@ export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ name: '', slug: '', description: '', long_description: '', image_url: '', price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
+  const [form, setForm] = useState({ name: '', slug: '', description: '', long_description: '', images: [], price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
   const [uploading, setUploading] = useState(false);
 
   const fetchProducts = () => {
@@ -20,18 +20,21 @@ export default function AdminProducts() {
   useEffect(() => { fetchProducts(); }, []);
 
   const resetForm = () => {
-    setForm({ name: '', slug: '', description: '', long_description: '', image_url: '', price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
+    setForm({ name: '', slug: '', description: '', long_description: '', images: [], price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
     setEditing(null);
     setShowCreate(false);
   };
 
   const startEdit = (product) => {
+    const gallery = Array.isArray(product.images) && product.images.length
+      ? product.images
+      : (product.image_url ? [product.image_url] : []);
     setForm({
       name: product.name,
       slug: product.slug,
       description: product.description || '',
       long_description: product.long_description || '',
-      image_url: product.image_url || '',
+      images: gallery,
       price: String(product.price),
       compare_at_price: product.compare_at_price ? String(product.compare_at_price) : '',
       weight: product.weight,
@@ -44,38 +47,69 @@ export default function AdminProducts() {
     setShowCreate(true);
   };
 
+  const uploadOne = async (file) => {
+    const data = new FormData();
+    data.append('file', file);
+    const token = localStorage.getItem('access_token');
+    const base = import.meta.env.VITE_API_URL || '/api/v1';
+    const resp = await fetch(`${base}/uploads/image`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: data,
+    });
+    if (!resp.ok) {
+      let detail = `HTTP ${resp.status}`;
+      try { detail = (await resp.json()).detail || detail; } catch {}
+      throw new Error(detail);
+    }
+    const res = await resp.json();
+    if (!res.url) throw new Error('Server did not return an image URL');
+    return res.url;
+  };
+
   const handleImageUpload = async (e) => {
     const input = e.target;
-    const file = input.files?.[0];
-    if (!file) return;
+    const files = Array.from(input.files || []);
+    if (!files.length) return;
     setUploading(true);
     try {
-      const data = new FormData();
-      data.append('file', file);
-      // Use fetch directly so the browser sets the multipart boundary itself.
-      // (axios has a default Content-Type: application/json which can leak
-      //  through overrides in some setups and break the request.)
-      const token = localStorage.getItem('access_token');
-      const base = import.meta.env.VITE_API_URL || '/api/v1';
-      const resp = await fetch(`${base}/uploads/image`, {
-        method: 'POST',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: data,
-      });
-      if (!resp.ok) {
-        let detail = `HTTP ${resp.status}`;
-        try { detail = (await resp.json()).detail || detail; } catch {}
-        throw new Error(detail);
+      const urls = [];
+      for (const file of files) {
+        // Upload sequentially so a failure surfaces the exact file, and the
+        // shared uploads dir doesn't get hammered in parallel.
+        urls.push(await uploadOne(file));
       }
-      const res = await resp.json();
-      if (!res.url) throw new Error('Server did not return an image URL');
-      setForm(f => ({ ...f, image_url: res.url }));
+      setForm(f => ({ ...f, images: [...f.images, ...urls] }));
     } catch (err) {
       alert(`Upload failed: ${err.message || 'unknown error'}`);
     } finally {
       setUploading(false);
       if (input) input.value = '';
     }
+  };
+
+  const removeImage = (idx) => {
+    setForm(f => ({ ...f, images: f.images.filter((_, i) => i !== idx) }));
+  };
+
+  const moveImage = (idx, dir) => {
+    setForm(f => {
+      const next = [...f.images];
+      const j = idx + dir;
+      if (j < 0 || j >= next.length) return f;
+      [next[idx], next[j]] = [next[j], next[idx]];
+      return { ...f, images: next };
+    });
+  };
+
+  const setCover = (idx) => {
+    setForm(f => {
+      if (idx === 0) return f;
+      const next = [...f.images];
+      const [pick] = next.splice(idx, 1);
+      next.unshift(pick);
+      return { ...f, images: next };
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -85,7 +119,8 @@ export default function AdminProducts() {
       price: parseFloat(form.price),
       compare_at_price: form.compare_at_price ? parseFloat(form.compare_at_price) : null,
       stock: parseInt(form.stock) || 0,
-      image_url: form.image_url || null,
+      images: form.images,
+      image_url: form.images[0] || null,
       long_description: form.long_description || null,
       description: form.description || null,
       flavor: form.flavor || null,
@@ -153,13 +188,28 @@ export default function AdminProducts() {
                 <textarea value={form.long_description} onChange={(e) => setForm(f => ({ ...f, long_description: e.target.value }))} rows={6} placeholder="A few paragraphs about this flavor — story, ingredients, pairings…" />
               </div>
               <div className="form-group">
-                <label>Product image</label>
-                <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+                <label>Product images</label>
+                <input type="file" accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} />
+                <p style={{ fontSize: 12, color: 'var(--muted)', margin: '6px 0 0' }}>
+                  First image is the cover shown on the shop grid. Pick multiple files, or add more later.
+                </p>
                 {uploading && <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>Uploading…</p>}
-                {form.image_url && (
-                  <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <img src={form.image_url} alt="preview" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(11,35,64,0.15)' }} />
-                    <button type="button" className="btn-link" onClick={() => setForm(f => ({ ...f, image_url: '' }))}>Remove image</button>
+                {form.images.length > 0 && (
+                  <div className="admin-product-gallery">
+                    {form.images.map((url, idx) => (
+                      <div className={`admin-product-thumb${idx === 0 ? ' is-cover' : ''}`} key={`${url}-${idx}`}>
+                        <img src={url} alt={`Image ${idx + 1}`} />
+                        {idx === 0 && <span className="admin-product-thumb__badge">Cover</span>}
+                        <div className="admin-product-thumb__actions">
+                          <button type="button" title="Move left" onClick={() => moveImage(idx, -1)} disabled={idx === 0}>◀</button>
+                          {idx !== 0 && (
+                            <button type="button" title="Make cover" onClick={() => setCover(idx)}>★</button>
+                          )}
+                          <button type="button" title="Move right" onClick={() => moveImage(idx, 1)} disabled={idx === form.images.length - 1}>▶</button>
+                          <button type="button" title="Remove" onClick={() => removeImage(idx)} className="danger">✕</button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

@@ -51,6 +51,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
 
@@ -63,6 +64,7 @@ export default function ProductDetailPage() {
       setProduct(p);
       setOthers(all.filter((x) => x.slug !== slug && x.is_active).slice(0, 3));
     }).finally(() => setLoading(false));
+    setActiveImage(0);
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [slug]);
 
@@ -115,15 +117,41 @@ export default function ProductDetailPage() {
 
           <div className="product-detail-grid">
             <div className="product-visual">
-              {product.image_url ? (
-                <div className="product-image-wrap">
-                  <img src={product.image_url} alt={product.name} className="product-image" />
-                </div>
-              ) : (
-                <div className={`flavor-thumb large ${TONE_MAP[product.flavor] || 'tone-warm'}`}>
-                  <span className="flavor-label">{product.flavor || product.name}</span>
-                </div>
-              )}
+              {(() => {
+                const gallery = (product.images && product.images.length)
+                  ? product.images
+                  : (product.image_url ? [product.image_url] : []);
+                if (!gallery.length) {
+                  return (
+                    <div className={`flavor-thumb large ${TONE_MAP[product.flavor] || 'tone-warm'}`}>
+                      <span className="flavor-label">{product.flavor || product.name}</span>
+                    </div>
+                  );
+                }
+                const idx = Math.min(activeImage, gallery.length - 1);
+                return (
+                  <>
+                    <div className="product-image-wrap">
+                      <img src={gallery[idx]} alt={product.name} className="product-image" />
+                    </div>
+                    {gallery.length > 1 && (
+                      <div className="product-gallery-thumbs">
+                        {gallery.map((url, i) => (
+                          <button
+                            key={`${url}-${i}`}
+                            type="button"
+                            className={`product-gallery-thumb${i === idx ? ' is-active' : ''}`}
+                            onClick={() => setActiveImage(i)}
+                            aria-label={`Show image ${i + 1}`}
+                          >
+                            <img src={url} alt="" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
 
             <div className="product-info">
