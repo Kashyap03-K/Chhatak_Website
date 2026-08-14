@@ -110,6 +110,9 @@ export default function Navbar() {
           </Link>
 
           <div className="nav-side nav-side--right">
+            <Link to="/wishlist" className="nav-icon" aria-label="Wishlist">
+              <IconHeart />
+            </Link>
             <Link to="/cart" className="nav-icon" aria-label="Cart">
               <IconCart />
               {totalItems > 0 && <span className="nav-icon-badge">{totalItems}</span>}
