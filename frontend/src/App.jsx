@@ -17,7 +17,6 @@ import AdminUIUX from './pages/admin/AdminUIUX.jsx';
 import AdminProducts from './pages/admin/AdminProducts.jsx';
 import AdminOrders from './pages/admin/AdminOrders.jsx';
 import AdminPayments from './pages/admin/AdminPayments.jsx';
-import AdminUsers from './pages/admin/AdminUsers.jsx';
 import AdminReviews from './pages/admin/AdminReviews.jsx';
 import AdminNewsletter from './pages/admin/AdminNewsletter.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
@@ -60,7 +59,6 @@ export default function App() {
         <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
         <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
         <Route path="/admin/payments" element={<AdminRoute><AdminPayments /></AdminRoute>} />
-        <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
         <Route path="/admin/reviews" element={<AdminRoute><AdminReviews /></AdminRoute>} />
         <Route path="/admin/newsletter" element={<AdminRoute><AdminNewsletter /></AdminRoute>} />
         <Route path="*" element={<NotFoundPage />} />

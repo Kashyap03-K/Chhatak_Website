@@ -2020,6 +2020,54 @@ img[src*="beige-paper"] { border-radius: 0 !important; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.admin-order-customer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(245, 130, 44, 0.04);
+}
+.admin-order-customer__main strong { font-size: 15px; }
+.admin-order-customer__contact { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.admin-order-customer__contact a { color: inherit; text-decoration: underline; }
+.admin-order-customer__stats {
+  display: flex;
+  gap: 18px;
+  font-size: 13px;
+  color: var(--muted);
+  align-items: center;
+  flex-wrap: wrap;
+}
+.admin-order-customer__stats b { color: var(--ink); font-weight: 700; }
+
+.admin-order-details {
+  padding: 18px 24px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 24px;
+}
+.admin-order-details__label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.admin-order-details__ship-body {
+  margin: 0;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+@media (max-width: 720px) {
+  .admin-order-details { grid-template-columns: 1fr; }
+  .admin-order-customer { flex-direction: column; }
+}
 .admin-link {
   color: var(--accent) !important;
   font-weight: 600 !important;

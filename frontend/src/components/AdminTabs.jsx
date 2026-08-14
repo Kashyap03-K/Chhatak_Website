@@ -5,7 +5,6 @@ const TABS = [
   { to: '/admin/uiux',     label: 'UI / UX' },
   { to: '/admin/products', label: 'Products' },
   { to: '/admin/orders',   label: 'Orders' },
-  { to: '/admin/users',    label: 'Users' },
   { to: '/admin/payments', label: 'Payments' },
   { to: '/admin/reviews',  label: 'Reviews' },
 ];

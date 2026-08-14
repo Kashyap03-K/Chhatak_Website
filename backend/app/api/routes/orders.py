@@ -13,6 +13,7 @@ from app.models.user import User
 from app.models.order import Order, OrderItem
 from app.models.cart import CartItem
 from app.models.product import Product
+from app.models.address import Address
 from app.schemas.order import OrderOut, OrderCreate, OrderStatusUpdate
 
 router = APIRouter(prefix="/orders", tags=["orders"])
@@ -125,9 +126,88 @@ def download_invoice(order_id: int, user: User = Depends(get_current_user), db: 
     )
 
 
-@router.get("/admin/all", response_model=list[OrderOut])
+@router.get("/admin/all")
 def admin_list_orders(db: Session = Depends(get_db), _=Depends(get_current_admin)):
-    return db.query(Order).order_by(Order.created_at.desc()).all()
+    """Every order with the customer's profile, saved addresses, and lifetime stats."""
+    orders = db.query(Order).order_by(Order.created_at.desc()).all()
+
+    stats_rows = (
+        db.query(
+            Order.user_id,
+            func.count(Order.id).label("order_count"),
+            func.coalesce(func.sum(Order.total_amount), 0).label("total_spent"),
+            func.max(Order.created_at).label("last_order_at"),
+        )
+        .group_by(Order.user_id)
+        .all()
+    )
+    stats_by_user = {
+        uid: {"order_count": int(oc or 0), "total_spent": float(ts or 0.0), "last_order_at": lo}
+        for (uid, oc, ts, lo) in stats_rows
+    }
+
+    addr_by_user: dict[int, list[Address]] = {}
+    for a in db.query(Address).order_by(Address.is_default.desc(), Address.created_at.desc()).all():
+        addr_by_user.setdefault(a.user_id, []).append(a)
+
+    def serialize_addr(a: Address):
+        return {
+            "id": a.id,
+            "full_name": a.full_name,
+            "phone": a.phone,
+            "address_line1": a.address_line1,
+            "address_line2": a.address_line2,
+            "city": a.city,
+            "state": a.state,
+            "pincode": a.pincode,
+            "is_default": a.is_default,
+        }
+
+    result = []
+    for o in orders:
+        u = o.user
+        s = stats_by_user.get(o.user_id, {"order_count": 0, "total_spent": 0.0, "last_order_at": None})
+        result.append({
+            "id": o.id,
+            "user_id": o.user_id,
+            "total_amount": o.total_amount,
+            "status": o.status,
+            "payment_method": o.payment_method,
+            "shipping_address": o.shipping_address,
+            "created_at": o.created_at,
+            "items": [
+                {
+                    "id": it.id,
+                    "product_id": it.product_id,
+                    "quantity": it.quantity,
+                    "unit_price": it.unit_price,
+                    "total_price": it.total_price,
+                    "product": {
+                        "id": it.product.id,
+                        "name": it.product.name,
+                        "slug": it.product.slug,
+                        "flavor": getattr(it.product, "flavor", None),
+                        "price": it.product.price,
+                        "image_url": getattr(it.product, "image_url", None),
+                    } if it.product else None,
+                }
+                for it in o.items
+            ],
+            "customer": {
+                "id": u.id,
+                "name": u.name,
+                "email": u.email,
+                "phone": u.phone,
+                "is_admin": u.is_admin,
+                "email_verified": u.email_verified,
+                "created_at": u.created_at,
+                "order_count": s["order_count"],
+                "total_spent": s["total_spent"],
+                "last_order_at": s["last_order_at"],
+                "addresses": [serialize_addr(a) for a in addr_by_user.get(u.id, [])],
+            } if u else None,
+        })
+    return result
 
 
 @router.get("/admin/stats")
