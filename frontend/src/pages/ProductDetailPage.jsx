@@ -129,10 +129,35 @@ export default function ProductDetailPage() {
                   );
                 }
                 const idx = Math.min(activeImage, gallery.length - 1);
+                const go = (delta) => setActiveImage((i) => {
+                  const n = gallery.length;
+                  return ((i + delta) % n + n) % n;
+                });
                 return (
                   <>
                     <div className="product-image-wrap">
                       <img src={gallery[idx]} alt={product.name} className="product-image" />
+                      {gallery.length > 1 && (
+                        <>
+                          <button
+                            type="button"
+                            className="product-image-arrow product-image-arrow--prev"
+                            aria-label="Previous image"
+                            onClick={() => go(-1)}
+                          >
+                            ‹
+                          </button>
+                          <button
+                            type="button"
+                            className="product-image-arrow product-image-arrow--next"
+                            aria-label="Next image"
+                            onClick={() => go(1)}
+                          >
+                            ›
+                          </button>
+                          <span className="product-image-counter">{idx + 1} / {gallery.length}</span>
+                        </>
+                      )}
                     </div>
                     {gallery.length > 1 && (
                       <div className="product-gallery-thumbs">
