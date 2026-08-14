@@ -55,12 +55,12 @@ export default function AdminOrders() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      const res = await api.get('/auth/admin/users/export', { responseType: 'blob' });
+      const res = await api.get('/orders/admin/export', { responseType: 'blob' });
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
       const stamp = new Date().toISOString().slice(0, 10);
-      link.setAttribute('download', `chhatak-users-${stamp}.xlsx`);
+      link.setAttribute('download', `chhatak-orders-${stamp}.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -112,7 +112,7 @@ export default function AdminOrders() {
             onClick={handleExport}
             disabled={exporting || orders.length === 0}
           >
-            {exporting ? 'Preparing…' : '⬇ Export users as .xlsx'}
+            {exporting ? 'Preparing…' : '⬇ Export orders as .xlsx'}
           </button>
         </div>
 
