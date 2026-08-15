@@ -138,6 +138,7 @@ export default function CheckoutPage() {
 
         <div className="checkout-grid">
           <form onSubmit={handlePlaceOrder} className="checkout-form">
+            <div className="checkout-section">
             <h3>Shipping address</h3>
 
             {savedAddresses.length > 0 && !showNewForm && (
@@ -161,7 +162,7 @@ export default function CheckoutPage() {
                     </div>
                   </label>
                 ))}
-                <button type="button" className="btn-link" onClick={() => setShowNewForm(true)} style={{ marginTop: '12px' }}>
+                <button type="button" className="btn-link" onClick={() => setShowNewForm(true)} style={{ marginTop: '18px', display: 'inline-block' }}>
                   + Add new address
                 </button>
               </div>
@@ -213,7 +214,10 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            <h3 style={{ marginTop: 32 }}>Payment method</h3>
+            </div>
+
+            <div className="checkout-section">
+            <h3>Payment method</h3>
             <div className="saved-addresses">
               <label className={`address-option ${paymentMethod === 'online' ? 'selected' : ''}`}>
                 <input type="radio" name="payment" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} />
@@ -230,8 +234,9 @@ export default function CheckoutPage() {
                 </div>
               </label>
             </div>
+            </div>
 
-            <button type="submit" className="btn-solid accent full" disabled={loading} style={{ marginTop: '20px' }}>
+            <button type="submit" className="btn-solid accent full" disabled={loading}>
               {loading ? (paymentMethod === 'online' ? 'Opening payment…' : 'Placing order…') : (paymentMethod === 'online' ? `Pay ₹${grandTotal}` : `Place order — ₹${grandTotal}`)}
             </button>
           </form>
