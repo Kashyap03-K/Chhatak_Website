@@ -185,8 +185,7 @@ function Hero({ section }) {
   const bowlImg = imgs[1];
   return (
     <section className="v2-hero v2-hero--coast">
-      {/* Background editorial layers */}
-      <LighthouseIllustration className="v2-hero-lighthouse" />
+      {/* Background editorial layers — seagulls on the left */}
       <SeagullFlock className="v2-hero-birds" />
 
       <div className="v2-container">
@@ -210,36 +209,11 @@ function Hero({ section }) {
             </p>
             <div className="v2-hero-ctas">
               <Link to="/products" className="v2-btn v2-btn--primary">SHOP THE RANGE</Link>
-              <Link to="/story" className="v2-btn v2-btn--outline">OUR STORY</Link>
+              <Link to="/story" className="v2-btn v2-btn--outline">Read Our Story</Link>
             </div>
           </div>
 
           <div className="v2-hero-photo-wrap">
-            <svg className="v2-hero-palm v2-hero-palm--tl" viewBox="0 0 80 100" aria-hidden="true">
-              <g stroke="#14213D" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity="0.6">
-                <path d="M40 96 Q 42 60 40 30" />
-                <path d="M40 30 Q 22 22 8 26" />
-                <path d="M40 30 Q 58 22 72 26" />
-                <path d="M40 30 Q 30 12 18 8" />
-                <path d="M40 30 Q 50 12 62 8" />
-                <path d="M40 30 Q 40 10 40 4" />
-              </g>
-            </svg>
-            <svg className="v2-hero-palm v2-hero-palm--tr" viewBox="0 0 80 100" aria-hidden="true">
-              <g stroke="#14213D" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity="0.6">
-                <path d="M40 96 Q 42 60 40 30" />
-                <path d="M40 30 Q 22 22 8 26" />
-                <path d="M40 30 Q 58 22 72 26" />
-                <path d="M40 30 Q 30 12 18 8" />
-                <path d="M40 30 Q 50 12 62 8" />
-                <path d="M40 30 Q 40 10 40 4" />
-              </g>
-            </svg>
-
-            {/* Beige paper backdrop (decorative) */}
-            <div className="v2-hero-paper" aria-hidden="true" />
-
-            {/* Layer 1: main photo */}
             <figure className="v2-hero-photo">
               {mainImg?.image_url ? (
                 <img src={mainImg.image_url} alt={mainImg.title || ''} />
@@ -247,34 +221,11 @@ function Hero({ section }) {
                 <div className="v2-hero-slot-empty">Main photo</div>
               )}
             </figure>
-
-            {/* Layer 3: bowl circle */}
-            <div className="v2-hero-bowl">
-              {bowlImg?.image_url ? (
-                <img src={bowlImg.image_url} alt="" />
-              ) : (
-                <div className="v2-hero-slot-empty">Bowl</div>
-              )}
-            </div>
-
-            <CompassRose className="v2-hero-compass" />
-
           </div>
         </div>
       </div>
 
-      {/* Small sailboat sketch in the hero's bottom-right corner */}
-      <svg className="v2-hero-corner-boat" viewBox="0 0 140 80" aria-hidden="true">
-        <g stroke="#14213D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.8">
-          <path d="M34 46 L 96 46 L 86 60 L 44 60 Z" />
-          <path d="M65 46 L 65 14" />
-          <path d="M65 16 L 65 44 L 96 44 Z" />
-          <path d="M4 68 Q 26 62 48 68 T 92 68 T 136 68" opacity="0.7" />
-          <path d="M2 74 Q 26 68 50 74 T 96 74 T 138 74" opacity="0.5" />
-        </g>
-      </svg>
-
-      {/* Tall-ship sketch in the hero's bottom-left corner */}
+      {/* Tall-ship sketch — anchored on the left, alongside the seagulls */}
       <img className="v2-hero-fleet" src="/images/tall-ship.png" alt="" aria-hidden="true" />
 
       {/* Editorial wave divider transitioning into the next section */}

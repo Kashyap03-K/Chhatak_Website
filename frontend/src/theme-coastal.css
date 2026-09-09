@@ -239,8 +239,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 /* Main photo — no frame, just the image, slight tilt */
 .v2-hero-photo {
   position: absolute;
-  top: 10%; left: 18%;
-  width: 60%; height: 74%;
+  inset: 0;
   background: transparent;
   padding: 0;
   margin: 0;
@@ -299,14 +298,15 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   width: 140px; height: auto;
 }
 .v2-hero-fleet {
-  position: absolute; z-index: 8; pointer-events: none;
-  left: 34%; bottom: 40px;
+  position: absolute; z-index: 1; pointer-events: none;
+  left: 2%; bottom: 40px;
   width: 200px; height: auto;
   transform: rotate(-2deg);
+  opacity: 0.55;
 }
+.v2-hero-copy { position: relative; z-index: 3; }
 @media (max-width: 900px) {
-  .v2-hero-corner-boat { width: 96px; right: 16px; bottom: 90px; }
-  .v2-hero-fleet { width: 140px; left: 30%; bottom: 30px; }
+  .v2-hero-fleet { width: 130px; left: 4%; bottom: 20px; opacity: 0.4; }
 }
 
 @media (max-width: 900px) {
@@ -621,7 +621,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 }
 .v2-perfect-card {
   margin: 0;
-  aspect-ratio: 5 / 1;
+  aspect-ratio: 62 / 13;
   border-radius: 18px;
   overflow: hidden;
   background: #0B2340;
