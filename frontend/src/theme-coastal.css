@@ -1610,3 +1610,124 @@ body.theme-coastal .pd-other-foot {
 }
 body.theme-coastal .pd-other-price { font-weight: 700; font-size: 18px; color: #0B2340; }
 
+/* ============================================================
+   CHECKOUT — compact, formal look
+   ============================================================ */
+body.theme-coastal .checkout-page { padding-top: 100px; }
+body.theme-coastal .checkout-page .container { max-width: 1180px; }
+body.theme-coastal .checkout-page .kicker.center { display: none; }
+body.theme-coastal .checkout-page .display.sm.center {
+  font-family: 'Fraunces', 'Playfair Display', serif;
+  font-weight: 500;
+  font-size: clamp(1.6rem, 2.4vw, 2rem);
+  letter-spacing: -0.01em;
+  margin-bottom: 28px;
+}
+body.theme-coastal .checkout-page .display.sm.center em { color: #0B2340; }
+
+body.theme-coastal .checkout-grid {
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 24px;
+  margin-top: 0;
+}
+
+body.theme-coastal .checkout-form,
+body.theme-coastal .cart-summary {
+  background: #FFFFFF;
+  border: 1px solid rgba(11, 35, 64, 0.12);
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 20px 24px;
+}
+
+body.theme-coastal .checkout-form h3,
+body.theme-coastal .cart-summary h3 {
+  font-family: 'Fraunces', 'Playfair Display', serif;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0;
+  color: #0B2340;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(11, 35, 64, 0.10);
+  text-transform: none;
+}
+
+body.theme-coastal .checkout-form .checkout-section + .checkout-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(11, 35, 64, 0.08);
+}
+
+body.theme-coastal .saved-addresses { gap: 10px; }
+
+body.theme-coastal .address-option {
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(11, 35, 64, 0.15);
+  background: #FFFFFF;
+  font-size: 13px;
+  line-height: 1.45;
+  gap: 12px;
+}
+body.theme-coastal .address-option.selected {
+  border-color: #0B2340;
+  background: #FFFFFF;
+  box-shadow: inset 0 0 0 1px #0B2340;
+}
+body.theme-coastal .address-option strong { font-size: 13px; letter-spacing: 0.01em; }
+body.theme-coastal .address-option input[type="radio"] { margin-top: 2px; }
+
+body.theme-coastal .default-badge {
+  font-size: 9px; letter-spacing: 0.08em;
+  padding: 2px 6px; border-radius: 3px;
+  margin-left: 8px;
+  background: #0B2340; color: #FFFFFF;
+}
+
+body.theme-coastal .checkout-form .btn-link { font-size: 13px; font-weight: 600; }
+
+body.theme-coastal .checkout-form .form-group { margin-bottom: 12px; }
+body.theme-coastal .checkout-form .form-group label {
+  font-size: 12px; letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(11, 35, 64, 0.65);
+  margin-bottom: 4px;
+}
+body.theme-coastal .checkout-form .form-group input {
+  padding: 9px 12px; font-size: 14px; border-radius: 6px;
+  border: 1px solid rgba(11, 35, 64, 0.18);
+}
+body.theme-coastal .checkout-form .form-row { gap: 12px; }
+body.theme-coastal .checkout-form .save-checkbox { font-size: 13px; }
+
+body.theme-coastal .checkout-form .btn-solid.full {
+  margin-top: 18px !important;
+  padding: 12px 20px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+/* Order summary — tighter, ledger-like */
+body.theme-coastal .cart-summary { position: sticky; top: 96px; padding: 20px 22px; }
+body.theme-coastal .summary-item {
+  font-size: 13px; padding: 5px 0;
+  color: rgba(11, 35, 64, 0.75);
+}
+body.theme-coastal .cart-summary .summary-item:first-of-type { padding-top: 2px; }
+body.theme-coastal .summary-row {
+  font-size: 13px; padding: 7px 0;
+  border-top: 1px solid rgba(11, 35, 64, 0.08);
+  color: rgba(11, 35, 64, 0.85);
+}
+body.theme-coastal .summary-row.total {
+  font-family: 'Fraunces', 'Playfair Display', serif;
+  font-size: 17px; font-weight: 500;
+  padding-top: 10px; margin-top: 4px;
+  border-top: 1px solid rgba(11, 35, 64, 0.22);
+  color: #0B2340;
+}
+
