@@ -1,6 +1,15 @@
 /* ============================================================
    V2 · Coastal Cream landing theme  (scoped under .v2)
    ============================================================ */
+
+/* Preserve source quality when the browser downscales videos into small tiles */
+body.theme-coastal video {
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
 body.theme-coastal {
   background: #FFFFFF;
   color: #0B2340;

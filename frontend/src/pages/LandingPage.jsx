@@ -279,7 +279,7 @@ function StoryBanner({ section }) {
                   key={img.id ?? i}
                   src={img.image_url}
                   className={`v2-story-slide${i === active ? ' is-active' : ''}`}
-                  controls playsInline preload="metadata"
+                  controls playsInline preload="auto"
                 />
               ) : (
                 <img
@@ -510,7 +510,7 @@ function JourneyStrip({ items }) {
         {items.map((it, i) => (
           <a key={i} href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="v2-journey-tile">
             {it.media_type === 'video' ? (
-              <video src={it.src} muted playsInline preload="metadata" />
+              <video src={it.src} muted playsInline preload="auto" />
             ) : (
               <img src={it.src} alt="" loading="lazy" />
             )}
@@ -649,9 +649,8 @@ function HeroVideo({ src, defaultSoundOn = false }) {
         muted
         loop
         playsInline
-        preload="metadata"
-        disablePictureInPicture
-        controlsList="nodownload noplaybackrate nofullscreen"
+        preload="auto"
+        controlsList="nodownload"
       />
       <button
         type="button"
