@@ -139,7 +139,13 @@ export default function CheckoutPage() {
         <div className="checkout-grid">
           <form onSubmit={handlePlaceOrder} className="checkout-form">
             <div className="checkout-section">
-            <h3>Shipping address</h3>
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12Z" />
+                <circle cx="12" cy="9" r="2.6" />
+              </svg>
+              Shipping address
+            </h3>
 
             {savedAddresses.length > 0 && !showNewForm && (
               <div className="saved-addresses">
@@ -217,7 +223,14 @@ export default function CheckoutPage() {
             </div>
 
             <div className="checkout-section">
-            <h3>Payment method</h3>
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="2.5" y="5.5" width="19" height="13" rx="2" />
+                <path d="M2.5 10h19" />
+                <path d="M6 15h4" />
+              </svg>
+              Payment method
+            </h3>
             <div className="saved-addresses">
               <label className={`address-option ${paymentMethod === 'online' ? 'selected' : ''}`}>
                 <input type="radio" name="payment" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} />
@@ -242,7 +255,13 @@ export default function CheckoutPage() {
           </form>
 
           <div className="cart-summary">
-            <h3>Order summary</h3>
+            <h3>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M6 3h9l4 4v14a1 1 0 0 1-1.5.87L15 20l-2 1.2L11 20l-2 1.2L7 20l-2.5 1.87A1 1 0 0 1 3 21V5a2 2 0 0 1 2-2h1Z" />
+                <path d="M8 9h8M8 13h8M8 17h5" />
+              </svg>
+              Order summary
+            </h3>
             {items.map((item) => (
               <div className="summary-item" key={item.id}>
                 <span>{item.product.name} × {item.quantity}</span>

@@ -1651,6 +1651,14 @@ body.theme-coastal .cart-summary h3 {
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(11, 35, 64, 0.10);
   text-transform: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+body.theme-coastal .checkout-form h3 svg,
+body.theme-coastal .cart-summary h3 svg {
+  color: #F5822C;
+  flex-shrink: 0;
 }
 
 body.theme-coastal .checkout-form .checkout-section + .checkout-section {
