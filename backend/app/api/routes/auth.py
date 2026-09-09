@@ -1,7 +1,8 @@
 import io
 import logging
+import re
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
@@ -15,7 +16,9 @@ from app.models.address import Address
 from app.models.order import Order
 from app.models.user import User
 from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse
-from app.services.email import send_verification_email
+from app.services.email import send_verification_email, send_password_reset_email
+
+PASSWORD_RESET_TTL = timedelta(hours=1)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -97,6 +100,57 @@ def resend_verification(body: ResendRequest, db: Session = Depends(get_db)):
         db.commit()
         send_verification_email(user, token)
     return {"ok": True}
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+@router.post("/forgot-password")
+def forgot_password(body: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    """Generate a reset token and email it. Always returns ok — never reveals whether the account exists."""
+    user = db.query(User).filter(User.email == body.email).first()
+    if user:
+        token = secrets.token_urlsafe(32)
+        user.password_reset_token = token
+        user.password_reset_expires_at = datetime.now(timezone.utc) + PASSWORD_RESET_TTL
+        db.commit()
+        try:
+            send_password_reset_email(user, token)
+        except Exception as e:
+            logger.error("Password reset email failed for %s: %s", user.email, e)
+    return {"ok": True}
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    password: str
+
+
+_PW_RE = re.compile(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$")
+
+
+@router.post("/reset-password", response_model=TokenResponse)
+def reset_password(body: ResetPasswordRequest, db: Session = Depends(get_db)):
+    if not _PW_RE.match(body.password):
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters with one uppercase, one lowercase, and one digit.")
+    user = db.query(User).filter(User.password_reset_token == body.token).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset link")
+    expires = user.password_reset_expires_at
+    if expires is not None and expires.tzinfo is None:
+        expires = expires.replace(tzinfo=timezone.utc)
+    if not expires or expires < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Reset link has expired. Request a new one.")
+
+    user.password_hash = hash_password(body.password)
+    user.password_reset_token = None
+    user.password_reset_expires_at = None
+    db.commit()
+    logger.info("Password reset for user %s", user.id)
+
+    access = create_access_token({"sub": str(user.id)})
+    return TokenResponse(access_token=access, user_id=user.id, name=user.name, is_admin=user.is_admin)
 
 
 def _user_rows(db: Session):

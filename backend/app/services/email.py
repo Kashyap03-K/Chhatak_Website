@@ -58,6 +58,55 @@ def send_verification_email(user: User, token: str) -> bool:
         return False
 
 
+def send_password_reset_email(user: User, token: str) -> bool:
+    """Send a password reset email with a link containing the token.
+
+    If RESEND_API_KEY is unset, logs the reset URL instead — useful for local dev.
+    """
+    reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token}"
+
+    if not settings.RESEND_API_KEY:
+        logger.warning(
+            "RESEND_API_KEY not set — password reset email skipped. Reset URL for %s: %s",
+            user.email, reset_url,
+        )
+        return False
+
+    resend.api_key = settings.RESEND_API_KEY
+
+    first_name = user.name.split(' ')[0] if user.name else 'there'
+    html = f"""
+    <div style="font-family:Inter,Arial,sans-serif;max-width:560px;margin:0 auto;color:#1a1a2e">
+        <div style="background:#0B1520;padding:36px;text-align:center;border-radius:8px 8px 0 0">
+            <h1 style="color:#F0994A;margin:0;font-size:28px;font-family:'Fraunces',serif">Chhatak</h1>
+            <p style="color:#c5bfae;margin:8px 0 0;font-size:13px;letter-spacing:0.08em">THE COASTAL CRUNCH</p>
+        </div>
+        <div style="padding:36px 32px;background:#fff;border-radius:0 0 8px 8px;border:1px solid #eee;border-top:0">
+            <h2 style="color:#1a1a2e;margin:0 0 8px;font-family:'Fraunces',serif;font-weight:500">Reset your password, {first_name}.</h2>
+            <p style="color:#555;line-height:1.6;margin:0 0 28px">Click the button below to choose a new password. This link is good for one hour, then it stops working.</p>
+            <p style="text-align:center;margin:0 0 28px">
+                <a href="{reset_url}" style="display:inline-block;background:#F0994A;color:#0B1520;padding:14px 32px;border-radius:4px;text-decoration:none;font-weight:600;letter-spacing:0.02em">Reset my password →</a>
+            </p>
+            <p style="color:#888;font-size:12px;line-height:1.6;margin:0">Or paste this link into your browser:<br/><a href="{reset_url}" style="color:#B45A26;word-break:break-all">{reset_url}</a></p>
+        </div>
+        <p style="text-align:center;color:#aaa;font-size:11px;margin:20px 0 0">Didn't request this? Ignore this email — your password stays the same.</p>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": settings.FROM_EMAIL,
+            "to": [user.email],
+            "subject": "Reset your Chhatak password",
+            "html": html,
+        })
+        logger.info("Password reset email sent to %s", user.email)
+        return True
+    except Exception as e:
+        logger.error("Failed to send password reset email to %s: %s", user.email, e)
+        return False
+
+
 def send_order_confirmation(order: Order, pdf_bytes: bytes) -> bool:
     if not settings.RESEND_API_KEY:
         logger.warning("RESEND_API_KEY not set — skipping email for order %d", order.id)

@@ -108,7 +108,10 @@ export default function AuthDialog() {
           )}
           {isLogin ? (
             <div className="form-group">
-              <label htmlFor="d-pw">Password</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                <label htmlFor="d-pw" style={{ marginBottom: 0 }}>Password</label>
+                <a href="/forgot-password" onClick={closeAuthDialog} className="btn-link" style={{ fontSize: 12, textDecoration: 'none' }}>Forgot password?</a>
+              </div>
               <input id="d-pw" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password" />
             </div>
           ) : (

@@ -11,6 +11,8 @@ import CheckoutPage from './pages/CheckoutPage.jsx';
 import StoryPage from './pages/StoryPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
+import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx';
+import ResetPasswordPage from './pages/ResetPasswordPage.jsx';
 import OrdersPage from './pages/OrdersPage.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import AdminUIUX from './pages/admin/AdminUIUX.jsx';
@@ -53,6 +55,8 @@ export default function App() {
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         <Route path="/admin/uiux" element={<AdminRoute><AdminUIUX /></AdminRoute>} />

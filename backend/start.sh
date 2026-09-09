@@ -11,6 +11,9 @@ Base.metadata.create_all(bind=engine)
 with engine.begin() as conn:
     conn.execute(text('ALTER TABLE landing_sections ADD COLUMN IF NOT EXISTS full_viewport BOOLEAN NOT NULL DEFAULT false'))
     conn.execute(text('ALTER TABLE products ADD COLUMN IF NOT EXISTS long_description TEXT'))
+    conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS password_reset_token VARCHAR(64)'))
+    conn.execute(text('ALTER TABLE users ADD COLUMN IF NOT EXISTS password_reset_expires_at TIMESTAMP'))
+    conn.execute(text('CREATE UNIQUE INDEX IF NOT EXISTS ix_users_password_reset_token ON users (password_reset_token)'))
 print('Database tables created.')
 "
 

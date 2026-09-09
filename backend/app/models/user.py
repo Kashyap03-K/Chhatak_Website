@@ -17,5 +17,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     email_verified = Column(Boolean, default=False, nullable=False)
     verification_token = Column(String(64), unique=True, index=True, nullable=True)
+    password_reset_token = Column(String(64), unique=True, index=True, nullable=True)
+    password_reset_expires_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
