@@ -18,32 +18,15 @@ export default function WholesalePage() {
     <div className="wholesale-page">
       {/* BUY / CTA */}
       <section id="buy" className="buy section" style={{ paddingTop: 140 }}>
-        <div className="container buy-grid">
-          <div>
-            <p className="kicker accent">— Available now</p>
-            <h2 className="display sm">One pouch is <em>never</em> enough.</h2>
-            <p className="lead-dark">Stock Chhatak in your café, gourmet store, or coastal resort. Complimentary shipping on wholesale orders above ₹9,999.</p>
-            <div className="buy-actions">
-              <a className="btn-solid accent" href="#enquire">Enquire now →</a>
-              <a className="btn-link" href="mailto:hello@chhatak.co">hello@chhatak.co</a>
-            </div>
-          </div>
-
-          <div className="buy-card">
-            <img src="/images/packaging-front-back.png" alt="Chhatak packaging front and back" className="buy-card-img" loading="lazy" />
-            <p className="kicker">— Combo</p>
-            <h3 className="combo-title">Pack of three</h3>
-            <p className="combo-sub">100g each · Indian Classic</p>
-            <div className="combo-price">
-              <span className="price-now">₹549</span>
-              <span className="price-was">₹699</span>
-            </div>
-            <ul className="combo-list">
-              <li>Complimentary shipping</li>
-              <li>100% authentic Chhatak</li>
-              <li>Easy returns within 7 days</li>
-            </ul>
-            <a className="btn-solid accent full" href="/#products">Grab the combo</a>
+        <div className="container" style={{ maxWidth: 720, textAlign: 'center' }}>
+          <p className="kicker accent">— Available now</p>
+          <h2 className="display sm">One pouch is <em>never</em> enough.</h2>
+          <p className="lead-dark" style={{ margin: '18px auto 28px', maxWidth: 560 }}>
+            Stock Chhatak in your café, gourmet store, or coastal resort. Complimentary shipping on wholesale orders above ₹9,999.
+          </p>
+          <div className="buy-actions" style={{ justifyContent: 'center' }}>
+            <a className="btn-solid accent" href="#enquire">Enquire now →</a>
+            <a className="btn-link" href="mailto:hello@chhatak.co">hello@chhatak.co</a>
           </div>
         </div>
       </section>
