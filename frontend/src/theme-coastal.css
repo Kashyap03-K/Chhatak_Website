@@ -1612,44 +1612,66 @@ body.theme-coastal .pd-other-price { font-weight: 700; font-size: 18px; color: #
 
 /* ============================================================
    CHECKOUT — compact, formal look
+   Palette: navy #0F2745 · orange #D35E2B · cream #F6F1EA
+   Fonts:   Lora (headings) · Inter (body)
    ============================================================ */
-body.theme-coastal .checkout-page { padding-top: 100px; }
+body.theme-coastal .checkout-page {
+  padding-top: 100px;
+  background: #F6F1EA;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
 body.theme-coastal .checkout-page .container { max-width: 1180px; }
 body.theme-coastal .checkout-page .kicker.center { display: none; }
 body.theme-coastal .checkout-page .display.sm.center {
-  font-family: 'Fraunces', 'Playfair Display', serif;
+  font-family: 'Lora', 'Fraunces', 'Playfair Display', serif;
   font-weight: 500;
   font-size: clamp(1.6rem, 2.4vw, 2rem);
   letter-spacing: -0.01em;
+  color: #0F2745;
   margin-bottom: 28px;
 }
-body.theme-coastal .checkout-page .display.sm.center em { color: #0B2340; }
+body.theme-coastal .checkout-page .display.sm.center em { color: #0F2745; font-style: normal; }
 
 body.theme-coastal .checkout-grid {
   grid-template-columns: 1.35fr 0.65fr;
   gap: 24px;
   margin-top: 0;
 }
+@media (max-width: 1024px) {
+  body.theme-coastal .checkout-grid { grid-template-columns: 1fr; gap: 20px; }
+  body.theme-coastal .cart-summary { position: static; }
+}
+@media (max-width: 640px) {
+  body.theme-coastal .checkout-page { padding-top: 80px; }
+  body.theme-coastal .checkout-page .container { padding: 0 16px; }
+  body.theme-coastal .checkout-form,
+  body.theme-coastal .cart-summary { padding: 16px 18px; }
+  body.theme-coastal .checkout-page .display.sm.center { font-size: 1.5rem; margin-bottom: 20px; }
+  body.theme-coastal .checkout-form .form-row { grid-template-columns: 1fr; gap: 0; }
+  body.theme-coastal .address-option { padding: 12px; font-size: 12.5px; }
+  body.theme-coastal .address-option strong { font-size: 12.5px; }
+}
 
 body.theme-coastal .checkout-form,
 body.theme-coastal .cart-summary {
   background: #FFFFFF;
-  border: 1px solid rgba(11, 35, 64, 0.12);
-  border-radius: 8px;
+  border: 1px solid rgba(15, 39, 69, 0.12);
+  border-radius: 10px;
   box-shadow: none;
-  padding: 20px 24px;
+  padding: 22px 26px;
+  color: #1F1F1F;
 }
 
 body.theme-coastal .checkout-form h3,
 body.theme-coastal .cart-summary h3 {
-  font-family: 'Fraunces', 'Playfair Display', serif;
+  font-family: 'Lora', 'Fraunces', 'Playfair Display', serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 17px;
   letter-spacing: 0;
-  color: #0B2340;
-  margin: 0 0 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(11, 35, 64, 0.10);
+  color: #0F2745;
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(15, 39, 69, 0.10);
   text-transform: none;
   display: flex;
   align-items: center;
@@ -1657,7 +1679,7 @@ body.theme-coastal .cart-summary h3 {
 }
 body.theme-coastal .checkout-form h3 svg,
 body.theme-coastal .cart-summary h3 svg {
-  color: #F5822C;
+  color: #D35E2B;
   flex-shrink: 0;
 }
 
@@ -1670,72 +1692,98 @@ body.theme-coastal .checkout-form .checkout-section + .checkout-section {
 body.theme-coastal .saved-addresses { gap: 10px; }
 
 body.theme-coastal .address-option {
-  padding: 12px 14px;
-  border-radius: 6px;
-  border: 1px solid rgba(11, 35, 64, 0.15);
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 39, 69, 0.15);
   background: #FFFFFF;
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: 13.5px;
+  line-height: 1.5;
   gap: 12px;
+  color: #1F1F1F;
 }
+body.theme-coastal .address-option:hover { border-color: #D35E2B; }
 body.theme-coastal .address-option.selected {
-  border-color: #0B2340;
+  border-color: #0F2745;
   background: #FFFFFF;
-  box-shadow: inset 0 0 0 1px #0B2340;
+  box-shadow: inset 0 0 0 1px #0F2745;
 }
-body.theme-coastal .address-option strong { font-size: 13px; letter-spacing: 0.01em; }
-body.theme-coastal .address-option input[type="radio"] { margin-top: 2px; }
+body.theme-coastal .address-option strong { font-size: 13.5px; letter-spacing: 0.01em; color: #0F2745; }
+body.theme-coastal .address-option input[type="radio"] { margin-top: 3px; accent-color: #D35E2B; }
 
 body.theme-coastal .default-badge {
   font-size: 9px; letter-spacing: 0.08em;
-  padding: 2px 6px; border-radius: 3px;
+  padding: 3px 7px; border-radius: 3px;
   margin-left: 8px;
-  background: #0B2340; color: #FFFFFF;
+  background: #0F2745; color: #FFFFFF;
 }
 
-body.theme-coastal .checkout-form .btn-link { font-size: 13px; font-weight: 600; }
+body.theme-coastal .checkout-form .btn-link { font-size: 13px; font-weight: 600; color: #D35E2B; }
+body.theme-coastal .checkout-form .btn-link:hover { color: #0F2745; }
 
-body.theme-coastal .checkout-form .form-group { margin-bottom: 12px; }
+body.theme-coastal .checkout-form .form-group { margin-bottom: 14px; }
 body.theme-coastal .checkout-form .form-group label {
-  font-size: 12px; letter-spacing: 0.04em;
+  font-size: 11.5px; letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(11, 35, 64, 0.65);
-  margin-bottom: 4px;
+  color: #8B8B8B;
+  margin-bottom: 5px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 body.theme-coastal .checkout-form .form-group input {
-  padding: 9px 12px; font-size: 14px; border-radius: 6px;
-  border: 1px solid rgba(11, 35, 64, 0.18);
+  padding: 10px 13px; font-size: 14px; border-radius: 6px;
+  border: 1px solid rgba(15, 39, 69, 0.18);
+  font-family: 'Inter', sans-serif;
+  color: #1F1F1F;
 }
-body.theme-coastal .checkout-form .form-row { gap: 12px; }
-body.theme-coastal .checkout-form .save-checkbox { font-size: 13px; }
+body.theme-coastal .checkout-form .form-group input:focus { border-color: #D35E2B; outline: none; }
+body.theme-coastal .checkout-form .form-row { gap: 14px; }
+body.theme-coastal .checkout-form .save-checkbox { font-size: 13px; color: #1F1F1F; }
 
 body.theme-coastal .checkout-form .btn-solid.full {
-  margin-top: 18px !important;
-  padding: 12px 20px;
+  margin-top: 20px !important;
+  padding: 13px 20px;
   font-size: 14px;
   letter-spacing: 0.04em;
   font-weight: 600;
   border-radius: 6px;
   text-transform: uppercase;
+  background: #D35E2B;
+  font-family: 'Inter', sans-serif;
 }
+body.theme-coastal .checkout-form .btn-solid.full:hover { background: #B54F22; }
 
 /* Order summary — tighter, ledger-like */
-body.theme-coastal .cart-summary { position: sticky; top: 96px; padding: 20px 22px; }
+body.theme-coastal .cart-summary { position: sticky; top: 96px; padding: 22px 24px; }
 body.theme-coastal .summary-item {
-  font-size: 13px; padding: 5px 0;
-  color: rgba(11, 35, 64, 0.75);
+  font-size: 13px; padding: 6px 0;
+  color: #1F1F1F;
 }
 body.theme-coastal .cart-summary .summary-item:first-of-type { padding-top: 2px; }
 body.theme-coastal .summary-row {
-  font-size: 13px; padding: 7px 0;
-  border-top: 1px solid rgba(11, 35, 64, 0.08);
-  color: rgba(11, 35, 64, 0.85);
+  font-size: 13px; padding: 8px 0;
+  border-top: 1px solid rgba(15, 39, 69, 0.08);
+  color: #1F1F1F;
 }
 body.theme-coastal .summary-row.total {
-  font-family: 'Fraunces', 'Playfair Display', serif;
-  font-size: 17px; font-weight: 500;
-  padding-top: 10px; margin-top: 4px;
-  border-top: 1px solid rgba(11, 35, 64, 0.22);
-  color: #0B2340;
+  font-family: 'Lora', 'Fraunces', 'Playfair Display', serif;
+  font-size: 18px; font-weight: 500;
+  padding-top: 12px; margin-top: 4px;
+  border-top: 1px solid rgba(15, 39, 69, 0.22);
+  color: #0F2745;
+}
+
+/* ============================================================
+   VIDEO — prevent hard cropping on narrow screens.
+   Hero/story videos default to object-fit: cover, which chops the
+   frame off on portrait phones. Contain preserves the whole shot.
+   ============================================================ */
+@media (max-width: 640px) {
+  body.theme-coastal .v2-hero-photo video,
+  body.theme-coastal .v2-story-media video,
+  body.theme-coastal .v2-custom-hero > video,
+  body.theme-coastal .v2-slide-frame video {
+    object-fit: contain;
+    background: #0F2745;
+  }
 }
 
