@@ -18,17 +18,16 @@ const PAYMENT_LABELS = {
   online: { label: 'Paid by UPI', tone: 'paid' },
 };
 
-// Date-bucketing: today / yesterday / last 7 days / older.
+// Date-bucketing: today / yesterday / last 7 days / older — all anchored to IST civil days.
 function bucketOf(iso) {
-  if (!iso) return 'older';
-  const d = new Date(iso);
-  const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startOfYesterday = new Date(startOfToday); startOfYesterday.setDate(startOfYesterday.getDate() - 1);
-  const startOfWeekWindow = new Date(startOfToday); startOfWeekWindow.setDate(startOfWeekWindow.getDate() - 6);
-  if (d >= startOfToday) return 'today';
-  if (d >= startOfYesterday) return 'yesterday';
-  if (d >= startOfWeekWindow) return 'last_week';
+  const d = parseServerDate(iso);
+  if (!d || isNaN(d)) return 'older';
+  const today = istDateParts(new Date());
+  const then = istDateParts(d);
+  const delta = daysBetweenIST(then, today); // 0 = today, 1 = yesterday, ...
+  if (delta <= 0) return 'today';
+  if (delta === 1) return 'yesterday';
+  if (delta <= 7) return 'last_week';
   return 'older';
 }
 const BUCKET_ORDER = ['today', 'yesterday', 'last_week', 'older'];
@@ -38,14 +37,44 @@ function formatCurrency(n) {
   return `₹${Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 }
 
+// Backend stores timestamps as UTC but the column is naive, so the ISO string it
+// returns has no timezone suffix (e.g. "2026-09-11T00:22:00"). new Date(...) then
+// interprets that as local time and displays UTC hours as if they were IST hours,
+// which lands orders on the wrong day. Force-treat any naive string as UTC.
+function parseServerDate(s) {
+  if (!s) return null;
+  if (s instanceof Date) return s;
+  const hasTZ = /[zZ]$|[+-]\d{2}:?\d{2}$/.test(s);
+  return new Date(hasTZ ? s : `${s}Z`);
+}
+
+const IST_TZ = 'Asia/Kolkata';
+
 function formatDate(s, withTime = false) {
-  if (!s) return '—';
-  try {
-    const d = new Date(s);
-    const opts = { day: 'numeric', month: 'short', year: 'numeric' };
-    if (withTime) { opts.hour = '2-digit'; opts.minute = '2-digit'; }
-    return d.toLocaleDateString('en-IN', opts);
-  } catch { return String(s); }
+  const d = parseServerDate(s);
+  if (!d || isNaN(d)) return '—';
+  const opts = { day: 'numeric', month: 'short', year: 'numeric', timeZone: IST_TZ };
+  if (withTime) {
+    opts.hour = '2-digit'; opts.minute = '2-digit'; opts.hour12 = true;
+  }
+  return d.toLocaleString('en-IN', opts);
+}
+
+// Returns { y, m, d } in IST for a given Date — used to build IST-anchored buckets.
+function istDateParts(dt) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: IST_TZ, year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(dt);
+  const y = parseInt(parts.find((p) => p.type === 'year').value, 10);
+  const m = parseInt(parts.find((p) => p.type === 'month').value, 10);
+  const d = parseInt(parts.find((p) => p.type === 'day').value, 10);
+  return { y, m, d };
+}
+function daysBetweenIST(a, b) {
+  // Number of civil days (IST) from a to b, ignoring the time-of-day.
+  const A = new Date(Date.UTC(a.y, a.m - 1, a.d));
+  const B = new Date(Date.UTC(b.y, b.m - 1, b.d));
+  return Math.round((B - A) / 86400000);
 }
 
 export default function AdminOrders() {
