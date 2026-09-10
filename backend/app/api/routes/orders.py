@@ -379,3 +379,31 @@ def update_order_status(order_id: int, body: OrderStatusUpdate, db: Session = De
     db.commit()
     db.refresh(order)
     return order
+
+
+@router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
+def admin_delete_order(order_id: int, db: Session = Depends(get_db), _=Depends(get_current_admin)):
+    """Permanently delete an order and its line items. Admin only."""
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    db.delete(order)
+    db.commit()
+
+
+@router.post("/admin/bulk-delete")
+def admin_bulk_delete(body: dict, db: Session = Depends(get_db), _=Depends(get_current_admin)):
+    """Delete every order strictly older than a cutoff date (ISO 8601). Returns the count removed."""
+    cutoff = body.get("older_than")
+    if not cutoff:
+        raise HTTPException(status_code=400, detail="older_than is required (ISO 8601 date)")
+    try:
+        cutoff_dt = datetime.fromisoformat(str(cutoff).replace("Z", "+00:00"))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid older_than format; use ISO 8601")
+    stale = db.query(Order).filter(Order.created_at < cutoff_dt).all()
+    n = len(stale)
+    for o in stale:
+        db.delete(o)
+    db.commit()
+    return {"deleted": n}

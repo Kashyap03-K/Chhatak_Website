@@ -12,6 +12,28 @@ const STATUS_LABELS = {
   cancelled: 'Cancelled',
 };
 
+const PAYMENT_LABELS = {
+  cod: { label: 'COD', tone: 'cod' },
+  razorpay: { label: 'Paid by UPI', tone: 'paid' },
+  online: { label: 'Paid by UPI', tone: 'paid' },
+};
+
+// Date-bucketing: today / yesterday / last 7 days / older.
+function bucketOf(iso) {
+  if (!iso) return 'older';
+  const d = new Date(iso);
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startOfYesterday = new Date(startOfToday); startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+  const startOfWeekWindow = new Date(startOfToday); startOfWeekWindow.setDate(startOfWeekWindow.getDate() - 6);
+  if (d >= startOfToday) return 'today';
+  if (d >= startOfYesterday) return 'yesterday';
+  if (d >= startOfWeekWindow) return 'last_week';
+  return 'older';
+}
+const BUCKET_ORDER = ['today', 'yesterday', 'last_week', 'older'];
+const BUCKET_LABELS = { today: 'Today', yesterday: 'Yesterday', last_week: 'Last 7 days', older: 'Older' };
+
 function formatCurrency(n) {
   return `₹${Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 }
@@ -49,6 +71,42 @@ export default function AdminOrders() {
       fetchOrders();
     } catch {
       alert('Failed to update status');
+    }
+  };
+
+  const deleteOrder = async (orderId) => {
+    if (!confirm(`Permanently delete order #${orderId}? This cannot be undone.`)) return;
+    try {
+      await api.delete(`/orders/${orderId}`);
+      setOrders((prev) => prev.filter((o) => o.id !== orderId));
+    } catch {
+      alert('Delete failed.');
+    }
+  };
+
+  const bulkDeleteOlderThan = async () => {
+    const label = prompt(
+      'Delete all orders older than…\n\nType a number of days (e.g. 30) or an ISO date (e.g. 2026-01-01).',
+      '90',
+    );
+    if (!label) return;
+    let cutoff;
+    if (/^\d+$/.test(label.trim())) {
+      const days = parseInt(label.trim(), 10);
+      const d = new Date(); d.setDate(d.getDate() - days);
+      cutoff = d.toISOString();
+    } else {
+      const d = new Date(label);
+      if (isNaN(d)) { alert('Could not parse that date.'); return; }
+      cutoff = d.toISOString();
+    }
+    if (!confirm(`Delete every order created before ${new Date(cutoff).toLocaleDateString('en-IN')}? This cannot be undone.`)) return;
+    try {
+      const { data } = await api.post('/orders/admin/bulk-delete', { older_than: cutoff });
+      alert(`Deleted ${data.deleted} order${data.deleted === 1 ? '' : 's'}.`);
+      fetchOrders();
+    } catch (e) {
+      alert(e.response?.data?.detail || 'Bulk delete failed.');
     }
   };
 
@@ -114,6 +172,16 @@ export default function AdminOrders() {
           >
             {exporting ? 'Preparing…' : '⬇ Export orders as .xlsx'}
           </button>
+          <button
+            type="button"
+            className="btn-outline"
+            onClick={bulkDeleteOlderThan}
+            disabled={orders.length === 0}
+            title="Delete every order older than a chosen date"
+            style={{ borderColor: '#c94a4a', color: '#c94a4a' }}
+          >
+            🗑 Delete old orders…
+          </button>
         </div>
 
         <div className="admin-users-stats">
@@ -141,14 +209,23 @@ export default function AdminOrders() {
           <p style={{ color: 'var(--muted)', marginTop: '32px' }}>No orders found.</p>
         ) : (
           <div className="admin-orders-list">
-            {filtered.map((order) => {
+            {BUCKET_ORDER.flatMap((bucket) => {
+              const rows = filtered.filter((o) => bucketOf(o.created_at) === bucket);
+              if (rows.length === 0) return [];
+              return [
+                <h3 key={`h-${bucket}`} className="admin-orders-bucket-heading">
+                  {BUCKET_LABELS[bucket]} <span className="admin-orders-bucket-count">({rows.length})</span>
+                </h3>,
+                ...rows.map((order) => {
               const c = order.customer || {};
               const isOpen = expanded === order.id;
+              const pay = PAYMENT_LABELS[order.payment_method] || { label: order.payment_method || 'Unknown', tone: 'unknown' };
               return (
                 <div className={`admin-order-card${isOpen ? ' is-open' : ''}`} key={order.id}>
                   <div className="admin-order-header">
                     <div>
                       <span className="order-id">Order #{order.id}</span>
+                      <span className={`admin-pay-badge admin-pay-badge--${pay.tone}`}>{pay.label}</span>
                       <span className="order-date">{formatDate(order.created_at, true)}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -161,6 +238,14 @@ export default function AdminOrders() {
                           <option key={s} value={s}>{STATUS_LABELS[s]}</option>
                         ))}
                       </select>
+                      <button
+                        type="button"
+                        className="admin-order-delete"
+                        title="Delete this order"
+                        onClick={() => deleteOrder(order.id)}
+                      >
+                        🗑
+                      </button>
                     </div>
                   </div>
 
@@ -238,6 +323,8 @@ export default function AdminOrders() {
                   )}
                 </div>
               );
+                }),
+              ];
             })}
           </div>
         )}
