@@ -78,7 +78,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Fredoka:wght@500;600;700&family=Caveat:wght@600;700&family=Titan+One&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <!--
+      SEO fallback: React replaces this on mount, but Googlebot's first-pass crawler
+      sees this before JS runs, so it can actually match "chhatak", "bombil crunch",
+      "diu fish snack" etc. without waiting for the (slower) rendering pass.
+    -->
+    <main style="max-width:820px;margin:40px auto;padding:0 24px;font-family:system-ui,sans-serif;color:#0F2745;line-height:1.55">
+      <h1 style="font-size:2rem;margin:0 0 8px">Chhatak — The Coastal Crunch</h1>
+      <p style="font-size:1.05rem;margin:0 0 20px;color:#333"><strong>Premium ready-to-eat Bombil (Bombay Duck) fish snack from Diu, Arabian Sea.</strong> Crispy, spicy, high-protein, made with authentic Indian coastal recipes. Ordering across India.</p>
+
+      <h2 style="font-size:1.2rem;margin:24px 0 8px">What is Chhatak?</h2>
+      <p>Chhatak is a coastal Indian brand crafting a ready-to-eat Bombil fish snack — dried Bombay Duck seasoned in traditional Diu spices, then baked and packed for a crunch that goes with drinks, meals, movies and travel. Wild-caught. 21g+ protein per 100g. No preservatives. Made in Diu.</p>
+
+      <h2 style="font-size:1.2rem;margin:24px 0 8px">Explore</h2>
+      <ul>
+        <li><a href="/products">Shop all products</a></li>
+        <li><a href="/story">Our story from the coast of Diu</a></li>
+        <li><a href="/wholesale">Wholesale enquiries</a></li>
+      </ul>
+
+      <p style="color:#666;margin-top:32px;font-size:14px">Loading the full site…</p>
+    </main>
+  </div>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script type="module" src="/src/main.jsx"></script>
 </body>
