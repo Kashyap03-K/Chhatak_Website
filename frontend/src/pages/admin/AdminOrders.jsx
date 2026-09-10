@@ -84,6 +84,9 @@ export default function AdminOrders() {
   const [query, setQuery] = useState('');
   const [expanded, setExpanded] = useState(null);
   const [exporting, setExporting] = useState(false);
+  // Buckets collapse independently; default: everything open.
+  const [collapsedBuckets, setCollapsedBuckets] = useState({});
+  const toggleBucket = (b) => setCollapsedBuckets((prev) => ({ ...prev, [b]: !prev[b] }));
 
   const fetchOrders = () => {
     api.get('/orders/admin/all')
@@ -241,11 +244,20 @@ export default function AdminOrders() {
             {BUCKET_ORDER.flatMap((bucket) => {
               const rows = filtered.filter((o) => bucketOf(o.created_at) === bucket);
               if (rows.length === 0) return [];
+              const isCollapsed = !!collapsedBuckets[bucket];
               return [
-                <h3 key={`h-${bucket}`} className="admin-orders-bucket-heading">
-                  {BUCKET_LABELS[bucket]} <span className="admin-orders-bucket-count">({rows.length})</span>
-                </h3>,
-                ...rows.map((order) => {
+                <button
+                  type="button"
+                  key={`h-${bucket}`}
+                  className={`admin-orders-bucket-heading admin-orders-bucket-toggle${isCollapsed ? ' is-collapsed' : ''}`}
+                  onClick={() => toggleBucket(bucket)}
+                  aria-expanded={!isCollapsed}
+                >
+                  <span className="admin-orders-bucket-chevron" aria-hidden="true">▾</span>
+                  {BUCKET_LABELS[bucket]}
+                  <span className="admin-orders-bucket-count">({rows.length})</span>
+                </button>,
+                ...(isCollapsed ? [] : rows.map((order) => {
               const c = order.customer || {};
               const isOpen = expanded === order.id;
               const pay = PAYMENT_LABELS[order.payment_method] || { label: order.payment_method || 'Unknown', tone: 'unknown' };
@@ -352,7 +364,7 @@ export default function AdminOrders() {
                   )}
                 </div>
               );
-                }),
+                })),
               ];
             })}
           </div>
