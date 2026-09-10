@@ -2139,6 +2139,25 @@ img[src*="beige-paper"] { border-radius: 0 !important; }
 }
 .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
 .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+/* Drag-and-drop reorder rows in admin tables */
+.admin-drag-row { cursor: grab; transition: background 0.15s, box-shadow 0.15s; }
+.admin-drag-row:active { cursor: grabbing; }
+.admin-drag-row.is-dragging { opacity: 0.4; }
+.admin-drag-row.is-drop-target > td {
+  box-shadow: inset 0 2px 0 var(--accent);
+  background: rgba(211, 94, 43, 0.05);
+}
+.admin-drag-handle {
+  color: var(--muted);
+  font-size: 18px;
+  text-align: center;
+  user-select: none;
+  cursor: grab;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+.admin-drag-handle:hover { color: var(--accent); }
+
 .admin-orders-list {
   display: flex;
   flex-direction: column;

@@ -24,5 +24,6 @@ class Product(Base):
     stock = Column(Integer, default=0)
     is_active = Column(Boolean, default=True)
     is_featured = Column(Boolean, default=False)
+    sort_order = Column(Integer, default=0, nullable=False, index=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))

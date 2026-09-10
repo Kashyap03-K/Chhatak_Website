@@ -63,7 +63,36 @@ def _apply_images(product: Product, images: list[str] | None, explicit_image_url
 
 @router.get("/", response_model=list[ProductOut])
 def list_products(db: Session = Depends(get_db)):
-    return [_serialize(p) for p in db.query(Product).filter(Product.is_active == True).all()]
+    rows = (
+        db.query(Product)
+        .filter(Product.is_active == True)
+        .order_by(Product.sort_order.asc(), Product.id.asc())
+        .all()
+    )
+    return [_serialize(p) for p in rows]
+
+
+@router.get("/admin/all", response_model=list[ProductOut])
+def list_products_admin(db: Session = Depends(get_db), _=Depends(get_current_admin)):
+    """Include inactive products; sorted by admin-chosen order."""
+    rows = (
+        db.query(Product)
+        .order_by(Product.sort_order.asc(), Product.id.asc())
+        .all()
+    )
+    return [_serialize(p) for p in rows]
+
+
+@router.post("/admin/reorder")
+def reorder_products(body: dict, db: Session = Depends(get_db), _=Depends(get_current_admin)):
+    """Body: {order: [id, id, id, ...]} — writes sort_order 0..N-1 in that sequence."""
+    order = body.get("order") or []
+    if not isinstance(order, list):
+        raise HTTPException(status_code=400, detail="order must be a list of product ids")
+    for idx, pid in enumerate(order):
+        db.query(Product).filter(Product.id == int(pid)).update({"sort_order": idx})
+    db.commit()
+    return {"ok": True, "count": len(order)}
 
 
 @router.get("/slug/{slug}", response_model=ProductOut)

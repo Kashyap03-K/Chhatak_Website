@@ -11,13 +11,62 @@ export default function AdminProducts() {
   const [uploading, setUploading] = useState(false);
 
   const fetchProducts = () => {
-    api.get('/products/')
+    api.get('/products/admin/all')
       .then(({ data }) => setProducts(data))
-      .catch(() => {})
+      .catch(() => {
+        // Fallback for older backends that don't have the admin listing yet.
+        api.get('/products/').then(({ data }) => setProducts(data)).catch(() => {});
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchProducts(); }, []);
+
+  // --- Drag-and-drop reorder ---------------------------------------------
+  const [dragId, setDragId] = useState(null);
+  const [dragOverId, setDragOverId] = useState(null);
+  const [savingOrder, setSavingOrder] = useState(false);
+
+  const persistOrder = async (nextList) => {
+    setSavingOrder(true);
+    try {
+      await api.post('/products/admin/reorder', { order: nextList.map((p) => p.id) });
+    } catch {
+      alert('Could not save the new order — refreshing.');
+      fetchProducts();
+    } finally {
+      setSavingOrder(false);
+    }
+  };
+
+  const handleDragStart = (id) => (e) => {
+    setDragId(id);
+    e.dataTransfer.effectAllowed = 'move';
+    // Firefox needs some data to actually initiate the drag.
+    try { e.dataTransfer.setData('text/plain', String(id)); } catch {}
+  };
+  const handleDragOver = (id) => (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (id !== dragOverId) setDragOverId(id);
+  };
+  const handleDragLeave = () => setDragOverId(null);
+  const handleDrop = (targetId) => (e) => {
+    e.preventDefault();
+    const sourceId = dragId;
+    setDragId(null);
+    setDragOverId(null);
+    if (sourceId == null || sourceId === targetId) return;
+    const src = products.findIndex((p) => p.id === sourceId);
+    const dst = products.findIndex((p) => p.id === targetId);
+    if (src === -1 || dst === -1) return;
+    const next = [...products];
+    const [moved] = next.splice(src, 1);
+    next.splice(dst, 0, moved);
+    setProducts(next);
+    persistOrder(next);
+  };
+  const handleDragEnd = () => { setDragId(null); setDragOverId(null); };
 
   const resetForm = () => {
     setForm({ name: '', slug: '', description: '', long_description: '', images: [], price: '', compare_at_price: '', weight: '100g', flavor: '', stock: '', is_active: true, is_featured: false });
@@ -259,9 +308,13 @@ export default function AdminProducts() {
           <p style={{ color: 'var(--muted)' }}>Loading...</p>
         ) : (
           <div className="admin-table-wrap">
-            <table className="admin-table">
+            <p style={{ color: 'var(--muted)', fontSize: 13, margin: '0 0 12px' }}>
+              Drag the ☰ handle to reorder — the new sequence is what customers see on the storefront. {savingOrder && <em>Saving…</em>}
+            </p>
+            <table className="admin-table admin-products-table">
               <thead>
                 <tr>
+                  <th style={{ width: 32 }} aria-label="Reorder" />
                   <th>Product</th>
                   <th>Price</th>
                   <th>Stock</th>
@@ -271,7 +324,17 @@ export default function AdminProducts() {
               </thead>
               <tbody>
                 {products.map((p) => (
-                  <tr key={p.id}>
+                  <tr
+                    key={p.id}
+                    draggable
+                    onDragStart={handleDragStart(p.id)}
+                    onDragOver={handleDragOver(p.id)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop(p.id)}
+                    onDragEnd={handleDragEnd}
+                    className={`admin-drag-row${dragId === p.id ? ' is-dragging' : ''}${dragOverId === p.id && dragId !== p.id ? ' is-drop-target' : ''}`}
+                  >
+                    <td className="admin-drag-handle" title="Drag to reorder">☰</td>
                     <td>
                       <strong>{p.name}</strong>
                       <br /><span style={{ fontSize: '12px', color: 'var(--muted)' }}>{p.flavor} · {p.weight}</span>
