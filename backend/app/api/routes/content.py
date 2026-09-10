@@ -5,8 +5,16 @@ from app.core.database import get_db
 from app.api.deps import get_current_admin
 from app.models.content import Review
 from app.schemas.content import ReviewOut, ReviewCreate, ReviewUpdate
+from pydantic import BaseModel, Field
 
 reviews_router = APIRouter(prefix="/reviews", tags=["reviews"])
+
+
+class ReviewSubmission(BaseModel):
+    author: str = Field(..., min_length=1, max_length=120)
+    location: str | None = Field(None, max_length=120)
+    rating: int = Field(5, ge=1, le=5)
+    quote: str = Field(..., min_length=4, max_length=1000)
 
 
 @reviews_router.get("/", response_model=list[ReviewOut])
@@ -21,7 +29,29 @@ def list_reviews(db: Session = Depends(get_db)):
 
 @reviews_router.get("/admin/all", response_model=list[ReviewOut])
 def list_reviews_admin(db: Session = Depends(get_db), _=Depends(get_current_admin)):
-    return db.query(Review).order_by(Review.sort_order.asc(), Review.id.asc()).all()
+    # Newest first so freshly submitted reviews are easy to spot for approval.
+    return (
+        db.query(Review)
+        .order_by(Review.created_at.desc(), Review.id.desc())
+        .all()
+    )
+
+
+@reviews_router.post("/submit", response_model=ReviewOut, status_code=status.HTTP_201_CREATED)
+def submit_review(body: ReviewSubmission, db: Session = Depends(get_db)):
+    """Public: customer-submitted review. Stored inactive so an admin has to approve it before it goes live."""
+    review = Review(
+        author=body.author.strip(),
+        location=(body.location or "").strip() or None,
+        rating=body.rating,
+        quote=body.quote.strip(),
+        is_active=False,   # requires admin approval before it shows on the storefront
+        sort_order=0,
+    )
+    db.add(review)
+    db.commit()
+    db.refresh(review)
+    return review
 
 
 @reviews_router.post("/", response_model=ReviewOut, status_code=status.HTTP_201_CREATED)

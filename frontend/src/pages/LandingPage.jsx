@@ -546,6 +546,38 @@ function Footer() {
     }
   };
 
+  // Customer review submission — lands in /admin/reviews as inactive until approved.
+  const [rvName, setRvName] = useState('');
+  const [rvLoc, setRvLoc] = useState('');
+  const [rvRating, setRvRating] = useState(5);
+  const [rvQuote, setRvQuote] = useState('');
+  const [rvStatus, setRvStatus] = useState('idle');
+  const [rvMsg, setRvMsg] = useState('');
+
+  const submitReview = async (e) => {
+    e.preventDefault();
+    const name = rvName.trim();
+    const quote = rvQuote.trim();
+    if (!name || quote.length < 4) return;
+    setRvStatus('sending');
+    setRvMsg('');
+    try {
+      await api.post('/reviews/submit', {
+        author: name,
+        location: rvLoc.trim() || null,
+        rating: rvRating,
+        quote,
+      });
+      setRvStatus('ok');
+      setRvMsg('Thanks — your review is with our team for a quick check before it goes live.');
+      setRvName(''); setRvLoc(''); setRvQuote(''); setRvRating(5);
+    } catch (err) {
+      setRvStatus('error');
+      const detail = err.response?.data?.detail;
+      setRvMsg(Array.isArray(detail) ? detail[0]?.msg : (detail || 'Could not submit. Please try again.'));
+    }
+  };
+
   return (
     <footer className="v2-footer">
       <div className="v2-container">
@@ -607,6 +639,65 @@ function Footer() {
             {message && (
               <p className={`v2-newsletter-msg ${status === 'ok' ? 'ok' : status === 'error' ? 'err' : ''}`}>
                 {message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <p className="v2-footer-h">SHARE YOUR REVIEW</p>
+            <p className="v2-footer-note">Tell us what you loved — it may show up on our reviews wall.</p>
+            <form className="v2-footer-review" onSubmit={submitReview}>
+              <div className="v2-footer-review-row">
+                <input
+                  type="text"
+                  required
+                  value={rvName}
+                  onChange={(e) => setRvName(e.target.value)}
+                  placeholder="Your name"
+                  maxLength={120}
+                  disabled={rvStatus === 'sending'}
+                />
+                <input
+                  type="text"
+                  value={rvLoc}
+                  onChange={(e) => setRvLoc(e.target.value)}
+                  placeholder="City (optional)"
+                  maxLength={120}
+                  disabled={rvStatus === 'sending'}
+                />
+              </div>
+              <div className="v2-footer-review-rating" role="radiogroup" aria-label="Rating">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <button
+                    type="button"
+                    key={n}
+                    className={`v2-star${n <= rvRating ? ' is-on' : ''}`}
+                    onClick={() => setRvRating(n)}
+                    aria-checked={n === rvRating}
+                    aria-label={`${n} star${n === 1 ? '' : 's'}`}
+                    role="radio"
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+              <textarea
+                required
+                rows={3}
+                value={rvQuote}
+                onChange={(e) => setRvQuote(e.target.value)}
+                placeholder="What did you think?"
+                maxLength={1000}
+                minLength={4}
+                disabled={rvStatus === 'sending'}
+              />
+              <button type="submit" disabled={rvStatus === 'sending'} className="v2-footer-review-submit">
+                {rvStatus === 'sending' ? 'SENDING…' : 'SUBMIT REVIEW'}
+              </button>
+            </form>
+            {rvMsg && (
+              <p className={`v2-newsletter-msg ${rvStatus === 'ok' ? 'ok' : rvStatus === 'error' ? 'err' : ''}`}>
+                {rvMsg}
               </p>
             )}
           </div>
