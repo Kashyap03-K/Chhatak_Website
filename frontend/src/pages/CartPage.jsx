@@ -1,11 +1,23 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
+import api from '../api/client.js';
 
 export default function CartPage() {
   const { items, loading, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
+  const [onlineCfg, setOnlineCfg] = useState({ amount: 0, free_above: 0 });
 
-  const shipping = totalPrice >= 499 ? 0 : 49;
-  const freeShippingProgress = Math.min((totalPrice / 499) * 100, 100);
+  useEffect(() => {
+    api.get('/shipping/config').then(({ data }) => {
+      const online = data.find((r) => r.payment_method === 'online');
+      if (online) setOnlineCfg({ amount: online.amount, free_above: online.free_above });
+    }).catch(() => {});
+  }, []);
+
+  const shipping = onlineCfg.free_above > 0 && totalPrice >= onlineCfg.free_above ? 0 : onlineCfg.amount;
+  const freeShippingProgress = onlineCfg.free_above > 0
+    ? Math.min((totalPrice / onlineCfg.free_above) * 100, 100)
+    : 100;
 
   return (
     <div className="section cart-page">
@@ -74,12 +86,12 @@ export default function CartPage() {
                 <span>Total</span>
                 <span>₹{totalPrice + shipping}</span>
               </div>
-              {totalPrice < 499 && (
+              {onlineCfg.free_above > 0 && totalPrice < onlineCfg.free_above && (
                 <div className="shipping-progress">
                   <div className="shipping-progress__bar">
                     <div className="shipping-progress__fill" style={{ width: `${freeShippingProgress}%` }} />
                   </div>
-                  <p className="shipping-progress__text">Add ₹{499 - totalPrice} more for free shipping</p>
+                  <p className="shipping-progress__text">Add ₹{onlineCfg.free_above - totalPrice} more for free shipping</p>
                 </div>
               )}
               <Link to="/checkout" className="btn-solid accent full" style={{ marginTop: '24px' }}>

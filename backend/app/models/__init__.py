@@ -7,8 +7,10 @@ from app.models.address import Address
 from app.models.content import Review
 from app.models.landing import LandingSection, SectionImage
 from app.models.newsletter import NewsletterSubscriber
+from app.models.shipping import ShippingConfig
 
 __all__ = [
     "User", "Product", "CartItem", "Order", "OrderItem", "Payment", "Address",
     "Review", "LandingSection", "SectionImage", "NewsletterSubscriber",
+    "ShippingConfig",
 ]

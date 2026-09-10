@@ -9,6 +9,7 @@ from sqlalchemy import func
 
 from app.services.invoice import generate_invoice_pdf
 from app.services.email import send_order_confirmation
+from app.api.routes.shipping import compute_shipping
 
 from app.core.database import get_db
 from app.api.deps import get_current_user, get_current_admin
@@ -57,9 +58,12 @@ def _build_order_from_cart(user: User, shipping_address: str, payment_method: st
             total_price=line_total,
         ))
 
+    shipping_cost = compute_shipping(db, payment_method, total)
+    total_with_shipping = round(total + shipping_cost, 2)
+
     order = Order(
         user_id=user.id,
-        total_amount=total,
+        total_amount=total_with_shipping,
         shipping_address=shipping_address,
         status="pending_payment",
         payment_method=payment_method,
@@ -93,6 +97,9 @@ def create_order(body: OrderCreate, user: User = Depends(get_current_user), db: 
     if pending:
         pending.shipping_address = body.shipping_address
         pending.payment_method = body.payment_method
+        # Recompute total with the (possibly changed) payment method's shipping.
+        subtotal = sum(item.total_price for item in pending.items)
+        pending.total_amount = round(subtotal + compute_shipping(db, body.payment_method, subtotal), 2)
         db.commit()
         db.refresh(pending)
         return pending

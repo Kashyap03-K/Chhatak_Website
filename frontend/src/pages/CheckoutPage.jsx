@@ -18,8 +18,13 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState('online');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [shippingConfig, setShippingConfig] = useState({
+    cod: { amount: 49, free_above: 499 },
+    online: { amount: 0, free_above: 0 },
+  });
 
-  const shipping = totalPrice >= 499 ? 0 : 49;
+  const activeCfg = shippingConfig[paymentMethod === 'cod' ? 'cod' : 'online'];
+  const shipping = activeCfg.free_above > 0 && totalPrice >= activeCfg.free_above ? 0 : activeCfg.amount;
   const grandTotal = totalPrice + shipping;
 
   useEffect(() => {
@@ -30,6 +35,11 @@ export default function CheckoutPage() {
       else if (data.length > 0) setSelectedAddressId(data[0].id);
       else setShowNewForm(true);
     }).catch(() => setShowNewForm(true));
+    api.get('/shipping/config').then(({ data }) => {
+      const map = { cod: { amount: 49, free_above: 499 }, online: { amount: 0, free_above: 0 } };
+      for (const row of data) map[row.payment_method] = { amount: row.amount, free_above: row.free_above };
+      setShippingConfig(map);
+    }).catch(() => {});
   }, []);
 
   const formatAddress = (a) =>

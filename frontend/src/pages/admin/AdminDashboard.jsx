@@ -168,6 +168,13 @@ export default function AdminDashboard() {
                     <p>See who signed up via the "Stay in the loop" footer</p>
                   </div>
                 </Link>
+                <Link to="/admin/shipping" className="admin-action-card">
+                  <div className="admin-action-card__icon">₹</div>
+                  <div>
+                    <strong>Shipping charges</strong>
+                    <p>Set the shipping fee and free-shipping threshold for COD and online payments</p>
+                  </div>
+                </Link>
               </div>
             </div>
           </>

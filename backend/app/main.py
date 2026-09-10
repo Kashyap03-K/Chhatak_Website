@@ -52,6 +52,8 @@ app.include_router(content.reviews_router, prefix=settings.API_V1_PREFIX)
 app.include_router(landing.router, prefix=settings.API_V1_PREFIX)
 app.include_router(landing.uploads_router, prefix=settings.API_V1_PREFIX)
 app.include_router(newsletter.router, prefix=settings.API_V1_PREFIX)
+from app.api.routes import shipping as shipping_routes  # noqa: E402
+app.include_router(shipping_routes.router, prefix=settings.API_V1_PREFIX)
 
 # Serve uploaded images at /uploads/<file>
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "uploads"))
