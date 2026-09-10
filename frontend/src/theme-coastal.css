@@ -12,16 +12,24 @@ body.theme-coastal video {
 
 body.theme-coastal {
   background: #FFFFFF;
-  color: #0B2340;
-  /* Redefine base tokens so shared components (cart, orders, wholesale)
-     read dark-on-cream instead of the default dark-theme cream-on-navy. */
-  --ink: #0B2340;
-  --ink-soft: rgba(11, 35, 64, 0.86);
-  --muted: rgba(11, 35, 64, 0.72);
-  --line: rgba(11, 35, 64, 0.14);
-  --line-strong: rgba(11, 35, 64, 0.22);
+  color: #0F2745;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Reference palette: navy #0F2745 · orange #D35E2B · cream #F6F1EA · charcoal #1F1F1F · muted #8B8B8B */
+  --ink: #0F2745;
+  --ink-soft: rgba(15, 39, 69, 0.86);
+  --muted: #8B8B8B;
+  --line: rgba(15, 39, 69, 0.14);
+  --line-strong: rgba(15, 39, 69, 0.22);
   --bg: #FFFFFF;
-  --bg-soft: #FFF8EA;
+  --bg-soft: #F6F1EA;
+  --accent: #D35E2B;
+  --accent-soft: rgba(211, 94, 43, 0.10);
+}
+body.theme-coastal h1,
+body.theme-coastal h2,
+body.theme-coastal h3,
+body.theme-coastal h4 {
+  font-family: 'Lora', 'Fraunces', 'Playfair Display', serif;
 }
 body.theme-coastal .nav {
   background: rgba(255, 255, 255, 0.92);
@@ -1773,17 +1781,13 @@ body.theme-coastal .summary-row.total {
 }
 
 /* ============================================================
-   VIDEO — prevent hard cropping on narrow screens.
-   Hero/story videos default to object-fit: cover, which chops the
-   frame off on portrait phones. Contain preserves the whole shot.
+   VIDEO — never crop the frame. Applies on both desktop and mobile.
    ============================================================ */
-@media (max-width: 640px) {
-  body.theme-coastal .v2-hero-photo video,
-  body.theme-coastal .v2-story-media video,
-  body.theme-coastal .v2-custom-hero > video,
-  body.theme-coastal .v2-slide-frame video {
-    object-fit: contain;
-    background: #0F2745;
-  }
+body.theme-coastal .v2-hero-photo video,
+body.theme-coastal .v2-story-media video,
+body.theme-coastal .v2-custom-hero > video,
+body.theme-coastal .v2-slide-frame video {
+  object-fit: contain;
+  background: #0F2745;
 }
 
