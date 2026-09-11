@@ -9,6 +9,7 @@ import VerifyEmailPage from './pages/VerifyEmailPage.jsx';
 import CartPage from './pages/CartPage.jsx';
 import CheckoutPage from './pages/CheckoutPage.jsx';
 import StoryPage from './pages/StoryPage.jsx';
+import OurStoryPage from './pages/OurStoryPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx';
@@ -50,6 +51,7 @@ export default function App() {
         <Route path="/products/:slug" element={<ProductDetailPage />} />
         <Route path="/wholesale" element={<WholesalePage />} />
         <Route path="/story" element={<StoryPage />} />
+        <Route path="/our-story" element={<OurStoryPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />

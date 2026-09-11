@@ -150,7 +150,7 @@ export default function Navbar() {
               <a href="/#story" onClick={goHash('story')}>About</a>
               <Link to="/products" onClick={() => setDrawerOpen(false)}>Products</Link>
               <a href="/#reviews" onClick={goHash('reviews')}>Reviews</a>
-              <a href="/#journey" onClick={goHash('journey')}>Journey</a>
+              <Link to="/story" onClick={() => setDrawerOpen(false)}>Journey</Link>
               <Link to="/wholesale" onClick={() => setDrawerOpen(false)}>Wholesale</Link>
             </>
           )}

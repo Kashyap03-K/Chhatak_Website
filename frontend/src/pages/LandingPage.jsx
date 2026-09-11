@@ -209,7 +209,7 @@ function Hero({ section }) {
             </p>
             <div className="v2-hero-ctas">
               <Link to="/products" className="v2-btn v2-btn--primary">SHOP THE RANGE</Link>
-              <Link to="/story" className="v2-btn v2-btn--outline">Read Our Story</Link>
+              <Link to="/our-story" className="v2-btn v2-btn--outline">Read Our Story</Link>
             </div>
           </div>
 
@@ -318,7 +318,7 @@ function StoryBanner({ section }) {
               taste of Bombil with a crunchy twist. A snack that fits every mood, every meal
               and every moment.
             </p>
-            <Link to="/story" className="v2-btn v2-btn--dark">READ OUR STORY</Link>
+            <Link to="/our-story" className="v2-btn v2-btn--dark">READ OUR STORY</Link>
           </div>
           <BoatDoodle className="v2-story-boat" />
         </div>

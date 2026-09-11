@@ -1653,6 +1653,114 @@ body.theme-coastal .pd-other-foot {
 body.theme-coastal .pd-other-price { font-weight: 700; font-size: 18px; color: #0B2340; }
 
 /* ============================================================
+   OUR STORY page (/our-story) — full-bleed slideshow + gallery
+   ============================================================ */
+.our-story-page { background: #F6F1EA; padding: 110px 0 80px; }
+.our-story-container { max-width: 1080px; }
+.our-story-title {
+  font-family: 'Lora', 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #0F2745;
+  line-height: 1.15;
+  margin: 12px 0 20px;
+}
+.our-story-lede {
+  font-family: 'Inter', sans-serif;
+  color: #1F1F1F;
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 640px;
+  margin: 0 0 32px;
+}
+.our-story-hero {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #0F2745;
+  box-shadow: 0 8px 32px rgba(15, 39, 69, 0.12);
+}
+.our-story-hero__slide {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 800ms ease;
+  pointer-events: none;
+}
+.our-story-hero__slide.is-active { opacity: 1; }
+.our-story-hero__arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 3;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(15, 39, 69, 0.55);
+  color: #fff; border: none; cursor: pointer;
+  font-size: 28px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+}
+.our-story-hero__arrow:hover { background: #D35E2B; transform: translateY(-50%) scale(1.05); }
+.our-story-hero__arrow--prev { left: 16px; }
+.our-story-hero__arrow--next { right: 16px; }
+.our-story-hero__dots {
+  position: absolute; left: 50%; bottom: 16px;
+  transform: translateX(-50%);
+  display: flex; gap: 8px;
+  padding: 8px 12px; border-radius: 999px;
+  background: rgba(15, 39, 69, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 3;
+}
+.our-story-hero__dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  border: none; background: rgba(255, 255, 255, 0.45);
+  cursor: pointer; padding: 0;
+  transition: background 0.15s, transform 0.15s;
+}
+.our-story-hero__dot.is-active { background: #D35E2B; transform: scale(1.25); }
+
+.our-story-caption {
+  text-align: center;
+  color: #8B8B8B;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  margin: 14px 0 0;
+  font-style: italic;
+}
+.our-story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 32px;
+}
+.our-story-grid__tile {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #fff;
+  aspect-ratio: 1 / 1;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.our-story-grid__tile:hover { transform: translateY(-2px); }
+.our-story-grid__tile.is-active { border-color: #D35E2B; }
+.our-story-grid__tile img,
+.our-story-grid__tile video {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.our-story-cta {
+  display: flex; gap: 14px; margin-top: 40px; flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .our-story-page { padding: 90px 0 60px; }
+  .our-story-hero { border-radius: 12px; }
+  .our-story-hero__arrow { width: 36px; height: 36px; font-size: 22px; }
+  .our-story-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+}
+
+/* ============================================================
    CHECKOUT — Chhatak brand system
    Palette: navy #0F2745 · orange #D35E2B · cream #F6F1EA · ink #1F1F1F · muted #8B8B8B
    Fonts:   Lora (headings) · Inter (body / buttons / UI)
