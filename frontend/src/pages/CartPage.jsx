@@ -4,14 +4,16 @@ import { useCart } from '../context/CartContext.jsx';
 import api from '../api/client.js';
 
 export default function CartPage() {
-  const { items, loading, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
+  const { items, loading, totalPrice, updateQuantity, removeItem, clearCart, fetchCart } = useCart();
   const [onlineCfg, setOnlineCfg] = useState({ amount: 0, free_above: 0 });
 
   useEffect(() => {
+    fetchCart();  // re-pull on mount so admin price changes appear
     api.get('/shipping/config').then(({ data }) => {
       const online = data.find((r) => r.payment_method === 'online');
       if (online) setOnlineCfg({ amount: online.amount, free_above: online.free_above });
     }).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const shipping = onlineCfg.free_above > 0 && totalPrice >= onlineCfg.free_above ? 0 : onlineCfg.amount;

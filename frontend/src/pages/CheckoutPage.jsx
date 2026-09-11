@@ -28,6 +28,7 @@ export default function CheckoutPage() {
   const grandTotal = totalPrice + shipping;
 
   useEffect(() => {
+    fetchCart();  // re-pull on mount so admin price changes are picked up before payment
     api.get('/addresses/').then(({ data }) => {
       setSavedAddresses(data);
       const def = data.find(a => a.is_default);
