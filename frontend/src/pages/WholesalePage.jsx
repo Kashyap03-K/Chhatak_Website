@@ -10,7 +10,7 @@ export default function WholesalePage() {
     const body = encodeURIComponent(
       `Name: ${form.name}\nBusiness: ${form.business}\nEmail: ${form.email}\nPhone: ${form.phone}\nMonthly volume: ${form.volume}\n\n${form.message}`
     );
-    window.location.href = `mailto:hello@chhatak.co?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:chhatakfood@gmail.com?subject=${subject}&body=${body}`;
     setSent(true);
   };
 
@@ -26,7 +26,7 @@ export default function WholesalePage() {
           </p>
           <div className="buy-actions" style={{ justifyContent: 'center' }}>
             <a className="btn-solid accent" href="#enquire">Enquire now →</a>
-            <a className="btn-link" href="mailto:hello@chhatak.co">hello@chhatak.co</a>
+            <a className="btn-link" href="mailto:chhatakfood@gmail.com">chhatakfood@gmail.com</a>
           </div>
         </div>
       </section>
@@ -42,7 +42,7 @@ export default function WholesalePage() {
 
           {sent && (
             <div className="auth-error" style={{ background: 'rgba(80,180,120,0.12)', borderColor: 'rgba(80,180,120,0.3)', color: '#8dc99a' }}>
-              Opening your email client with the enquiry pre-filled. If nothing happens, email <a href="mailto:hello@chhatak.co" className="btn-link">hello@chhatak.co</a> directly.
+              Opening your email client with the enquiry pre-filled. If nothing happens, email <a href="mailto:chhatakfood@gmail.com" className="btn-link">chhatakfood@gmail.com</a> directly.
             </div>
           )}
 
