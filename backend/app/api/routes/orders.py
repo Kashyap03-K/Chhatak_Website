@@ -90,6 +90,39 @@ def _finalize_order(order: Order, db: Session) -> None:
         pass
 
 
+def _rebuild_order_items_from_cart(user: User, order: Order, db: Session) -> float:
+    """Wipe the order's frozen line items and rebuild from the customer's live cart
+    at the current Product.price. Returns the resulting subtotal (before shipping).
+
+    Called whenever a pending order is reused so admin price changes and cart edits
+    made after the original checkout attempt are picked up.
+    """
+    cart_items = db.query(CartItem).filter(CartItem.user_id == user.id).all()
+    if not cart_items:
+        raise HTTPException(status_code=400, detail="Cart is empty")
+
+    # Drop old items; add fresh ones at current prices.
+    db.query(OrderItem).filter(OrderItem.order_id == order.id).delete(synchronize_session=False)
+
+    subtotal = 0.0
+    for ci in cart_items:
+        product = db.query(Product).filter(Product.id == ci.product_id).first()
+        if not product or not product.is_active:
+            raise HTTPException(status_code=400, detail=f"Product {ci.product_id} unavailable")
+        if product.stock < ci.quantity:
+            raise HTTPException(status_code=400, detail=f"{product.name} has only {product.stock} left in stock")
+        line_total = round(product.price * ci.quantity, 2)
+        subtotal += line_total
+        db.add(OrderItem(
+            order_id=order.id,
+            product_id=product.id,
+            quantity=ci.quantity,
+            unit_price=product.price,
+            total_price=line_total,
+        ))
+    return round(subtotal, 2)
+
+
 @router.post("/", response_model=OrderOut, status_code=status.HTTP_201_CREATED)
 def create_order(body: OrderCreate, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     pending = db.query(Order).filter(
@@ -98,9 +131,15 @@ def create_order(body: OrderCreate, user: User = Depends(get_current_user), db: 
     if pending:
         pending.shipping_address = body.shipping_address
         pending.payment_method = body.payment_method
-        # Recompute total with the (possibly changed) payment method's shipping.
-        subtotal = sum(item.total_price for item in pending.items)
+        # Rebuild line items from the current cart at current product prices so
+        # admin price changes and cart edits since the last attempt take effect.
+        subtotal = _rebuild_order_items_from_cart(user, pending, db)
         pending.total_amount = round(subtotal + compute_shipping(db, body.payment_method, subtotal), 2)
+        # Invalidate any half-baked Razorpay orders for this order — they were
+        # created at the OLD amount and cannot be reused.
+        db.query(Payment).filter(
+            Payment.order_id == pending.id, Payment.status == "created"
+        ).delete(synchronize_session=False)
         db.commit()
         db.refresh(pending)
         return pending
