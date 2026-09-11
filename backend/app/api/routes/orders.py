@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import Response, StreamingResponse
 from sqlalchemy.orm import Session
 
-from sqlalchemy import func
+from sqlalchemy import func, delete as sa_delete, exists
 
 from app.services.invoice import generate_invoice_pdf
 from app.services.email import send_order_confirmation
@@ -382,22 +382,29 @@ def update_order_status(order_id: int, body: OrderStatusUpdate, db: Session = De
     return order
 
 
-def _hard_delete_order(db: Session, order: Order) -> None:
-    """Delete order + its line items + linked payments. Explicit so we don't rely on the
-    DB having ON DELETE CASCADE — pre-existing FK constraints may not have it."""
-    db.query(OrderItem).filter(OrderItem.order_id == order.id).delete(synchronize_session=False)
-    db.query(Payment).filter(Payment.order_id == order.id).delete(synchronize_session=False)
-    db.delete(order)
+def _hard_delete_order_ids(db: Session, order_ids: list[int]) -> None:
+    """Bulk-delete children then parents, entirely via SQL — no ORM session
+    reconciliation. Avoids 'expected to update N row(s); 0 were matched' when
+    the Order was previously loaded with its items joined.
+    """
+    if not order_ids:
+        return
+    # Clear any ORM state for these orders so the session doesn't try to
+    # re-sync joined items after the DELETE.
+    db.expire_all()
+    db.execute(sa_delete(OrderItem).where(OrderItem.order_id.in_(order_ids)))
+    db.execute(sa_delete(Payment).where(Payment.order_id.in_(order_ids)))
+    db.execute(sa_delete(Order).where(Order.id.in_(order_ids)))
 
 
 @router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
 def admin_delete_order(order_id: int, db: Session = Depends(get_db), _=Depends(get_current_admin)):
     """Permanently delete an order, its line items, and any linked payment rows. Admin only."""
-    order = db.query(Order).filter(Order.id == order_id).first()
-    if not order:
+    found = db.query(exists().where(Order.id == order_id)).scalar()
+    if not found:
         raise HTTPException(status_code=404, detail="Order not found")
     try:
-        _hard_delete_order(db, order)
+        _hard_delete_order_ids(db, [order_id])
         db.commit()
     except Exception as e:
         db.rollback()
@@ -414,11 +421,10 @@ def admin_bulk_delete(body: dict, db: Session = Depends(get_db), _=Depends(get_c
         cutoff_dt = datetime.fromisoformat(str(cutoff).replace("Z", "+00:00"))
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid older_than format; use ISO 8601")
-    stale = db.query(Order).filter(Order.created_at < cutoff_dt).all()
-    n = len(stale)
+    stale_ids = [row[0] for row in db.query(Order.id).filter(Order.created_at < cutoff_dt).all()]
+    n = len(stale_ids)
     try:
-        for o in stale:
-            _hard_delete_order(db, o)
+        _hard_delete_order_ids(db, stale_ids)
         db.commit()
     except Exception as e:
         db.rollback()
