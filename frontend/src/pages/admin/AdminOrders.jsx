@@ -111,8 +111,11 @@ export default function AdminOrders() {
     try {
       await api.delete(`/orders/${orderId}`);
       setOrders((prev) => prev.filter((o) => o.id !== orderId));
-    } catch {
-      alert('Delete failed.');
+    } catch (e) {
+      const msg = e.response?.data?.detail || e.response?.statusText || e.message || 'unknown error';
+      alert(`Delete failed: ${msg}`);
+      // Re-pull in case the delete actually landed but the response was cut.
+      fetchOrders();
     }
   };
 

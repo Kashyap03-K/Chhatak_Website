@@ -17,6 +17,7 @@ from app.models.user import User
 from app.models.order import Order, OrderItem
 from app.models.cart import CartItem
 from app.models.product import Product
+from app.models.payment import Payment
 from app.models.address import Address
 from app.schemas.order import OrderOut, OrderCreate, OrderStatusUpdate
 
@@ -381,14 +382,26 @@ def update_order_status(order_id: int, body: OrderStatusUpdate, db: Session = De
     return order
 
 
+def _hard_delete_order(db: Session, order: Order) -> None:
+    """Delete order + its line items + linked payments. Explicit so we don't rely on the
+    DB having ON DELETE CASCADE — pre-existing FK constraints may not have it."""
+    db.query(OrderItem).filter(OrderItem.order_id == order.id).delete(synchronize_session=False)
+    db.query(Payment).filter(Payment.order_id == order.id).delete(synchronize_session=False)
+    db.delete(order)
+
+
 @router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
 def admin_delete_order(order_id: int, db: Session = Depends(get_db), _=Depends(get_current_admin)):
-    """Permanently delete an order and its line items. Admin only."""
+    """Permanently delete an order, its line items, and any linked payment rows. Admin only."""
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    db.delete(order)
-    db.commit()
+    try:
+        _hard_delete_order(db, order)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Delete failed: {e}")
 
 
 @router.post("/admin/bulk-delete")
@@ -403,7 +416,11 @@ def admin_bulk_delete(body: dict, db: Session = Depends(get_db), _=Depends(get_c
         raise HTTPException(status_code=400, detail="Invalid older_than format; use ISO 8601")
     stale = db.query(Order).filter(Order.created_at < cutoff_dt).all()
     n = len(stale)
-    for o in stale:
-        db.delete(o)
-    db.commit()
+    try:
+        for o in stale:
+            _hard_delete_order(db, o)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Bulk delete failed: {e}")
     return {"deleted": n}
