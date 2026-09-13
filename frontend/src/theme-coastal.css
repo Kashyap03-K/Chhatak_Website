@@ -237,38 +237,55 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 .v2-hero + .v2-feature-strip,
 .v2-hero + section { background: #E4CFA6; }
 
+/* Right-column Polaroid — real photo frame with white border + bottom caption strip */
 .v2-hero-photo-wrap {
   position: relative;
-  aspect-ratio: 5 / 4.4;
-  min-height: 460px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 520px;
+  padding: 24px 12px;
 }
-
-/* Beige paper backdrop — sits farthest back, burnt edges visible */
-.v2-hero-paper {
+.v2-hero-photo {
+  position: relative;
+  margin: 0;
+  padding: 18px 18px 68px;      /* thick white border, wider strip at the bottom */
+  background: #FFFFFF;
+  border-radius: 4px;
+  box-shadow:
+    0 22px 40px rgba(11, 35, 64, 0.18),
+    0 6px 14px rgba(11, 35, 64, 0.10);
+  transform: rotate(-2deg);
+  transition: transform 0.3s ease;
+  width: min(100%, 440px);
+  aspect-ratio: 4 / 5;           /* classic Polaroid ratio */
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
+}
+.v2-hero-photo:hover { transform: rotate(-1deg) translateY(-4px); }
+.v2-hero-photo::after {
+  /* Handwritten caption in the Polaroid's white strip */
+  content: 'From the coast · Diu';
   position: absolute;
-  top: -6%; left: -6%;
-  width: 112%; height: 112%;
-  z-index: 1;
-  background: url('/images/beige-paper.png') center/100% 100% no-repeat;
+  left: 0; right: 0; bottom: 18px;
+  text-align: center;
+  font-family: 'Caveat', 'Lora', cursive;
+  font-size: 22px;
+  color: #14213D;
+  opacity: 0.75;
+  letter-spacing: 0.02em;
   pointer-events: none;
 }
-
-/* Main photo — no frame, just the image, slight tilt */
-.v2-hero-photo {
-  position: absolute;
-  inset: 0;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  transform: rotate(-2deg);
-  z-index: 3;
-  border-radius: 14px;
-  overflow: hidden;
-}
-.v2-hero-photo img { border-radius: 14px; }
-.v2-hero-photo img {
-  display: block; width: 100%; height: 100%;
+.v2-hero-photo img,
+.v2-hero-photo .v2-hero-slot-empty {
+  display: block;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   object-fit: cover;
+  border-radius: 2px;
+  background: #F1EBDD;
 }
 
 /* Bowl — circular, bottom-right, overlaps main */
@@ -329,7 +346,9 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 @media (max-width: 900px) {
   .v2-hero--coast { padding: 80px 0 40px; }
   .v2-hero-grid { grid-template-columns: 1fr; }
-  .v2-hero-photo-wrap { min-height: 360px; margin-top: 28px; }
+  .v2-hero-photo-wrap { min-height: auto; margin-top: 40px; padding: 12px; }
+  .v2-hero-photo { width: min(88%, 320px); padding: 14px 14px 54px; }
+  .v2-hero-photo::after { font-size: 18px; bottom: 14px; }
   .v2-hero-seaside { margin-left: auto; margin-right: auto; }
 }
 .v2-hero-waves {
