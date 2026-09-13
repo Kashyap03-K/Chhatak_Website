@@ -263,7 +263,7 @@ function StoryBanner({ section }) {
 
   useEffect(() => {
     if (images.length < 2) return undefined;
-    const t = setInterval(() => setActive((i) => (i + 1) % images.length), 4200);
+    const t = setInterval(() => setActive((i) => (i + 1) % images.length), 3000);
     return () => clearInterval(t);
   }, [images.length]);
 
@@ -492,6 +492,44 @@ function Gallery({ section }) {
   );
 }
 
+function JourneyVideoTile({ src }) {
+  const ref = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  const play = () => {
+    const v = ref.current;
+    if (!v) return;
+    v.muted = true;
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+    setPlaying(true);
+  };
+  const pause = () => {
+    const v = ref.current;
+    if (!v) return;
+    v.pause();
+    try { v.currentTime = 0; } catch {} // rewind for a clean thumbnail
+    setPlaying(false);
+  };
+  return (
+    <div
+      className="v2-journey-video"
+      onMouseEnter={play}
+      onMouseLeave={pause}
+      onFocus={play}
+      onBlur={pause}
+    >
+      <video ref={ref} src={src} muted playsInline loop preload="metadata" />
+      {!playing && (
+        <span className="v2-journey-play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
+            <path d="M8 5v14l11-7L8 5z" />
+          </svg>
+        </span>
+      )}
+    </div>
+  );
+}
+
 function JourneyStrip({ items }) {
   const trackRef = useRef(null);
   const scroll = (dir) => {
@@ -510,7 +548,7 @@ function JourneyStrip({ items }) {
         {items.map((it, i) => (
           <a key={i} href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="v2-journey-tile">
             {it.media_type === 'video' ? (
-              <video src={it.src} muted playsInline preload="auto" />
+              <JourneyVideoTile src={it.src} />
             ) : (
               <img src={it.src} alt="" loading="lazy" />
             )}
@@ -769,9 +807,10 @@ function HeroVideo({ src, defaultSoundOn = false }) {
 
 // Reusable slideshow for a list of media (images + videos) with next/prev arrows.
 // One item → renders it plain (no arrows). 2+ items → slideshow.
-function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption }) {
+function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption, autoAdvanceMs = 3000 }) {
   const [index, setIndex] = useState(0);
   const [muted, setMuted] = useState(true);
+  const [paused, setPaused] = useState(false);
   const videoRef = useRef(null);
 
   // Mobile browsers (iOS Safari especially) don't always honor the autoplay
@@ -784,6 +823,14 @@ function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption 
     const p = v.play();
     if (p && typeof p.catch === 'function') p.catch(() => {});
   }, [index, muted]);
+
+  // Auto-advance every autoAdvanceMs (default 3s). Pauses on hover / while the
+  // user is interacting via arrows or dots.
+  useEffect(() => {
+    if (!items || items.length < 2 || paused || !autoAdvanceMs) return undefined;
+    const t = setInterval(() => setIndex((i) => (i + 1) % items.length), autoAdvanceMs);
+    return () => clearInterval(t);
+  }, [items, paused, autoAdvanceMs]);
 
   if (!items?.length) return null;
   const count = items.length;
@@ -837,7 +884,11 @@ function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption 
   }
 
   return (
-    <div className={`v2-slideshow ${className}`}>
+    <div
+      className={`v2-slideshow ${className}`}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       <button type="button" className="v2-slide-arrow v2-slide-arrow--prev" onClick={() => go(-1)} aria-label="Previous">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
       </button>

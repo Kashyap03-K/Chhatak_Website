@@ -28,7 +28,7 @@ export default function OurStoryPage() {
   useEffect(() => {
     if (images.length < 2) return undefined;
     clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => setIndex((i) => (i + 1) % images.length), 4200);
+    timerRef.current = setInterval(() => setIndex((i) => (i + 1) % images.length), 3000);
     return () => clearInterval(timerRef.current);
   }, [images.length]);
 
