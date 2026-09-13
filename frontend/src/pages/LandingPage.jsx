@@ -495,12 +495,20 @@ function Gallery({ section }) {
 function JourneyVideoTile({ src }) {
   const ref = useRef(null);
   const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(true);
+
   const play = () => {
     const v = ref.current;
     if (!v) return;
-    v.muted = true;
+    // Preserve whatever mute state the viewer chose; browsers allow autoplay
+    // only for muted media, so the very first hover always starts muted.
+    v.muted = muted;
     const p = v.play();
-    if (p && p.catch) p.catch(() => {});
+    if (p && p.catch) p.catch(() => {
+      // If unmuted playback was blocked, fall back to muted so at least the
+      // frame moves.
+      if (!v.muted) { v.muted = true; setMuted(true); v.play().catch(() => {}); }
+    });
     setPlaying(true);
   };
   const pause = () => {
@@ -510,6 +518,24 @@ function JourneyVideoTile({ src }) {
     try { v.currentTime = 0; } catch {} // rewind for a clean thumbnail
     setPlaying(false);
   };
+  const toggleSound = (e) => {
+    // Sound toggle sits inside the Instagram <a> — stop the link from firing.
+    e.preventDefault();
+    e.stopPropagation();
+    const v = ref.current;
+    if (!v) return;
+    const next = !muted;
+    v.muted = next;
+    setMuted(next);
+    // A user gesture just fired; unmuting is now safe. Start playing if
+    // the pointer already left the tile — the viewer clearly wants audio.
+    if (!next) {
+      const p = v.play();
+      if (p && p.catch) p.catch(() => {});
+      setPlaying(true);
+    }
+  };
+
   return (
     <div
       className="v2-journey-video"
@@ -518,7 +544,7 @@ function JourneyVideoTile({ src }) {
       onFocus={play}
       onBlur={pause}
     >
-      <video ref={ref} src={src} muted playsInline loop preload="metadata" />
+      <video ref={ref} src={src} muted={muted} playsInline loop preload="metadata" />
       {!playing && (
         <span className="v2-journey-play" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
@@ -526,6 +552,27 @@ function JourneyVideoTile({ src }) {
           </svg>
         </span>
       )}
+      <button
+        type="button"
+        className="v2-journey-sound"
+        onClick={toggleSound}
+        aria-label={muted ? 'Unmute video' : 'Mute video'}
+        title={muted ? 'Unmute' : 'Mute'}
+      >
+        {muted ? (
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+            <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+            <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+          </svg>
+        )}
+      </button>
     </div>
   );
 }

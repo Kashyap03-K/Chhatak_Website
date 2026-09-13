@@ -774,6 +774,32 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   transition: transform 0.2s ease, background 0.2s ease;
 }
 .v2-journey-tile:hover .v2-journey-play { background: rgba(211, 94, 43, 0.85); transform: translate(-50%, -50%) scale(0.92); }
+.v2-journey-sound {
+  position: absolute;
+  right: 10px; bottom: 10px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(11, 35, 64, 0.55);
+  color: #FFFFFF;
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+  z-index: 3;
+}
+.v2-journey-tile:hover .v2-journey-sound,
+.v2-journey-sound:focus-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.v2-journey-sound:hover { background: rgba(211, 94, 43, 0.9); }
+/* On touch devices the tile never gets 'hovered' — keep the sound chip visible so it stays tappable. */
+@media (hover: none) {
+  .v2-journey-sound { opacity: 1; transform: none; }
+}
 .v2-journey-arrow {
   position: absolute;
   top: 50%;
