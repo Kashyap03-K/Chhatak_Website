@@ -249,7 +249,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 .v2-hero-photo {
   position: relative;
   margin: 0;
-  padding: 16px 16px 56px;      /* thin white border, wider strip at the bottom for the caption */
+  padding: 0;                    /* padding used to size the photo well — replaced by absolute inset below */
   background: #FFFFFF;
   border-radius: 4px;
   box-shadow:
@@ -258,9 +258,8 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   transform: rotate(-2deg);
   transition: transform 0.3s ease;
   width: min(100%, 440px);
-  aspect-ratio: 1 / 1;           /* square Polaroid (photo well + caption strip fit within a square outer) */
-  display: flex;
-  flex-direction: column;
+  aspect-ratio: 1 / 1;           /* SQUARE outer frame — locked; children are absolutely positioned so they can't push it. */
+  overflow: hidden;
   z-index: 3;
 }
 .v2-hero-photo:hover { transform: rotate(-1deg) translateY(-4px); }
@@ -279,10 +278,14 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 }
 .v2-hero-photo img,
 .v2-hero-photo .v2-hero-slot-empty {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 56px;      /* leaves a wider strip at the bottom for the caption */
+  width: auto;
+  height: auto;
   display: block;
-  width: 100%;
-  flex: 1 1 auto;
-  min-height: 0;
   object-fit: cover;
   border-radius: 2px;
   background: #F1EBDD;
@@ -347,7 +350,9 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   .v2-hero--coast { padding: 80px 0 40px; }
   .v2-hero-grid { grid-template-columns: 1fr; }
   .v2-hero-photo-wrap { min-height: auto; margin-top: 40px; padding: 12px; }
-  .v2-hero-photo { width: min(88%, 320px); padding: 12px 12px 46px; }
+  .v2-hero-photo { width: min(88%, 320px); }
+  .v2-hero-photo img,
+  .v2-hero-photo .v2-hero-slot-empty { top: 12px; left: 12px; right: 12px; bottom: 46px; }
   .v2-hero-photo::after { font-size: 18px; bottom: 12px; }
   .v2-hero-seaside { margin-left: auto; margin-right: auto; }
 }
