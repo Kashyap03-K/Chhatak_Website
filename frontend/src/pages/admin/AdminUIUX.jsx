@@ -21,12 +21,45 @@ const BUILTIN_LABELS = {
 
 // Which built-in sections have an image manager card shown below the section list.
 const SECTIONS_WITH_IMAGES = new Set(['hero', 'story', 'perfect-with', 'gallery']);
+// Concrete size guidance for creatives — keeps the site sharp on retina without
+// bloating downloads. Aspect ratio is the important thing; pixel targets are
+// "aim for at least" (bigger is fine, the browser downscales cleanly).
 const IMAGE_HINTS = {
-  hero:           'Image 1 = product pack (shown centered). Image 2 = bowl (bottom-right accent).',
-  story:          'A single wide banner image for the yellow story card. First image is used.',
-  'perfect-with': 'Exactly 4 images — one per tile: Drinks, Meals, Travel, Movie Nights (in order).',
-  gallery:        'Reel/post frames shown one at a time with next/prev arrows. Upload as many images or videos as you like; any videos → 9:16 reel frame, otherwise 1:1 post frame.',
+  hero: (
+    <>
+      <strong>Square Polaroid photo</strong> — recommended <strong>1200 × 1200 px (1:1)</strong>. JPG or WebP under ~500 KB.<br />
+      Only the first image is used. Subject should be centred; the frame trims a thin white border.
+    </>
+  ),
+  story: (
+    <>
+      <strong>Landscape banner</strong> for the yellow "Born on the coast" card — recommended <strong>1600 × 1100 px (16:11)</strong>.<br />
+      Add 2+ images to enable the 3-second cross-fade slideshow. Videos (mp4) work too — they'll autoplay muted.
+    </>
+  ),
+  'perfect-with': (
+    <>
+      <strong>Exactly 4 wide banner tiles</strong>, one per use-case: Drinks, Meals, Travel, Movie Nights (in order).<br />
+      Recommended <strong>1860 × 390 px (≈62:13)</strong>. Keep the headline text in the vertical middle so it survives the crop on mobile.
+    </>
+  ),
+  gallery: (
+    <>
+      <strong>Instagram-shaped tiles</strong>. Upload any mix of images or videos — a slideshow if there's more than one.<br />
+      • Videos → <strong>1080 × 1920 px (9:16 reel)</strong>.<br />
+      • Photos → <strong>1080 × 1080 px (1:1 post)</strong>.<br />
+      Videos auto-preview on hover with a play chip; sound stays off until the viewer clicks the 🔊 chip.
+    </>
+  ),
 };
+
+// Same guidance for admin-created custom gallery sections (kind === 'gallery').
+const CUSTOM_GALLERY_HINT = (
+  <>
+    <strong>Full-bleed hero</strong> if you upload a single image/video — recommended <strong>1920 × 1080 px (16:9)</strong>, or 1920 × 1200 for a taller drop.<br />
+    <strong>2+ items</strong> → auto-advancing slideshow every 3 s (pauses on hover). Same 9:16 for video, 1:1 for photo as the journey strip.
+  </>
+);
 
 async function uploadMedia(file) {
   const fd = new FormData();
@@ -251,7 +284,7 @@ export default function AdminUIUX() {
                   key={s.id}
                   section={s}
                   isHero={s.key === 'hero'}
-                  hint={IMAGE_HINTS[s.key]}
+                  hint={s.kind === 'gallery' ? CUSTOM_GALLERY_HINT : IMAGE_HINTS[s.key]}
                   builtinLabel={BUILTIN_LABELS[s.key]}
                   onAdd={addImage}
                   onUpdate={updateImage}
@@ -381,7 +414,10 @@ function SectionImagesCard({ section, isHero, hint, builtinLabel, onAdd, onUpdat
         </div>
       </div>
       {hint && (
-        <p style={{ color: 'var(--muted)', fontSize: 13, margin: '4px 0 12px' }}>{hint}</p>
+        <div className="uiux-hint" role="note" aria-label="Recommended size">
+          <span className="uiux-hint__icon" aria-hidden="true">📐</span>
+          <div className="uiux-hint__body">{hint}</div>
+        </div>
       )}
 
       {!isHero && (
