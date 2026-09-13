@@ -27,6 +27,7 @@ import NotFoundPage from './pages/NotFoundPage.jsx';
 import Navbar from './components/Navbar.jsx';
 import AuthDialog from './components/AuthDialog.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
+import LoadingBar from './components/LoadingBar.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import AdminRoute from './components/AdminRoute.jsx';
 
@@ -42,6 +43,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ThemeGuard />
+      <LoadingBar />
       <Navbar />
       <AuthDialog />
       <CartDrawer />

@@ -2139,6 +2139,25 @@ img[src*="beige-paper"] { border-radius: 0 !important; }
 }
 .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
 .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+/* Global top loading bar — thin accent-orange strip on every API call / route change */
+.loading-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: transparent;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.loading-bar.is-visible { opacity: 1; }
+.loading-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #D35E2B 0%, #F5822C 50%, #D35E2B 100%);
+  box-shadow: 0 0 10px rgba(211, 94, 43, 0.55);
+  transition: width 180ms ease-out;
+}
+
 /* Drag-and-drop reorder rows in admin tables */
 .admin-drag-row { cursor: grab; transition: background 0.15s, box-shadow 0.15s; }
 .admin-drag-row:active { cursor: grabbing; }
