@@ -249,7 +249,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
 .v2-hero-photo {
   position: relative;
   margin: 0;
-  padding: 18px 18px 68px;      /* thick white border, wider strip at the bottom */
+  padding: 16px 16px 56px;      /* thin white border, wider strip at the bottom for the caption */
   background: #FFFFFF;
   border-radius: 4px;
   box-shadow:
@@ -258,7 +258,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   transform: rotate(-2deg);
   transition: transform 0.3s ease;
   width: min(100%, 440px);
-  aspect-ratio: 4 / 5;           /* classic Polaroid ratio */
+  aspect-ratio: 1 / 1;           /* square Polaroid (photo well + caption strip fit within a square outer) */
   display: flex;
   flex-direction: column;
   z-index: 3;
@@ -268,7 +268,7 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   /* Handwritten caption in the Polaroid's white strip */
   content: 'From the coast · Diu';
   position: absolute;
-  left: 0; right: 0; bottom: 18px;
+  left: 0; right: 0; bottom: 14px;
   text-align: center;
   font-family: 'Caveat', 'Lora', cursive;
   font-size: 22px;
@@ -347,8 +347,8 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   .v2-hero--coast { padding: 80px 0 40px; }
   .v2-hero-grid { grid-template-columns: 1fr; }
   .v2-hero-photo-wrap { min-height: auto; margin-top: 40px; padding: 12px; }
-  .v2-hero-photo { width: min(88%, 320px); padding: 14px 14px 54px; }
-  .v2-hero-photo::after { font-size: 18px; bottom: 14px; }
+  .v2-hero-photo { width: min(88%, 320px); padding: 12px 12px 46px; }
+  .v2-hero-photo::after { font-size: 18px; bottom: 12px; }
   .v2-hero-seaside { margin-left: auto; margin-right: auto; }
 }
 .v2-hero-waves {
