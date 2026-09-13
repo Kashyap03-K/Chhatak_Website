@@ -281,12 +281,11 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   position: absolute;
   top: 16px;
   left: 16px;
-  right: 16px;
-  bottom: 56px;      /* leaves a wider strip at the bottom for the caption */
-  width: auto;
-  height: auto;
+  width: calc(100% - 32px);
+  height: calc(100% - 72px);   /* 16 (top border) + 56 (caption strip) */
   display: block;
   object-fit: cover;
+  object-position: center;
   border-radius: 2px;
   background: #F1EBDD;
 }
@@ -352,7 +351,11 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   .v2-hero-photo-wrap { min-height: auto; margin-top: 40px; padding: 12px; }
   .v2-hero-photo { width: min(88%, 320px); }
   .v2-hero-photo img,
-  .v2-hero-photo .v2-hero-slot-empty { top: 12px; left: 12px; right: 12px; bottom: 46px; }
+  .v2-hero-photo .v2-hero-slot-empty {
+    top: 12px; left: 12px;
+    width: calc(100% - 24px);
+    height: calc(100% - 58px);   /* 12 (top border) + 46 (caption strip) */
+  }
   .v2-hero-photo::after { font-size: 18px; bottom: 12px; }
   .v2-hero-seaside { margin-left: auto; margin-right: auto; }
 }
