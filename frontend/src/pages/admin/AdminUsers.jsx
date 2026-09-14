@@ -52,6 +52,20 @@ export default function AdminUsers() {
     revenue: users.reduce((s, u) => s + (u.total_spent || 0), 0),
   }), [users]);
 
+  const handleDelete = async (u) => {
+    const confirmMsg =
+      `Permanently delete ${u.name || u.email}?\n\n` +
+      `This also removes their orders, saved addresses, cart, and payment records.\n` +
+      `This action cannot be undone.`;
+    if (!window.confirm(confirmMsg)) return;
+    try {
+      await api.delete(`/auth/admin/users/${u.id}`);
+      setUsers((prev) => prev.filter((x) => x.id !== u.id));
+    } catch (e) {
+      alert(e.response?.data?.detail || 'Delete failed.');
+    }
+  };
+
   const handleExport = async () => {
     setExporting(true);
     try {
@@ -122,6 +136,7 @@ export default function AdminUsers() {
                   <th>Last order</th>
                   <th>Joined</th>
                   <th>Flags</th>
+                  <th aria-label="Actions" />
                 </tr>
               </thead>
               <tbody>
@@ -140,6 +155,18 @@ export default function AdminUsers() {
                       {u.email_verified && <span className="admin-badge" style={{ marginRight: 4 }}>✓ verified</span>}
                       {u.is_admin && <span className="admin-badge" style={{ marginRight: 4 }}>Admin</span>}
                       {!u.is_active && <span className="admin-badge inactive">Inactive</span>}
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
+                      <button
+                        type="button"
+                        className="admin-order-delete"
+                        title={u.is_admin ? 'Cannot delete an admin' : 'Delete this user'}
+                        onClick={() => handleDelete(u)}
+                        disabled={u.is_admin}
+                        style={u.is_admin ? { opacity: 0.35, cursor: 'not-allowed' } : undefined}
+                      >
+                        🗑
+                      </button>
                     </td>
                   </tr>
                 ))}

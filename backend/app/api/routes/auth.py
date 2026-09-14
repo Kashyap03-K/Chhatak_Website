@@ -220,6 +220,43 @@ def admin_list_users(db: Session = Depends(get_db), _=Depends(get_current_admin)
     ]
 
 
+@router.delete("/admin/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def admin_delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    """Permanently delete a user and everything they own (orders + line items, payments,
+    saved addresses, cart items). Admin-only. Cannot delete yourself or another admin.
+    """
+    if user_id == current_admin.id:
+        raise HTTPException(status_code=400, detail="You cannot delete your own account.")
+    target = db.query(User).filter(User.id == user_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    if target.is_admin:
+        raise HTTPException(status_code=400, detail="Cannot delete another admin. Revoke admin rights first.")
+
+    # Core-level bulk delete to avoid ORM 'expected to update N rows' reconciliation.
+    from sqlalchemy import delete as sa_delete
+    from app.models.order import Order, OrderItem
+    from app.models.payment import Payment
+    from app.models.address import Address
+    from app.models.cart import CartItem
+
+    order_ids = [row[0] for row in db.query(Order.id).filter(Order.user_id == user_id).all()]
+    db.expire_all()
+    if order_ids:
+        db.execute(sa_delete(OrderItem).where(OrderItem.order_id.in_(order_ids)))
+        db.execute(sa_delete(Payment).where(Payment.order_id.in_(order_ids)))
+        db.execute(sa_delete(Order).where(Order.id.in_(order_ids)))
+    db.execute(sa_delete(CartItem).where(CartItem.user_id == user_id))
+    db.execute(sa_delete(Address).where(Address.user_id == user_id))
+    db.execute(sa_delete(User).where(User.id == user_id))
+    db.commit()
+    logger.info("Admin %s deleted user %s (%s)", current_admin.id, user_id, target.email)
+
+
 @router.get("/admin/users/export")
 def admin_export_users(db: Session = Depends(get_db), _=Depends(get_current_admin)):
     """Return an .xlsx workbook with a Users sheet and an Addresses sheet."""
