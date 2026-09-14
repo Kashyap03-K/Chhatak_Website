@@ -1890,7 +1890,30 @@ body.theme-coastal .pd-other-price { font-weight: 700; font-size: 18px; color: #
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
 .our-story-cta {
-  display: flex; gap: 14px; margin-top: 40px; flex-wrap: wrap;
+  display: flex; gap: 14px; margin-top: 48px; flex-wrap: wrap;
+  justify-content: center;
+}
+/* Scope-specific rules so nothing upstream can bleach these buttons on the cream page bg */
+.our-story-page .v2-btn { text-decoration: none; }
+.our-story-page .v2-btn--primary {
+  background: #D35E2B !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(211, 94, 43, 0.25);
+}
+.our-story-page .v2-btn--primary:hover {
+  background: #B54F22 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 20px rgba(211, 94, 43, 0.32);
+}
+.our-story-page .v2-btn--outline {
+  background: transparent !important;
+  color: #0F2745 !important;
+  border: 1.5px solid #0F2745 !important;
+}
+.our-story-page .v2-btn--outline:hover {
+  background: #0F2745 !important;
+  color: #FFFFFF !important;
 }
 @media (max-width: 640px) {
   .our-story-page { padding: 90px 0 60px; }
