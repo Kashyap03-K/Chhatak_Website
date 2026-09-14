@@ -35,7 +35,7 @@ const IMAGE_HINTS = {
   story: (
     <>
       <strong>Landscape banner</strong> for the yellow "Born on the coast" card — recommended <strong>1600 × 1100 px (16:11)</strong>.<br />
-      Add 2+ images to enable the 3-second cross-fade slideshow. Videos (mp4) work too — they'll autoplay muted.
+      Add 2+ images to enable the 5-second cross-fade slideshow. Videos (mp4) work too — they'll autoplay muted.
     </>
   ),
   'perfect-with': (
@@ -64,7 +64,7 @@ const IMAGE_HINTS = {
 const CUSTOM_GALLERY_HINT = (
   <>
     <strong>Full-bleed hero</strong> if you upload a single image/video — recommended <strong>1920 × 1080 px (16:9)</strong>, or 1920 × 1200 for a taller drop.<br />
-    <strong>2+ items</strong> → auto-advancing slideshow every 3 s (pauses on hover). Same 9:16 for video, 1:1 for photo as the journey strip.
+    <strong>2+ items</strong> → auto-advancing slideshow every 5 s (pauses on hover). Same 9:16 for video, 1:1 for photo as the journey strip.
   </>
 );
 

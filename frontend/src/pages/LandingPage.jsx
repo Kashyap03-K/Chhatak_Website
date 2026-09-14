@@ -263,7 +263,7 @@ function StoryBanner({ section }) {
 
   useEffect(() => {
     if (images.length < 2) return undefined;
-    const t = setInterval(() => setActive((i) => (i + 1) % images.length), 3000);
+    const t = setInterval(() => setActive((i) => (i + 1) % images.length), 5000);
     return () => clearInterval(t);
   }, [images.length]);
 
@@ -877,7 +877,7 @@ function HeroVideo({ src, defaultSoundOn = false }) {
 
 // Reusable slideshow for a list of media (images + videos) with next/prev arrows.
 // One item → renders it plain (no arrows). 2+ items → slideshow.
-function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption, autoAdvanceMs = 3000 }) {
+function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption, autoAdvanceMs = 5000 }) {
   const [index, setIndex] = useState(0);
   const [muted, setMuted] = useState(true);
   const [paused, setPaused] = useState(false);
@@ -894,7 +894,7 @@ function MediaSlideshow({ items, aspect = 'auto', className = '', renderCaption,
     if (p && typeof p.catch === 'function') p.catch(() => {});
   }, [index, muted]);
 
-  // Auto-advance every autoAdvanceMs (default 3s). Pauses on hover / while the
+  // Auto-advance every autoAdvanceMs (default 5s). Pauses on hover / while the
   // user is interacting via arrows or dots.
   useEffect(() => {
     if (!items || items.length < 2 || paused || !autoAdvanceMs) return undefined;
