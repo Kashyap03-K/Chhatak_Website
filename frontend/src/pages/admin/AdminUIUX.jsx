@@ -27,8 +27,8 @@ const SECTIONS_WITH_IMAGES = new Set(['hero', 'story', 'perfect-with', 'gallery'
 const IMAGE_HINTS = {
   hero: (
     <>
-      <strong>Square Polaroid photo</strong> — recommended <strong>1200 × 1200 px (1:1)</strong>. JPG or WebP under ~500 KB.<br />
-      Only the first image is used. Subject should be centred; the frame trims a thin white border.
+      <strong>Landscape Polaroid photo</strong> — recommended <strong>1600 × 1200 px (4:3)</strong>. JPG or WebP under ~500 KB.<br />
+      Only the first image is used. Subject should be centred; the frame trims a thin white border on the sides and a wider caption strip at the bottom.
     </>
   ),
   story: (

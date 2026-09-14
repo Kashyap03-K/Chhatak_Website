@@ -257,8 +257,8 @@ body.theme-coastal .nav-icon { color: #0B2340; }
     0 6px 14px rgba(11, 35, 64, 0.10);
   transform: rotate(-2deg);
   transition: transform 0.3s ease;
-  width: min(100%, 440px);
-  aspect-ratio: 1 / 1;           /* SQUARE outer frame — locked; children are absolutely positioned so they can't push it. */
+  width: min(100%, 560px);
+  aspect-ratio: 4 / 3;           /* LANDSCAPE outer frame — locked; children are absolutely positioned so they can't push it. */
   overflow: hidden;
   z-index: 3;
 }
