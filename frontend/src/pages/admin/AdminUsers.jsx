@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api/client.js';
 import AdminTabs from '../../components/AdminTabs.jsx';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 function fmtCurrency(n) {
   return `₹${Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
@@ -21,6 +22,7 @@ function fmtDate(s) {
 }
 
 export default function AdminUsers() {
+  const { user: me } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -53,16 +55,24 @@ export default function AdminUsers() {
   }), [users]);
 
   const handleDelete = async (u) => {
+    const suffix = u.is_admin
+      ? '\n\n⚠ This user is another admin. Deleting them removes their admin access too.'
+      : '';
     const confirmMsg =
       `Permanently delete ${u.name || u.email}?\n\n` +
       `This also removes their orders, saved addresses, cart, and payment records.\n` +
-      `This action cannot be undone.`;
+      `This action cannot be undone.` + suffix;
     if (!window.confirm(confirmMsg)) return;
     try {
       await api.delete(`/auth/admin/users/${u.id}`);
       setUsers((prev) => prev.filter((x) => x.id !== u.id));
     } catch (e) {
-      alert(e.response?.data?.detail || 'Delete failed.');
+      const status = e.response?.status;
+      const detail = e.response?.data?.detail;
+      if (detail) alert(detail);
+      else if (status === 404) alert('The delete endpoint isn\'t live yet — the backend needs to be redeployed.');
+      else if (status === 401 || status === 403) alert('You need to be signed in as an admin.');
+      else alert(`Delete failed${status ? ` (HTTP ${status})` : ''}. Check the network tab for details.`);
     }
   };
 
@@ -157,16 +167,18 @@ export default function AdminUsers() {
                       {!u.is_active && <span className="admin-badge inactive">Inactive</span>}
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      <button
-                        type="button"
-                        className="admin-order-delete"
-                        title={u.is_admin ? 'Cannot delete an admin' : 'Delete this user'}
-                        onClick={() => handleDelete(u)}
-                        disabled={u.is_admin}
-                        style={u.is_admin ? { opacity: 0.35, cursor: 'not-allowed' } : undefined}
-                      >
-                        🗑
-                      </button>
+                      {me?.id === u.id ? (
+                        <span title="You can't delete your own account" style={{ opacity: 0.35, fontSize: 16 }}>🗑</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="admin-order-delete"
+                          title={u.is_admin ? 'Delete this admin user' : 'Delete this user'}
+                          onClick={() => handleDelete(u)}
+                        >
+                          🗑
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

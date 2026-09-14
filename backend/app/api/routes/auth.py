@@ -234,8 +234,8 @@ def admin_delete_user(
     target = db.query(User).filter(User.id == user_id).first()
     if not target:
         raise HTTPException(status_code=404, detail="User not found")
-    if target.is_admin:
-        raise HTTPException(status_code=400, detail="Cannot delete another admin. Revoke admin rights first.")
+    # Deleting another admin is allowed — the caller has admin rights, so we trust them.
+    # Only self-delete is refused, so an admin can't lock everyone out by accident.
 
     # Core-level bulk delete to avoid ORM 'expected to update N rows' reconciliation.
     from sqlalchemy import delete as sa_delete
