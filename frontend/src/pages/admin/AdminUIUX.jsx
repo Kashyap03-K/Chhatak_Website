@@ -11,6 +11,7 @@ const BUILTIN_LABELS = {
   'perfect-with': 'Perfect With — 4 use-case tiles',
   why:            'Why Chhatak — dark stats bar',
   gallery:        'Follow our journey (reel/post slideshow)',
+  'our-story':    'Our Story page — chapter images with captions',
   reviews:        'Customer reviews wall',
   footer:         'Footer',
   // Legacy keys (kept for backwards-compat with older seeds)
@@ -20,7 +21,7 @@ const BUILTIN_LABELS = {
 };
 
 // Which built-in sections have an image manager card shown below the section list.
-const SECTIONS_WITH_IMAGES = new Set(['hero', 'story', 'perfect-with', 'gallery']);
+const SECTIONS_WITH_IMAGES = new Set(['hero', 'story', 'perfect-with', 'gallery', 'our-story']);
 // Concrete size guidance for creatives — keeps the site sharp on retina without
 // bloating downloads. Aspect ratio is the important thing; pixel targets are
 // "aim for at least" (bigger is fine, the browser downscales cleanly).
@@ -49,6 +50,12 @@ const IMAGE_HINTS = {
       • Videos → <strong>1080 × 1920 px (9:16 reel)</strong>.<br />
       • Photos → <strong>1080 × 1080 px (1:1 post)</strong>.<br />
       Videos auto-preview on hover with a play chip; sound stays off until the viewer clicks the 🔊 chip.
+    </>
+  ),
+  'our-story': (
+    <>
+      <strong>Chapter images</strong> shown one after another on the /our-story page. Recommended <strong>1600 × 1000 px (16:10)</strong>.<br />
+      Use each image's <em>title</em> as the short chapter heading and <em>body</em> as the paragraph description shown below the image. Leave both blank for a picture with no caption.
     </>
   ),
 };

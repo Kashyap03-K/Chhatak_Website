@@ -1772,6 +1772,46 @@ body.theme-coastal .pd-other-price { font-weight: 700; font-size: 18px; color: #
   max-width: 640px;
   margin: 0 0 32px;
 }
+/* Chapters — each image with its own caption block below it */
+.our-story-chapters {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  margin-top: 8px;
+}
+.our-story-chapter { display: flex; flex-direction: column; gap: 18px; }
+.our-story-chapter__media {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #0F2745;
+  box-shadow: 0 8px 32px rgba(15, 39, 69, 0.12);
+  aspect-ratio: 16 / 10;
+}
+.our-story-chapter__media img,
+.our-story-chapter__media video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.our-story-chapter__caption { padding: 0 4px; }
+.our-story-chapter__title {
+  font-family: 'Lora', 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.2vw, 1.7rem);
+  color: #0F2745;
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+.our-story-chapter__body {
+  font-family: 'Inter', sans-serif;
+  color: #1F1F1F;
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 780px;
+}
+
 .our-story-hero {
   position: relative;
   aspect-ratio: 16 / 9;
@@ -1857,6 +1897,9 @@ body.theme-coastal .pd-other-price { font-weight: 700; font-size: 18px; color: #
   .our-story-hero { border-radius: 12px; }
   .our-story-hero__arrow { width: 36px; height: 36px; font-size: 22px; }
   .our-story-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+  .our-story-chapters { gap: 40px; }
+  .our-story-chapter__media { border-radius: 12px; aspect-ratio: 4 / 3; }
+  .our-story-chapter__body { font-size: 14.5px; }
 }
 
 /* ============================================================

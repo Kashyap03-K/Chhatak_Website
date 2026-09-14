@@ -1,39 +1,27 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/client.js';
 
-// Full-page gallery of the story slideshow images.
-// Reads /landing/sections and pulls out the `story` section's uploaded images.
+// A long-form "story chapters" view.
+// Reads the `our-story` landing section from the CMS and renders each image
+// (image_url) with its title + body as a paragraph beneath it. Falls back to
+// the landing story-banner images if `our-story` hasn't been populated yet.
 export default function OurStoryPage() {
-  const [images, setImages] = useState([]);
-  const [index, setIndex] = useState(0);
+  const [chapters, setChapters] = useState([]);
   const [loading, setLoading] = useState(true);
-  const timerRef = useRef(null);
 
   useEffect(() => {
     document.title = 'Our Story — Chhatak';
     window.scrollTo(0, 0);
     api.get('/landing/sections').then(({ data }) => {
-      const story = (data || []).find((s) => s.key === 'story');
-      const imgs = story?.images?.length
-        ? story.images
-        : [{ image_url: '/images/scene 1.png', title: 'Fishermen at dawn in Diu', media_type: 'image' }];
-      setImages(imgs);
-    }).catch(() => {
-      setImages([{ image_url: '/images/scene 1.png', title: 'Fishermen at dawn in Diu', media_type: 'image' }]);
-    }).finally(() => setLoading(false));
+      const sections = data || [];
+      const ourStory = sections.find((s) => s.key === 'our-story');
+      const fallback = sections.find((s) => s.key === 'story');
+      const source = (ourStory?.images?.length ? ourStory : fallback);
+      const imgs = source?.images || [];
+      setChapters(imgs);
+    }).catch(() => setChapters([])).finally(() => setLoading(false));
   }, []);
-
-  // Auto-advance the hero slideshow every 4.2s.
-  useEffect(() => {
-    if (images.length < 2) return undefined;
-    clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => setIndex((i) => (i + 1) % images.length), 3000);
-    return () => clearInterval(timerRef.current);
-  }, [images.length]);
-
-  const go = (dir) => setIndex((i) => (i + dir + images.length) % images.length);
-  const active = images[index];
 
   return (
     <div className="our-story-page">
@@ -48,73 +36,34 @@ export default function OurStoryPage() {
 
         {loading ? (
           <p style={{ color: 'var(--muted)', textAlign: 'center', marginTop: 40 }}>Loading…</p>
+        ) : chapters.length === 0 ? (
+          <p style={{ color: 'var(--muted)', textAlign: 'center', marginTop: 40 }}>
+            Story chapters haven't been added yet. Set them up in <em>Admin → UI/UX → Our Story chapters</em>.
+          </p>
         ) : (
-          <>
-            {/* Hero slideshow — cross-fades the same images from the landing story banner. */}
-            <div className="our-story-hero">
-              {images.map((img, i) => (
-                img.media_type === 'video' ? (
-                  <video
-                    key={img.id ?? i}
-                    src={img.image_url}
-                    className={`our-story-hero__slide${i === index ? ' is-active' : ''}`}
-                    muted playsInline autoPlay loop
-                  />
-                ) : (
-                  <img
-                    key={img.id ?? i}
-                    src={img.image_url}
-                    alt={img.title || `Chhatak story frame ${i + 1}`}
-                    className={`our-story-hero__slide${i === index ? ' is-active' : ''}`}
-                    loading={i === 0 ? 'eager' : 'lazy'}
-                  />
-                )
-              ))}
-
-              {images.length > 1 && (
-                <>
-                  <button type="button" className="our-story-hero__arrow our-story-hero__arrow--prev" onClick={() => go(-1)} aria-label="Previous">‹</button>
-                  <button type="button" className="our-story-hero__arrow our-story-hero__arrow--next" onClick={() => go(1)} aria-label="Next">›</button>
-                  <div className="our-story-hero__dots" role="tablist">
-                    {images.map((_, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        className={`our-story-hero__dot${i === index ? ' is-active' : ''}`}
-                        onClick={() => setIndex(i)}
-                        aria-label={`Go to image ${i + 1}`}
-                      />
-                    ))}
+          <div className="our-story-chapters">
+            {chapters.map((img, i) => (
+              <article className="our-story-chapter" key={img.id ?? i}>
+                <div className="our-story-chapter__media">
+                  {img.media_type === 'video' ? (
+                    <video src={img.image_url} muted playsInline autoPlay loop />
+                  ) : (
+                    <img
+                      src={img.image_url}
+                      alt={img.title || `Chhatak story chapter ${i + 1}`}
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                    />
+                  )}
+                </div>
+                {(img.title || img.body) && (
+                  <div className="our-story-chapter__caption">
+                    {img.title && <h2 className="our-story-chapter__title">{img.title}</h2>}
+                    {img.body && <p className="our-story-chapter__body">{img.body}</p>}
                   </div>
-                </>
-              )}
-            </div>
-
-            {active?.title && (
-              <p className="our-story-caption">{active.title}</p>
-            )}
-
-            {/* Also expose every frame as a static gallery so viewers can scroll through them. */}
-            {images.length > 1 && (
-              <div className="our-story-grid">
-                {images.map((img, i) => (
-                  <button
-                    type="button"
-                    key={img.id ?? `grid-${i}`}
-                    className={`our-story-grid__tile${i === index ? ' is-active' : ''}`}
-                    onClick={() => setIndex(i)}
-                    aria-label={`Focus image ${i + 1}`}
-                  >
-                    {img.media_type === 'video' ? (
-                      <video src={img.image_url} muted playsInline preload="metadata" />
-                    ) : (
-                      <img src={img.image_url} alt={img.title || ''} loading="lazy" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </>
+                )}
+              </article>
+            ))}
+          </div>
         )}
 
         <div className="our-story-cta">

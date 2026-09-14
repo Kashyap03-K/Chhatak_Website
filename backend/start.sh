@@ -18,6 +18,8 @@ with engine.begin() as conn:
     conn.execute(text('CREATE UNIQUE INDEX IF NOT EXISTS ix_users_password_reset_token ON users (password_reset_token)'))
     # Seed default shipping rules so admin has rows to edit on day one
     conn.execute(text(\"INSERT INTO shipping_config (payment_method, amount, free_above) VALUES ('cod', 49, 499), ('online', 0, 0) ON CONFLICT (payment_method) DO NOTHING\"))
+    # Seed the 'our-story' landing section so /our-story has a home for its chapter images
+    conn.execute(text(\"INSERT INTO landing_sections (key, kind, title, is_active, sort_order) VALUES ('our-story', 'builtin', 'Our Story chapters', true, 998) ON CONFLICT (key) DO NOTHING\"))
 print('Database tables created.')
 "
 
