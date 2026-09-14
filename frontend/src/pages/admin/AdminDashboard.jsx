@@ -54,26 +54,26 @@ export default function AdminDashboard() {
         ) : stats ? (
           <>
             <div className="admin-stats">
-              <div className="stat-card stat-card--accent">
+              <Link to="/admin/orders" className="stat-card stat-card--accent stat-card--linked" title="Open orders list">
                 <span className="stat-num">₹{stats.total_revenue.toLocaleString('en-IN')}</span>
                 <span className="stat-label">Revenue</span>
-              </div>
-              <div className="stat-card">
+              </Link>
+              <Link to="/admin/orders" className="stat-card stat-card--linked" title="Open orders list">
                 <span className="stat-num">{stats.total_orders}</span>
                 <span className="stat-label">Total Orders</span>
-              </div>
-              <div className="stat-card">
+              </Link>
+              <Link to="/admin/orders?status=pending_payment" className="stat-card stat-card--linked" title="Show pending-payment orders">
                 <span className="stat-num">{stats.pending_orders}</span>
                 <span className="stat-label">Pending</span>
-              </div>
-              <div className="stat-card">
+              </Link>
+              <Link to="/admin/users" className="stat-card stat-card--linked" title="Open users list">
                 <span className="stat-num">{stats.total_users}</span>
                 <span className="stat-label">Users</span>
-              </div>
-              <div className="stat-card">
+              </Link>
+              <Link to="/admin/products" className="stat-card stat-card--linked" title="Open products list">
                 <span className="stat-num">{stats.total_products}</span>
                 <span className="stat-label">Products</span>
-              </div>
+              </Link>
             </div>
 
             {lowStock.length > 0 && (
@@ -173,6 +173,13 @@ export default function AdminDashboard() {
                   <div>
                     <strong>Shipping charges</strong>
                     <p>Set the shipping fee and free-shipping threshold for COD and online payments</p>
+                  </div>
+                </Link>
+                <Link to="/admin/users" className="admin-action-card">
+                  <div className="admin-action-card__icon">◔</div>
+                  <div>
+                    <strong>Users</strong>
+                    <p>Every registered customer, their contact details, lifetime spend, and order history</p>
                   </div>
                 </Link>
               </div>

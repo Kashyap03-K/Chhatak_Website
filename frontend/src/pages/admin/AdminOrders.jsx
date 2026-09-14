@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import api from '../../api/client.js';
 
 const STATUS_OPTIONS = ['pending_payment', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
@@ -80,7 +80,12 @@ function daysBetweenIST(a, b) {
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
+  const [searchParams] = useSearchParams();
+  // Honor ?status=... from the dashboard KPI links (e.g. Pending card).
+  const initialStatus = searchParams.get('status');
+  const [filter, setFilter] = useState(
+    initialStatus && STATUS_OPTIONS.includes(initialStatus) ? initialStatus : 'all'
+  );
   const [query, setQuery] = useState('');
   const [expanded, setExpanded] = useState(null);
   const [exporting, setExporting] = useState(false);

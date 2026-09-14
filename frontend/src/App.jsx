@@ -23,6 +23,7 @@ import AdminPayments from './pages/admin/AdminPayments.jsx';
 import AdminReviews from './pages/admin/AdminReviews.jsx';
 import AdminNewsletter from './pages/admin/AdminNewsletter.jsx';
 import AdminShipping from './pages/admin/AdminShipping.jsx';
+import AdminUsers from './pages/admin/AdminUsers.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import Navbar from './components/Navbar.jsx';
 import AuthDialog from './components/AuthDialog.jsx';
@@ -71,6 +72,7 @@ export default function App() {
         <Route path="/admin/reviews" element={<AdminRoute><AdminReviews /></AdminRoute>} />
         <Route path="/admin/newsletter" element={<AdminRoute><AdminNewsletter /></AdminRoute>} />
         <Route path="/admin/shipping" element={<AdminRoute><AdminShipping /></AdminRoute>} />
+        <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

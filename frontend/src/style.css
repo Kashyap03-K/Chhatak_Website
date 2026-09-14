@@ -2017,6 +2017,30 @@ img[src*="beige-paper"] { border-radius: 0 !important; }
   flex-direction: column;
   gap: 8px;
 }
+/* Clickable KPI card — signals interactivity + hints at drill-down list */
+.stat-card--linked {
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.stat-card--linked::after {
+  content: '›';
+  position: absolute;
+  top: 14px; right: 18px;
+  font-size: 26px;
+  color: var(--muted);
+  line-height: 1;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.stat-card--linked:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 24px rgba(11, 35, 64, 0.08);
+}
+.stat-card--linked:hover::after { color: var(--accent); transform: translateX(3px); }
+.stat-card--linked:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .stat-num {
   font-family: 'Lora', 'Fraunces', serif;
   font-size: 36px;
