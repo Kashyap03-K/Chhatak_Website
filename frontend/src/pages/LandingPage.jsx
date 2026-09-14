@@ -192,7 +192,7 @@ function Hero({ section }) {
         <div className="v2-hero-grid">
           <div className="v2-hero-copy">
             <p className="v2-hero-eyebrow">
-              <span>EST · 1961</span>
+              <span>EST · 2025</span>
               <span className="v2-hero-eyebrow-dot" />
               <span>DIU · ARABIAN SEA</span>
             </p>

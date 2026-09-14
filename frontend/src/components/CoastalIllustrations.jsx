@@ -132,7 +132,7 @@ export function CompassRose({ className = '', ...rest }) {
 export function PassportStamp({
   label = 'DIU · GUJARAT',
   sub = 'ARABIAN SEA COAST',
-  year = '1961',
+  year = '2025',
   className = '',
   ...rest
 }) {
