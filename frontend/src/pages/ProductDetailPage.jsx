@@ -234,7 +234,6 @@ export default function ProductDetailPage() {
             <div className="pd-about-inner">
               <p className="kicker">— About this flavor</p>
               <h2 className="display sm">The story behind <em>{product.name}</em>.</h2>
-              <WaveDoodle />
               <div className="pd-about-body">
                 {product.long_description.split(/\n\n+/).map((para, i) => (
                   <p key={i}>{para}</p>
