@@ -1738,16 +1738,15 @@ body.theme-coastal .pd-other-card:hover {
   box-shadow: 0 14px 30px rgba(11, 35, 64, 0.10);
 }
 body.theme-coastal .pd-other-thumb {
-  aspect-ratio: 16 / 10;             /* was 4/3 — flatter tile so the whole card is less tall */
-  max-height: 220px;                 /* hard cap so wide cards don't blow up the placeholder */
+  aspect-ratio: 4 / 3;               /* restored to the taller placeholder pre-32a0a58 */
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; position: relative;
-  padding: 20px;                     /* breathing room around the packet */
+  padding: 24px;                     /* breathing room around the packet */
 }
 body.theme-coastal .pd-other-thumb img {
   width: auto; height: 100%;
-  max-width: 58%;                   /* keep the pouch modest inside the smaller placeholder */
-  max-height: 90%;
+  max-width: 65%;                   /* packet sits inside the tile, not filling it */
+  max-height: 88%;
   object-fit: contain;
 }
 body.theme-coastal .pd-other-body { padding: 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
