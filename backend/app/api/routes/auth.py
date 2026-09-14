@@ -231,11 +231,15 @@ def admin_delete_user(
     """
     if user_id == current_admin.id:
         raise HTTPException(status_code=400, detail="You cannot delete your own account.")
-    target = db.query(User).filter(User.id == user_id).first()
-    if not target:
+
+    # Cheap existence + audit-info fetch. Never load the ORM object into the
+    # session — expire_all() below would blow away the loaded row and any later
+    # attribute access would raise ObjectDeletedError after the commit.
+    admin_id = current_admin.id
+    row = db.query(User.email).filter(User.id == user_id).first()
+    if row is None:
         raise HTTPException(status_code=404, detail="User not found")
-    # Deleting another admin is allowed — the caller has admin rights, so we trust them.
-    # Only self-delete is refused, so an admin can't lock everyone out by accident.
+    target_email = row[0]
 
     # Core-level bulk delete to avoid ORM 'expected to update N rows' reconciliation.
     from sqlalchemy import delete as sa_delete
@@ -244,17 +248,23 @@ def admin_delete_user(
     from app.models.address import Address
     from app.models.cart import CartItem
 
-    order_ids = [row[0] for row in db.query(Order.id).filter(Order.user_id == user_id).all()]
-    db.expire_all()
-    if order_ids:
-        db.execute(sa_delete(OrderItem).where(OrderItem.order_id.in_(order_ids)))
-        db.execute(sa_delete(Payment).where(Payment.order_id.in_(order_ids)))
-        db.execute(sa_delete(Order).where(Order.id.in_(order_ids)))
-    db.execute(sa_delete(CartItem).where(CartItem.user_id == user_id))
-    db.execute(sa_delete(Address).where(Address.user_id == user_id))
-    db.execute(sa_delete(User).where(User.id == user_id))
-    db.commit()
-    logger.info("Admin %s deleted user %s (%s)", current_admin.id, user_id, target.email)
+    try:
+        order_ids = [r[0] for r in db.query(Order.id).filter(Order.user_id == user_id).all()]
+        db.expire_all()
+        if order_ids:
+            db.execute(sa_delete(OrderItem).where(OrderItem.order_id.in_(order_ids)))
+            db.execute(sa_delete(Payment).where(Payment.order_id.in_(order_ids)))
+            db.execute(sa_delete(Order).where(Order.id.in_(order_ids)))
+        db.execute(sa_delete(CartItem).where(CartItem.user_id == user_id))
+        db.execute(sa_delete(Address).where(Address.user_id == user_id))
+        db.execute(sa_delete(User).where(User.id == user_id))
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        logger.exception("Admin %s failed to delete user %s", admin_id, user_id)
+        raise HTTPException(status_code=500, detail=f"Delete failed: {e}")
+
+    logger.info("Admin %s deleted user %s (%s)", admin_id, user_id, target_email)
 
 
 @router.get("/admin/users/export")
