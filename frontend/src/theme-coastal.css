@@ -1719,7 +1719,9 @@ body.theme-coastal .pd-others {
   gap: 24px; flex-wrap: wrap; margin-bottom: 36px;
 }
 .pd-others-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 300px));
+  justify-content: center;   /* center when there are only two cards (or a partial last row) */
   gap: 24px;
 }
 body.theme-coastal .pd-other-card {
@@ -1729,6 +1731,7 @@ body.theme-coastal .pd-other-card {
   color: #0B2340; text-decoration: none;
   display: flex; flex-direction: column;
   transition: transform 0.15s, box-shadow 0.15s;
+  max-width: 300px;
 }
 body.theme-coastal .pd-other-card:hover {
   transform: translateY(-4px);
