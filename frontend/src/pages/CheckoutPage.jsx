@@ -139,11 +139,31 @@ export default function CheckoutPage() {
     return null;
   }
 
+  const itemCount = items.reduce((s, i) => s + i.quantity, 0);
+
   return (
     <div className="section checkout-page">
       <div className="container">
         <p className="kicker center">— Checkout</p>
         <h2 className="display sm center">Complete your <em>order</em>.</h2>
+
+        {/* Progress steps — Cart → Address → Payment → Confirmed */}
+        <ol className="checkout-steps" aria-label="Checkout progress">
+          <li className="checkout-step is-done">
+            <span className="checkout-step__dot" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+            </span>
+            <span className="checkout-step__label">Cart</span>
+          </li>
+          <li className="checkout-step is-active">
+            <span className="checkout-step__dot" aria-hidden="true">2</span>
+            <span className="checkout-step__label">Address & Payment</span>
+          </li>
+          <li className="checkout-step">
+            <span className="checkout-step__dot" aria-hidden="true">3</span>
+            <span className="checkout-step__label">Confirmed</span>
+          </li>
+        </ol>
 
         {error && <div className="auth-error" style={{ maxWidth: '600px', margin: '20px auto' }}>{error}</div>}
 
@@ -242,27 +262,76 @@ export default function CheckoutPage() {
               </svg>
               Payment method
             </h3>
-            <div className="saved-addresses">
-              <label className={`address-option ${paymentMethod === 'online' ? 'selected' : ''}`}>
+            <div className="saved-addresses payment-options">
+              <label className={`address-option payment-option ${paymentMethod === 'online' ? 'selected' : ''}`}>
                 <input type="radio" name="payment" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} />
-                <div>
-                  <strong>Pay online</strong>
-                  <br /><span style={{ fontSize: 13, color: 'var(--ink-soft)' }}>UPI, cards, netbanking & wallets via Razorpay</span>
+                <div className="payment-option__body">
+                  <div className="payment-option__title">
+                    <strong>Pay online</strong>
+                    <span className="payment-badge payment-badge--recommended">Recommended</span>
+                  </div>
+                  <p className="payment-option__desc">UPI, cards, netbanking & wallets via Razorpay</p>
+                  <div className="payment-brands" aria-hidden="true">
+                    <span className="payment-brand">UPI</span>
+                    <span className="payment-brand">VISA</span>
+                    <span className="payment-brand">MC</span>
+                    <span className="payment-brand">RuPay</span>
+                    <span className="payment-brand">PayTM</span>
+                  </div>
                 </div>
               </label>
-              <label className={`address-option ${paymentMethod === 'cod' ? 'selected' : ''}`}>
+              <label className={`address-option payment-option ${paymentMethod === 'cod' ? 'selected' : ''}`}>
                 <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} />
-                <div>
-                  <strong>Cash on delivery</strong>
-                  <br /><span style={{ fontSize: 13, color: 'var(--ink-soft)' }}>Pay the courier when your order arrives.</span>
+                <div className="payment-option__body">
+                  <div className="payment-option__title">
+                    <strong>Cash on delivery</strong>
+                    {shippingConfig.cod.amount > 0 && (
+                      <span className="payment-badge">+ ₹{shippingConfig.cod.amount} handling</span>
+                    )}
+                  </div>
+                  <p className="payment-option__desc">Pay the courier in cash when your order arrives.</p>
                 </div>
               </label>
             </div>
             </div>
 
+            <div className="checkout-delivery">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 7h11v10H3z" />
+                <path d="M14 10h4l3 3v4h-7z" />
+                <circle cx="7" cy="18.5" r="1.8" />
+                <circle cx="17" cy="18.5" r="1.8" />
+              </svg>
+              <div>
+                <strong>Delivered in 3–5 business days</strong>
+                <p>Dispatched from Diu · Free tracking updates by email</p>
+              </div>
+            </div>
+
             <button type="submit" className="btn-solid accent full" disabled={loading}>
               {loading ? (paymentMethod === 'online' ? 'Opening payment…' : 'Placing order…') : (paymentMethod === 'online' ? `Pay ₹${grandTotal}` : `Place order — ₹${grandTotal}`)}
             </button>
+
+            <div className="checkout-trust" aria-label="Secure checkout">
+              <span className="checkout-trust__item">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+                Secure 256-bit checkout
+              </span>
+              <span className="checkout-trust__item">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4Z" /><path d="m9 12 2 2 4-4" />
+                </svg>
+                Powered by Razorpay
+              </span>
+              <span className="checkout-trust__item">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0Z" /><path d="M8 12h8M12 8v8" />
+                </svg>
+                7-day easy returns
+              </span>
+            </div>
           </form>
 
           <div className="cart-summary">
@@ -272,13 +341,27 @@ export default function CheckoutPage() {
                 <path d="M8 9h8M8 13h8M8 17h5" />
               </svg>
               Order summary
+              <span className="summary-count">{itemCount} item{itemCount === 1 ? '' : 's'}</span>
             </h3>
-            {items.map((item) => (
-              <div className="summary-item" key={item.id}>
-                <span>{item.product.name} × {item.quantity}</span>
-                <span>₹{item.product.price * item.quantity}</span>
-              </div>
-            ))}
+            <div className="summary-items">
+              {items.map((item) => {
+                const p = item.product;
+                const thumb = (Array.isArray(p.images) && p.images[0]) || p.image_url || '/images/packaging-real.JPG';
+                return (
+                  <div className="summary-line" key={item.id}>
+                    <div className="summary-line__thumb">
+                      <img src={thumb} alt={p.name} loading="lazy" />
+                      <span className="summary-line__qty">{item.quantity}</span>
+                    </div>
+                    <div className="summary-line__meta">
+                      <p className="summary-line__name">{p.name}</p>
+                      {p.weight && <p className="summary-line__sub">{p.weight}</p>}
+                    </div>
+                    <div className="summary-line__price">₹{p.price * item.quantity}</div>
+                  </div>
+                );
+              })}
+            </div>
             <div className="summary-row">
               <span>Subtotal</span>
               <span>₹{totalPrice}</span>
