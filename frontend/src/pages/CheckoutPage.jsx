@@ -4,6 +4,39 @@ import { useCart } from '../context/CartContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import api from '../api/client.js';
 
+// Inline Razorpay wordmark — matches their brand blue (#3395FF).
+// Kept as SVG so it always renders (no external requests, no CSP surprises).
+function RazorpayMark({ height = 16 }) {
+  return (
+    <svg
+      className="rp-mark"
+      viewBox="0 0 106 22"
+      height={height}
+      width={height * (106 / 22)}
+      role="img"
+      aria-label="Razorpay"
+    >
+      {/* Angular R glyph (the flag) */}
+      <path
+        d="M11.5 0 5.4 12.5H10L6.3 22h1.6L15 8.7h-4.6L14.5 0Z"
+        fill="#3395FF"
+      />
+      {/* Razorpay wordmark */}
+      <text
+        x="20"
+        y="16.5"
+        fontFamily="Inter, system-ui, sans-serif"
+        fontWeight="700"
+        fontSize="15"
+        fill="#0F2C4F"
+        letterSpacing="-0.2"
+      >
+        Razorpay
+      </text>
+    </svg>
+  );
+}
+
 export default function CheckoutPage() {
   const { items, totalPrice, fetchCart } = useCart();
   const { user } = useAuth();
@@ -278,6 +311,10 @@ export default function CheckoutPage() {
                     <span className="payment-brand">RuPay</span>
                     <span className="payment-brand">PayTM</span>
                   </div>
+                  <div className="payment-provider">
+                    <span className="payment-provider__label">Secured by</span>
+                    <RazorpayMark />
+                  </div>
                 </div>
               </label>
               <label className={`address-option payment-option ${paymentMethod === 'cod' ? 'selected' : ''}`}>
@@ -319,11 +356,8 @@ export default function CheckoutPage() {
                 </svg>
                 Secure 256-bit checkout
               </span>
-              <span className="checkout-trust__item">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4Z" /><path d="m9 12 2 2 4-4" />
-                </svg>
-                Powered by Razorpay
+              <span className="checkout-trust__item checkout-trust__item--rp">
+                Powered by <RazorpayMark height={14} />
               </span>
               <span className="checkout-trust__item">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

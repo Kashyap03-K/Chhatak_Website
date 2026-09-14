@@ -2194,6 +2194,23 @@ body.theme-coastal .payment-brand {
   border: 1px solid rgba(15, 39, 69, 0.14);
   color: #0F2745;
 }
+/* "Secured by <Razorpay>" strip under the brand chips */
+body.theme-coastal .payment-provider {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(15, 39, 69, 0.10);
+}
+body.theme-coastal .payment-provider__label {
+  font-size: 11px; letter-spacing: 0.04em;
+  color: #8B8B8B; font-weight: 500;
+  text-transform: uppercase;
+}
+body.theme-coastal .rp-mark { display: inline-block; vertical-align: middle; }
+body.theme-coastal .checkout-trust__item--rp {
+  gap: 5px;
+  color: #0F2745;   /* the wordmark is dark navy — matches the rest of the row visually */
+}
 
 /* Delivery + trust rows ----------------------------------------- */
 body.theme-coastal .checkout-delivery {
