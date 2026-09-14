@@ -1719,9 +1719,7 @@ body.theme-coastal .pd-others {
   gap: 24px; flex-wrap: wrap; margin-bottom: 36px;
 }
 .pd-others-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 300px));
-  justify-content: center;   /* center when there are only two cards (or a partial last row) */
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
 }
 body.theme-coastal .pd-other-card {
@@ -1731,23 +1729,18 @@ body.theme-coastal .pd-other-card {
   color: #0B2340; text-decoration: none;
   display: flex; flex-direction: column;
   transition: transform 0.15s, box-shadow 0.15s;
-  max-width: 300px;
 }
 body.theme-coastal .pd-other-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 14px 30px rgba(11, 35, 64, 0.10);
 }
 body.theme-coastal .pd-other-thumb {
-  aspect-ratio: 4 / 3;               /* restored to the taller placeholder pre-32a0a58 */
+  aspect-ratio: 4 / 3;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; position: relative;
-  padding: 24px;                     /* breathing room around the packet */
 }
 body.theme-coastal .pd-other-thumb img {
-  width: auto; height: 100%;
-  max-width: 65%;                   /* packet sits inside the tile, not filling it */
-  max-height: 88%;
-  object-fit: contain;
+  width: 100%; height: 100%; object-fit: cover;
 }
 body.theme-coastal .pd-other-body { padding: 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 body.theme-coastal .pd-other-body h3 { font-size: 20px; margin: 0; color: #0B2340; }
