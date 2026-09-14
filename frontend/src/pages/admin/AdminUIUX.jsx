@@ -383,6 +383,8 @@ export default function AdminUIUX() {
 
 
 function SectionImagesCard({ section, isHero, hint, builtinLabel, onAdd, onUpdate, onDelete, onMove, onEditMeta, onSaveImageOrder, busy }) {
+  // Sections whose images carry a Title/Body caption the storefront renders.
+  const withCaptions = isHero || section.key === 'our-story';
   const fileRef = useRef(null);
   const [pendingMeta, setPendingMeta] = useState({ kicker: '', title: '', body: '' });
   const [savingImgOrder, setSavingImgOrder] = useState(false);
@@ -468,23 +470,25 @@ function SectionImagesCard({ section, isHero, hint, builtinLabel, onAdd, onUpdat
             ) : (
               <img src={img.image_url} alt={img.title || ''} />
             )}
-            {isHero && (
+            {withCaptions && (
               <div className="uiux-image-fields">
+                {isHero && (
+                  <input
+                    type="text"
+                    placeholder="Kicker"
+                    defaultValue={img.kicker || ''}
+                    onBlur={(e) => e.target.value !== (img.kicker || '') && onUpdate(img, { kicker: e.target.value })}
+                  />
+                )}
                 <input
                   type="text"
-                  placeholder="Kicker"
-                  defaultValue={img.kicker || ''}
-                  onBlur={(e) => e.target.value !== (img.kicker || '') && onUpdate(img, { kicker: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Title"
+                  placeholder={isHero ? 'Title' : 'Chapter heading'}
                   defaultValue={img.title || ''}
                   onBlur={(e) => e.target.value !== (img.title || '') && onUpdate(img, { title: e.target.value })}
                 />
                 <textarea
-                  placeholder="Body"
-                  rows={2}
+                  placeholder={isHero ? 'Body' : 'Description shown under the image'}
+                  rows={isHero ? 2 : 4}
                   defaultValue={img.body || ''}
                   onBlur={(e) => e.target.value !== (img.body || '') && onUpdate(img, { body: e.target.value })}
                 />
