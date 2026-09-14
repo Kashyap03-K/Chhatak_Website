@@ -782,6 +782,32 @@ body.theme-coastal .nav-icon { color: #0B2340; }
   transition: transform 0.2s ease, background 0.2s ease;
 }
 .v2-journey-tile:hover .v2-journey-play { background: rgba(211, 94, 43, 0.85); transform: translate(-50%, -50%) scale(0.92); }
+.v2-journey-tile--video { position: relative; cursor: pointer; }
+.v2-journey-tile--video .v2-journey-video { width: 100%; height: 100%; }
+.v2-journey-ig {
+  position: absolute;
+  top: 10px; right: 10px;
+  z-index: 4;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: rgba(11, 35, 64, 0.55);
+  color: #FFFFFF;
+  text-decoration: none;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+.v2-journey-tile:hover .v2-journey-ig,
+.v2-journey-ig:focus-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.v2-journey-ig:hover { background: rgba(211, 94, 43, 0.9); color: #FFFFFF; }
+@media (hover: none) {
+  .v2-journey-ig { opacity: 1; transform: none; }
+}
 .v2-journey-sound {
   position: absolute;
   right: 10px; bottom: 10px;

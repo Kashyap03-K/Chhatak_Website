@@ -497,16 +497,15 @@ function JourneyVideoTile({ src }) {
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
 
-  const play = () => {
+  const play = (wantSound = false) => {
     const v = ref.current;
     if (!v) return;
-    // Preserve whatever mute state the viewer chose; browsers allow autoplay
-    // only for muted media, so the very first hover always starts muted.
-    v.muted = muted;
+    if (wantSound) { v.muted = false; setMuted(false); }
+    else            { v.muted = muted; }
     const p = v.play();
     if (p && p.catch) p.catch(() => {
-      // If unmuted playback was blocked, fall back to muted so at least the
-      // frame moves.
+      // If unmuted playback was blocked, fall back to muted so the frame at
+      // least moves — the viewer can still tap the 🔊 chip afterwards.
       if (!v.muted) { v.muted = true; setMuted(true); v.play().catch(() => {}); }
     });
     setPlaying(true);
@@ -519,7 +518,6 @@ function JourneyVideoTile({ src }) {
     setPlaying(false);
   };
   const toggleSound = (e) => {
-    // Sound toggle sits inside the Instagram <a> — stop the link from firing.
     e.preventDefault();
     e.stopPropagation();
     const v = ref.current;
@@ -527,22 +525,31 @@ function JourneyVideoTile({ src }) {
     const next = !muted;
     v.muted = next;
     setMuted(next);
-    // A user gesture just fired; unmuting is now safe. Start playing if
-    // the pointer already left the tile — the viewer clearly wants audio.
-    if (!next) {
-      const p = v.play();
-      if (p && p.catch) p.catch(() => {});
-      setPlaying(true);
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+    setPlaying(true);
+  };
+  // On touch devices there's no hover — tapping the tile itself should
+  // start audio playback (it's a real user gesture, so browsers allow it).
+  const handlePointer = (e) => {
+    if (e.pointerType && e.pointerType !== 'mouse') {
+      // toggle: tap again to pause and reset
+      if (playing && !muted) { pause(); return; }
+      play(true);
     }
   };
 
   return (
     <div
       className="v2-journey-video"
-      onMouseEnter={play}
+      onMouseEnter={() => play(false)}
       onMouseLeave={pause}
-      onFocus={play}
+      onFocus={() => play(false)}
       onBlur={pause}
+      onPointerDown={handlePointer}
+      role="button"
+      tabIndex={0}
+      aria-label="Play video"
     >
       <video ref={ref} src={src} muted={muted} playsInline loop preload="metadata" />
       {!playing && (
@@ -593,13 +600,29 @@ function JourneyStrip({ items }) {
       </button>
       <div className="v2-journey-strip" ref={trackRef}>
         {items.map((it, i) => (
-          <a key={i} href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="v2-journey-tile">
-            {it.media_type === 'video' ? (
+          it.media_type === 'video' ? (
+            <div key={i} className="v2-journey-tile v2-journey-tile--video">
               <JourneyVideoTile src={it.src} />
-            ) : (
+              <a
+                className="v2-journey-ig"
+                href="https://instagram.com/chhatak.co"
+                target="_blank"
+                rel="noopener"
+                onClick={(e) => e.stopPropagation()}
+                aria-label="Open on Instagram"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+            </div>
+          ) : (
+            <a key={i} href="https://instagram.com/chhatak.co" target="_blank" rel="noopener" className="v2-journey-tile">
               <img src={it.src} alt="" loading="lazy" />
-            )}
-          </a>
+            </a>
+          )
         ))}
       </div>
       <button type="button" className="v2-journey-arrow v2-journey-arrow--next" onClick={() => scroll(1)} aria-label="Scroll next">
