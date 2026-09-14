@@ -1780,6 +1780,9 @@ body.theme-coastal .pd-other-price { font-weight: 700; font-size: 18px; color: #
   margin-top: 8px;
 }
 .our-story-chapter { display: flex; flex-direction: column; gap: 18px; }
+/* Caption sits above the image, media below */
+.our-story-chapter__caption { order: 0; }
+.our-story-chapter__media   { order: 1; }
 .our-story-chapter__media {
   position: relative;
   border-radius: 18px;
